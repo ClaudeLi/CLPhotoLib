@@ -410,17 +410,22 @@ static CGSize AssetGridThumbnailSize;
         CLAssetModel *model = imagePicker.selectedModels[0];
         [[CLImageManager manager] getPhotoWithAsset:model.asset completion:^(UIImage *photo, NSDictionary *info, BOOL isDegraded) {
             [imagePicker hideProgressHUD];
-            if (photo) {
-                [self.navigationController dismissViewControllerAnimated:YES completion:^{
-                    if ([imagePicker.pickerDelegate respondsToSelector:@selector(imagePickerController:didFinishPickingVideo:sourceAssets:)]) {
-                        [imagePicker.pickerDelegate imagePickerController:imagePicker didFinishPickingVideo:photo sourceAssets:model.asset];
-                    }
-                    if (imagePicker.didFinishPickingVideoHandle) {
-                        imagePicker.didFinishPickingVideoHandle(photo,model.asset);
-                    }
-                }];
+            if (isDegraded) {
+                NSLog(@"缩略图");
+                return;
             }else{
-                NSLog(@"视频封面读取失败");
+                if (photo) {
+                    [self.navigationController dismissViewControllerAnimated:YES completion:^{
+                        if ([imagePicker.pickerDelegate respondsToSelector:@selector(imagePickerController:didFinishPickingVideo:sourceAssets:)]) {
+                            [imagePicker.pickerDelegate imagePickerController:imagePicker didFinishPickingVideo:photo sourceAssets:model.asset];
+                        }
+                        if (imagePicker.didFinishPickingVideoHandle) {
+                            imagePicker.didFinishPickingVideoHandle(photo,model.asset);
+                        }
+                    }];
+                }else{
+                    NSLog(@"视频封面读取失败");
+                }
             }
         }];
     }

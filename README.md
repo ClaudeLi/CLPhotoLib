@@ -24,14 +24,18 @@
         imagePickerVc.sortAscendingByModificationDate = NO;
         [self presentViewController:imagePickerVc animated:YES completion:nil];
 
-//2. 协议回调，也可以Block回调  
+//2. 协议回调，也可以Block回调 
+
         - (void)imagePickerController:(CLPickerRootController *)picker didFinishPickingPhotos:(NSArray *)photos sourceAssets:(NSArray *)assets isSelectOriginalPhoto:(BOOL)isSelectOriginalPhoto {
             NSLog(@"%@", photos);
             _assets = [assets mutableCopy];
         }
 
+
 // 如果用户选择了一个视频，下面的handle会被执行
+
 // 如果系统版本大于iOS8，asset是PHAsset类的对象，否则是ALAsset类的对象
+
         - (void)imagePickerController:(CLPickerRootController *)picker didFinishPickingVideo:(UIImage *)coverImage sourceAssets:(id)asset {
             NSLog(@"%@", asset);
         }
