@@ -1,0 +1,510 @@
+//
+//  CLEditManager.m
+//  CLPhotoLib
+//
+//  Created by ClaudeLi on 2017/11/16.
+//  Copyright © 2017年 ClaudeLi. All rights reserved.
+//
+
+#import "CLEditManager.h"
+#import "CLConfig.h"
+#import "CLExtHeader.h"
+
+@interface CLEditManager (){
+    NSTimer *_timerEffect;
+}
+
+@property (nonatomic, retain) AVAssetExportSession *exportSession;
+
+@end
+
+@implementation CLEditManager
+
+- (instancetype)init{
+    self = [super init];
+    if (self) {
+    }
+    return self;
+}
+
+- (void)exportEditVideoForAsset:(AVAsset *)asset
+                          range:(CMTimeRange)range
+                      sizeScale:(CGFloat)sizeScale
+                        cutMode:(CLVideoCutMode)cutMode
+                      fillColor:(UIColor *)fillColor{
+    [self exportEditVideoForAsset:asset range:range sizeScale:sizeScale isDistinguishWH:YES cutMode:cutMode fillColor:fillColor mustRecode:YES];
+}
+
+- (void)exportEditVideoForAsset:(AVAsset *)asset
+                          range:(CMTimeRange)range
+                      sizeScale:(CGFloat)sizeScale
+                isDistinguishWH:(BOOL)isDistinguishWH
+                        cutMode:(CLVideoCutMode)cutMode
+                      fillColor:(UIColor *)fillColor
+                     mustRecode:(BOOL)mustRecode
+{
+    NSArray *videoTracks = [asset tracksWithMediaType:AVMediaTypeVideo];
+    if (!videoTracks.count) {
+        [self onError:[NSError errorWithDomain:NSCocoaErrorDomain
+                                          code:0
+                                      userInfo:@{
+                                                 CLString(@"CLText_VideoProcessingError"):NSLocalizedDescriptionKey,
+                                                 CLString(@"CLText_NotGetVideoInfo"):NSLocalizedFailureReasonErrorKey
+                                                 }
+                       ]];
+        return;
+    }
+    AVAssetTrack *videoAssetTrack = [videoTracks objectAtIndex:0];
+    
+    // 判断视频方向
+    BOOL isVideoAssetPortrait_ = NO;
+    CGAffineTransform videoTransform = videoAssetTrack.preferredTransform;
+    if (videoTransform.a == 0 && videoTransform.b == 1.0 && videoTransform.c == -1.0 && videoTransform.d == 0) {
+        isVideoAssetPortrait_ = YES;
+    }
+    if (videoTransform.a == 0 && videoTransform.b == -1.0 && videoTransform.c == 1.0 && videoTransform.d == 0) {
+        isVideoAssetPortrait_ = YES;
+    }
+    if (videoTransform.a == 1.0 && videoTransform.b == 0 && videoTransform.c == 0 && videoTransform.d == 1.0) {
+    }
+    if (videoTransform.a == -1.0 && videoTransform.b == 0 && videoTransform.c == 0 && videoTransform.d == -1.0) {
+    }
+    
+    // 视频显示大小
+    CGSize renderSize;
+    if(isVideoAssetPortrait_){
+        renderSize = CGSizeMake(videoAssetTrack.naturalSize.height, videoAssetTrack.naturalSize.width);
+    } else {
+        renderSize = videoAssetTrack.naturalSize;
+    }
+    
+    // 是否处理
+    if (!mustRecode) {
+        if (CMTimeRangeEqual(range, CMTimeRangeMake(kCMTimeZero, asset.duration))) {
+            if (isDistinguishWH) {
+                if (renderSize.width/renderSize.height == sizeScale) {
+                    if ([asset valueForKey:@"URL"]) {
+                        // 不处理
+                        [self didFinishedOutputURL:[asset valueForKey:@"URL"]];
+                        return;
+                    }
+                }
+            }else{
+                if (renderSize.width/renderSize.height == sizeScale || renderSize.width/renderSize.height == 1.0/sizeScale) {
+                    if ([asset valueForKey:@"URL"]) {
+                        // 不处理
+                        [self didFinishedOutputURL:[asset valueForKey:@"URL"]];
+                        return;
+                    }
+                }
+            }
+        }
+    }
+    NSArray *compatiblePresets = [AVAssetExportSession exportPresetsCompatibleWithAsset:asset];
+    if ([compatiblePresets containsObject:AVAssetExportPreset640x480]) {
+        /*
+        // 这里可以处理背景音乐
+        NSArray *audioTracks = [asset tracksWithMediaType:AVMediaTypeAudio];
+        if (!audioTracks.count) {
+            [self onError:[NSError errorWithDomain:NSCocoaErrorDomain
+                                              code:0
+                                          userInfo:@{
+                                                     @"Audio Processing Error":NSLocalizedDescriptionKey,
+                                                     @"Not Found Audio Information":NSLocalizedFailureReasonErrorKey
+                                                     }
+                           ]];
+            return;
+        }
+        AVMutableComposition *mixComposition = [[AVMutableComposition alloc] init];
+        // - Video track
+        AVMutableCompositionTrack *videoCompositionTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo
+                                                                                       preferredTrackID:kCMPersistentTrackID_Invalid];
+        NSError *error;
+        [videoCompositionTrack insertTimeRange:range
+                                       ofTrack:[videoTracks objectAtIndex:0]
+                                        atTime:range.start error:&error];
+        if (error) {
+            [self onError:error];
+            return;
+        }
+        // - Audio track
+        AVMutableCompositionTrack *audioCompositionTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio
+                                                                                       preferredTrackID:kCMPersistentTrackID_Invalid];
+        [audioCompositionTrack insertTimeRange:range
+                                       ofTrack:[audioTracks objectAtIndex:0]
+                                        atTime:range.start
+                                         error:&error];
+        if (error) {
+            [self onError:error];
+            return;
+        }
+        */
+        
+        // 1. - Create AVMutableVideoCompositionInstruction
+        AVMutableVideoCompositionInstruction *mainInstruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
+        mainInstruction.timeRange = CMTimeRangeMake(kCMTimeZero, asset.duration);
+        
+        // 2. - Create an AVMutableVideoCompositionLayerInstruction for the video track and fix the orientation.
+        AVMutableVideoCompositionLayerInstruction *videoLayerInstruction = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoAssetTrack];
+        // 不透明度
+        [videoLayerInstruction setOpacity:1.0 atTime:kCMTimeZero];
+        
+        // 3. - Add instructions
+        mainInstruction.layerInstructions = [NSArray arrayWithObjects:videoLayerInstruction, nil];
+        
+        // 4. - Create AVMutableVideoComposition
+        AVMutableVideoComposition *mainCompositionInst = [AVMutableVideoComposition videoComposition];
+//        mainCompositionInst.renderSize = renderSize;
+        mainCompositionInst.instructions = [NSArray arrayWithObject:mainInstruction];
+        mainCompositionInst.frameDuration = CMTimeMake(1, 30);
+        
+        // 判断是否区分横竖比例
+        if (!isDistinguishWH) {
+            if (renderSize.width/renderSize.height > 1.0) {
+                sizeScale = sizeScale > 1.0 ? sizeScale:1.0/sizeScale;
+            }else{
+                sizeScale = sizeScale < 1.0 ? sizeScale:1.0/sizeScale;
+            }
+        }
+        // 设置输出视频尺寸大小及方向
+        CGSize outputSize = renderSize;
+        switch (cutMode) {
+            case CLVideoCutModeScaleAspectFit:
+            {
+                if (renderSize.width/renderSize.height > sizeScale) {
+                    outputSize.width = renderSize.width;
+                    outputSize.height = renderSize.width/sizeScale;
+                }else{
+                    outputSize.height = renderSize.height;
+                    outputSize.width = renderSize.height*sizeScale;
+                }
+                // 方向
+                [videoLayerInstruction setTransform:videoTransform atTime:kCMTimeZero];
+                [self layerWithOutputSize:outputSize
+                               renderSize:renderSize
+                                  cutMode:cutMode
+                                fillColor:fillColor
+                      mainCompositionInst:mainCompositionInst];
+            }
+                break;
+            case CLVideoCutModeScaleAspectFill:
+            {
+                if (renderSize.width/renderSize.height > sizeScale) {
+                    outputSize.height = renderSize.height;
+                    outputSize.width = outputSize.height*sizeScale;
+                    videoTransform.tx -= (renderSize.width-outputSize.width)/2.0;
+                    [videoLayerInstruction setTransform:videoTransform atTime:kCMTimeZero];
+                }else{
+                    outputSize.width = renderSize.width;
+                    outputSize.height = outputSize.width/sizeScale;
+                    videoTransform.ty -= (renderSize.height-outputSize.height)/2.0;
+                    [videoLayerInstruction setTransform:videoTransform atTime:kCMTimeZero];
+                }
+                [self layerWithOutputSize:outputSize
+                               renderSize:renderSize
+                                  cutMode:cutMode
+                                fillColor:fillColor
+                      mainCompositionInst:mainCompositionInst];
+            }
+                break;
+            default:
+            {
+                [videoLayerInstruction setTransform:videoTransform atTime:kCMTimeZero];
+                mainCompositionInst.renderSize = outputSize;
+            }
+                break;
+        }
+        
+        [self removeTimer];
+        NSString *outputPath = CLVideoOutputPath();
+        [self deleteFilePath:outputPath];
+        [UIApplication sharedApplication].idleTimerDisabled = YES;
+        // AVAssetExportPreset640x480 压缩质量
+        self.exportSession = [[AVAssetExportSession alloc]
+                              initWithAsset:asset presetName:AVAssetExportPreset640x480];
+        _exportSession.timeRange = range;
+        
+        NSURL *furl = [NSURL fileURLWithPath:outputPath];
+        _exportSession.outputURL = furl;
+        _exportSession.outputFileType = AVFileTypeMPEG4;
+        
+        [_exportSession setVideoComposition:mainCompositionInst];
+        [_exportSession setShouldOptimizeForNetworkUse:YES];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            // Progress monitor for effect
+            _timerEffect = [NSTimer scheduledTimerWithTimeInterval:0.3f
+                                                            target:self
+                                                          selector:@selector(handlingProgress)
+                                                          userInfo:nil
+                                                           repeats:YES];
+        });
+        cl_weakSelf(self);
+        [_exportSession exportAsynchronouslyWithCompletionHandler:^{
+            cl_strongSelf(weakSelf);
+            if (!strongSelf) {
+                return;
+            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [UIApplication sharedApplication].idleTimerDisabled = NO;
+                [strongSelf removeTimer];
+            });
+            switch ([strongSelf.exportSession status]) {
+                case AVAssetExportSessionStatusFailed:{
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [strongSelf onError:strongSelf.exportSession.error];
+                        [strongSelf.exportSession cancelExport];
+                        strongSelf.exportSession = nil;
+                    });
+                }
+                    break;
+                case AVAssetExportSessionStatusCancelled:
+                {
+                    [strongSelf.exportSession cancelExport];
+                    strongSelf.exportSession = nil;
+                }
+                    break;
+                default:{
+                    [strongSelf.exportSession cancelExport];
+                    strongSelf.exportSession = nil;
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [strongSelf didFinishedOutputURL:furl];
+                    });
+                }
+                    break;
+            }
+        }];
+    }else{
+        [self onError:[NSError errorWithDomain:NSCocoaErrorDomain
+                                          code:0
+                                      userInfo:@{
+                                                 CLString(@"CLText_VideoProcessingError"):NSLocalizedDescriptionKey,
+                                                 CLString(@"CLText_UnableToDecode"):NSLocalizedFailureReasonErrorKey
+                                                 }
+                       ]];
+    }
+}
+
+- (void)layerWithOutputSize:(CGSize)outputSize
+                 renderSize:(CGSize)renderSize
+                    cutMode:(CLVideoCutMode)cutMode
+                  fillColor:(UIColor *)fillColor
+        mainCompositionInst:(AVMutableVideoComposition *)mainCompositionInst
+{
+    mainCompositionInst.renderSize = outputSize;
+    // 1 - creat backgroundLayer
+    //    UIImage *borderImage = [UIImage imageWithColor:fillColor rectSize:(CGRect){CGPointZero, videoSize}];
+    //
+    //    CALayer *backgroundLayer = [CALayer layer];
+    //    [backgroundLayer setContents:(id)[borderImage CGImage]];
+    //    backgroundLayer.frame = (CGRect){CGPointZero, videoSize};
+    //    [backgroundLayer setMasksToBounds:YES];
+    
+    // 2 - creat videoLayer
+    CALayer *parentLayer = [CALayer layer];
+    CALayer *videoLayer = [CALayer layer];
+    
+    parentLayer.frame = (CGRect){CGPointZero, outputSize};
+    parentLayer.backgroundColor = fillColor.CGColor;
+    if (cutMode == CLVideoCutModeScaleAspectFit) {
+        videoLayer.frame = (CGRect){
+            (CGPoint){
+                (outputSize.width - renderSize.width)/2.0,
+                -(outputSize.height - renderSize.height)/2.0
+            },
+            outputSize
+        };
+    }else{
+        videoLayer.frame = (CGRect){
+            CGPointZero,
+            CGSizeMake(outputSize.width, outputSize.height)
+        };
+        // 相当于center
+        videoLayer.position = parentLayer.position;
+    }
+    CLLog(@"%@", NSStringFromCGRect(videoLayer.frame));
+    //    [parentLayer addSublayer:backgroundLayer];
+    [parentLayer addSublayer:videoLayer];
+    
+    // 3. creat maskLayer 放在videoLayer上面填充视频空余
+    if ((outputSize.width - renderSize.width) > 0) {
+        CALayer *maskLayer = [CALayer layer];
+        maskLayer.backgroundColor = fillColor.CGColor;
+        maskLayer.frame = (CGRect){
+            (CGPoint){
+                outputSize.width - (outputSize.width - renderSize.width)/2.0,
+                0
+            },
+            (CGSize){
+                (outputSize.width - renderSize.width)/2.0,
+                outputSize.height
+            }
+        };
+        [parentLayer addSublayer:maskLayer];
+    }
+    if ((outputSize.height - renderSize.height) > 0) {
+        CALayer *maskLayer = [CALayer layer];
+        maskLayer.backgroundColor = fillColor.CGColor;
+        maskLayer.frame = (CGRect){
+            CGPointZero,
+            (CGSize){
+                outputSize.width,
+                (outputSize.height - renderSize.height)/2.0
+            }
+        };
+        [parentLayer addSublayer:maskLayer];
+    }
+    mainCompositionInst.animationTool = [AVVideoCompositionCoreAnimationTool
+                                         videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayer:videoLayer inLayer:parentLayer];
+}
+
+- (void)deleteFilePath:(NSString *)path{
+    NSFileManager *fm = [NSFileManager defaultManager];
+    BOOL exist = [fm fileExistsAtPath:path];
+    NSError *err;
+    if (exist) {
+        [fm removeItemAtPath:path error:&err];
+        if (err) {
+            CLLog(@"file remove error, %@", err.localizedDescription);
+        }
+    }
+}
+
+- (void)cancelExport{
+    if (_exportSession) {
+        [_exportSession cancelExport];
+        _exportSession = nil;
+    }
+}
+
+- (void)removeTimer{
+    if (_timerEffect) {
+        [_timerEffect invalidate];
+        _timerEffect = nil;
+    }
+}
+
+- (void)handlingProgress{
+    if ([self.delegate respondsToSelector:@selector(editManager:handlingProgress:)]) {
+        [self.delegate editManager:self handlingProgress:self.exportSession.progress];
+    }
+}
+
+- (void)onError:(NSError *)error{
+    if ([self.delegate respondsToSelector:@selector(editManager:operationFailure:)]) {
+        [self.delegate editManager:self operationFailure:error];
+    }
+}
+
+- (void)didFinishedOutputURL:(NSURL *)outputURL{
+    if ([self.delegate respondsToSelector:@selector(editManager:didFinishedOutputURL:)]) {
+        [self.delegate editManager:self didFinishedOutputURL:outputURL];
+    }
+}
+
+#pragma mark -
+#pragma mark -- Public Class Methods --
++ (UIImage *)requestThumbnailImageForAVAsset:(AVAsset *)asset
+                                timeBySecond:(NSTimeInterval)timeBySecond
+{
+    if (!asset) {
+        return nil;
+    }
+    // 根据AVURLAsset创建AVAssetImageGenerator
+    AVAssetImageGenerator *imageGenerator=[AVAssetImageGenerator assetImageGeneratorWithAsset:asset];
+    imageGenerator.appliesPreferredTrackTransform = YES;
+    imageGenerator.requestedTimeToleranceAfter = kCMTimeZero;
+    imageGenerator.requestedTimeToleranceBefore = kCMTimeZero;
+    /*截图
+     * requestTime:缩略图创建时间
+     * actualTime:缩略图实际生成的时间
+     */
+    NSError *error=nil;
+    // CMTime是表示电影时间信息的结构体，第一个参数是视频第几秒，第二个参数时每秒帧数.(如果要活的某一秒的第几帧可以使用CMTimeMake方法)
+    CMTime time = CMTimeMakeWithSeconds(timeBySecond, 30);
+    CMTime actualTime;
+    CGImageRef cgImage= [imageGenerator copyCGImageAtTime:time actualTime:&actualTime error:&error];
+    imageGenerator = nil;
+    if(error){
+        CLLog(@"截取视频缩略图时发生错误，错误信息：%@",error.localizedDescription);
+        CGImageRelease(cgImage);
+        return nil;
+    }
+    UIImage *image = [UIImage imageWithCGImage:cgImage];//转化为UIImage
+    CGImageRelease(cgImage);
+    return image;
+}
+
++ (void)requestThumbnailImagesForAVAsset:(AVAsset *)asset
+                                interval:(NSTimeInterval)interval
+                                    size:(CGSize)size
+                           eachThumbnail:(void (^)(UIImage *image))eachThumbnail
+                                complete:(void (^)(AVAsset *asset, NSArray<UIImage *> *images))complete
+{
+    NSTimeInterval duration = asset.duration.value/(asset.duration.timescale * 1.0);
+    long imgCount = round(duration/interval);
+    [self requestThumbnailImagesForAVAsset:asset duration:duration imageCount:imgCount interval:interval size:size eachThumbnail:eachThumbnail complete:complete];
+}
+
++ (void)requestThumbnailImagesForAVAsset:(AVAsset *)asset
+                                duration:(NSTimeInterval)duration
+                              imageCount:(NSInteger)imageCount
+                                interval:(NSTimeInterval)interval
+                                    size:(CGSize)size
+                           eachThumbnail:(void (^)(UIImage *image))eachThumbnail
+                                complete:(void (^)(AVAsset *asset, NSArray<UIImage *> *images))complete
+{
+    AVAssetImageGenerator *generator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
+    generator.maximumSize = size;
+    generator.appliesPreferredTrackTransform = YES;
+    generator.requestedTimeToleranceBefore = kCMTimeZero;
+    generator.requestedTimeToleranceAfter = kCMTimeZero;
+
+    NSMutableArray *arr = [NSMutableArray array];
+    NSTimeInterval imgTime = 0;
+    for (int i = 0; i < imageCount; i++) {
+        /*
+         CMTimeMake(a,b) a当前第几帧, b每秒钟多少帧
+         */
+        // 这里有需要时加上0.1 是为了避免解析0s图片必定失败的问题
+        CMTime time = CMTimeMake((imgTime) * asset.duration.timescale, asset.duration.timescale);
+        NSValue *value = [NSValue valueWithCMTime:time];
+        [arr addObject:value];
+        imgTime += interval;
+        if (imgTime > duration) {
+            break;
+        }
+    }
+    NSMutableArray *arrImages = [NSMutableArray array];
+    __block long count = 0;
+    [generator generateCGImagesAsynchronouslyForTimes:arr
+                                    completionHandler:^(CMTime requestedTime, CGImageRef  _Nullable image, CMTime actualTime, AVAssetImageGeneratorResult result, NSError * _Nullable error) {
+        switch (result) {
+            case AVAssetImageGeneratorSucceeded:
+            {
+                UIImage *img = [UIImage imageWithCGImage:image];
+                if (eachThumbnail) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        eachThumbnail(img);
+                    });
+                }
+                [arrImages addObject:img];
+            }
+                break;
+            case AVAssetImageGeneratorFailed:
+                CLLog(@"第%ld张图片解析失败", count);
+                break;
+            case AVAssetImageGeneratorCancelled:
+                CLLog(@"取消解析视频图片");
+                break;
+        }
+        count++;
+        if (count == arr.count && complete) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                complete(asset, arrImages);
+            });
+        }
+    }];
+}
+
+@end

@@ -1,112 +1,165 @@
 //
 //  CLPickerRootController.h
-//  Tiaooo
+//  CLPhotoLib
 //
-//  Created by ClaudeLi on 16/6/30.
-//  Copyright © 2016年 ClaudeLi. All rights reserved.
+//  Created by ClaudeLi on 2017/11/1.
+//  Copyright © 2017年 ClaudeLi. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
-#import "CLAssetModel.h"
+#import <AVFoundation/AVFoundation.h>
 
+/**
+ 选择模式
+ - CLPickerSelectModeMixDisplay: 混合显示
+ - CLPickerSelectModeAllowImage: 只显示图片
+ - CLPickerSelectModeAllowVideo: 只显示视频
+ */
+typedef NS_ENUM(NSInteger, CLPickerSelectMode) {
+    CLPickerSelectModeMixDisplay,
+    CLPickerSelectModeAllowImage,
+    CLPickerSelectModeAllowVideo,
+};
+
+typedef void(^CLPickingPhotosHandle)(NSArray<UIImage *> *photos, NSArray *assets);
+typedef void(^CLPickingVideoHandle)(UIImage *videoCover, NSURL *videoURL);
+typedef void(^CLPickerCancelHandle)(void);
+typedef void(^CLPickerShootVideoHandle)(void);
+
+@class CLPhotoModel;
 @protocol CLPickerRootControllerDelegate;
 @interface CLPickerRootController : UINavigationController
-/// Use this init method / 用这个初始化方法
-- (instancetype)initWithMaxImagesCount:(NSInteger)maxImagesCount delegate:(id<CLPickerRootControllerDelegate>)delegate;
-/// This init method just for previewing photos / 用这个初始化方法以预览图片
-- (instancetype)initWithSelectedAssets:(NSMutableArray *)selectedAssets selectedPhotos:(NSMutableArray *)selectedPhotos index:(NSInteger)index;
 
-/// Default is 9 / 默认最大可选9张图片
-@property (nonatomic, assign) NSInteger maxImagesCount;
+/**
+ 启动选择器前状态栏样式
+ previous status bar style
+ */
+@property (nonatomic, assign) UIStatusBarStyle previousStatusBarStyle;
 
-/// Sort photos ascending by modificationDate，Default is YES
-/// 对照片排序，按修改时间升序，默认是YES。如果设置为NO,最新的照片会显示在最前面，内部的拍照按钮会排在第一个
-@property (nonatomic, assign) BOOL sortAscendingByModificationDate;
+/**
+ 默认 白色状态栏
+ default UIStatusBarStyleLightContent
+ */
+@property (nonatomic, assign) UIStatusBarStyle statusBarStyle;
 
-/// Default is (750, 750) / 默认图片较小的一边 不超过 minSideSize
-@property (nonatomic, assign) CGSize minSideSize;
+/**
+ 是否允许旋转
+ */
+@property (nonatomic, assign) BOOL allowAutorotate;
 
-// Default is 3 /  默认有3竖列  范围 [1-5]
-@property (nonatomic, assign) NSInteger listCount;
+/**
+ default UIInterfaceOrientationUnknown
+ */
+@property (nonatomic, assign) UIInterfaceOrientation preferredInterfaceOrientation;
 
-/// Default is 600px / 默认600像素宽
-@property (nonatomic, assign) CGFloat photoPreviewMaxWidth;
+/**
+ 选择器背景色 默认白色
+ background color default whiteColor
+ */
+@property (nonatomic) UIColor *backgroundColor;
 
-/// Default is 15, While fetching photo, HUD will dismiss automatic if timeout;
-/// 超时时间，默认为15秒，当取图片时间超过15秒还没有取成功时，会自动dismiss HUD；
-@property (nonatomic, assign) NSInteger timeout;
+/**
+ 导航栏背景色 默认 grayColor
+ navigation color default grayColor
+ */
+@property (nonatomic) UIColor *navigationColor;
 
-/// Default is YES.if set NO, the original photo button will hide. user can't picking original photo.
-/// 默认为YES，如果设置为NO,原图按钮将隐藏，用户不能选择发送原图
-@property (nonatomic, assign) BOOL allowPickingOriginalPhoto;
+/**
+ 标题颜色 默认白色
+ title color default whiteColor
+ */
+@property (nonatomic) UIColor *titleColor;
 
-/// Default is YES.if set NO, user can't picking video.
-/// 默认为YES，如果设置为NO,用户将不能选择发送视频
-@property (nonatomic, assign) BOOL allowPickingVideo;
+/**
+ 导航栏按钮字体颜色 默认白色
+ navigation item color default CLBarItemTitleDefaultColor
+ */
+@property (nonatomic) UIColor *navigationItemColor;
 
-/// Default is YES.if set NO, user can't picking image.
-/// 默认为YES，如果设置为NO,用户将不能选择发送图片
-@property(nonatomic, assign) BOOL allowPickingImage;
+/**
+ 底部控制栏背景色 默认和导航栏背景色相同
+ bottom tool bar backgroundColor default same navigationColor
+ */
+@property (nonatomic) UIColor *toolBarBackgroundColor;
 
-/// Default is YES.if set NO, user can't take picture.
-/// 默认为YES，如果设置为NO,拍照按钮将隐藏,用户将不能在选择器中拍照
-@property(nonatomic, assign) BOOL allowTakePicture;
+/**
+ 底部控制栏按钮颜色 默认和导航栏按钮颜色相同
+ bottom tool bar item color default same navigationItemColor
+ */
+@property (nonatomic) UIColor *toolBarItemColor;
 
-// 默认为NO，如果设置为YES, 工具tabBar将隐藏
-@property(nonatomic, assign) BOOL allowShowToolBar;
+#pragma mark -
+/**
+ 选择图片较小的一边 不超过(750, 750)
+ select image min size, Default is (750, 750)
+ */
+@property (nonatomic, assign) CGSize    minSize;
 
-// 默认NO，不能pop返回相册选择页，相册在当前页选择<类似新浪微博>
-@property(nonatomic, assign) BOOL canGoBackAlbum;
+@property (nonatomic, assign) NSInteger columnCount;                // default ipad:6 else 3
+@property (nonatomic, assign) CGFloat   minimumInteritemSpacing;    // default 1.0
+@property (nonatomic, assign) CGFloat   minimumLineSpacing;         // default 1.0
+@property (nonatomic, assign) UIEdgeInsets sectionInset;            // default UIEdgeInsetsMake(1, 0, 1, 0)
 
-/// The photos user have selected
-/// 用户选中过的图片数组
-@property (nonatomic, strong) NSMutableArray *selectedAssets;
-@property (nonatomic, strong) NSMutableArray<CLAssetModel *> *selectedModels;
+@property (nonatomic, assign) NSInteger maxSelectCount;             // image max default 9
+@property (nonatomic, assign) CGFloat minDuration;                  // default 0.0
+@property (nonatomic, assign) CGFloat maxDuration;                  // default MAXFLOAT
+@property (nonatomic, assign) CGFloat outputVideoScale;             // default 16.0:9.0
+@property (nonatomic, assign) BOOL isDistinguishWH;                 // 是否区分视频宽高比(outputScale宽高比是否可以互换), default NO
+@property (nonatomic, assign) BOOL allowEditVideo;                  // default YES
 
-- (void)showAlertWithTitle:(NSString *)title;
-- (void)showProgressHUD;
-- (void)hideProgressHUD;
-@property (nonatomic, assign) BOOL isSelectOriginalPhoto;
+@property (nonatomic, assign) BOOL allowAlbumDropDown;              // default NO
+@property (nonatomic, assign) BOOL allowPanGestureSelect;           // default NO
+@property (nonatomic, assign) BOOL allowPreviewImage;               // default YES
+@property (nonatomic, assign) BOOL allowEditImage;                  // default NO
+@property (nonatomic, assign) BOOL allowSelectOriginalImage;        // default NO
+@property (nonatomic, assign) BOOL allowDoneOnToolBar;              // default YES
 
-// The picker should dismiss itself; when it dismissed these handle will be called.
-// If isOriginalPhoto is YES, user picked the original photo.
-// You can get original photo with asset, by the method [[CLImageManager manager] getOriginalPhotoWithAsset:completion:].
-// The UIImage Object in photos default width is 828px, you can set it by photoWidth property.
-// 这个照片选择器会自己dismiss，当选择器dismiss的时候，会执行下面的handle
-// 如果isSelectOriginalPhoto为YES，表明用户选择了原图
-// 你可以通过一个asset获得原图，通过这个方法：[[CLImageManager manager] getOriginalPhotoWithAsset:completion:]
-// photos数组里的UIImage对象，默认是828像素宽，你可以通过设置photoWidth属性的值来改变它
-@property (nonatomic, copy) void (^didFinishPickingPhotosHandle)(NSArray<UIImage *> *photos,NSArray *assets,BOOL isSelectOriginalPhoto);
-@property (nonatomic, copy) void (^didFinishPickingPhotosWithInfosHandle)(NSArray<UIImage *> *photos,NSArray *assets,BOOL isSelectOriginalPhoto,NSArray<NSDictionary *> *infos);
-@property (nonatomic, copy) void (^imagePickerControllerDidCancelHandle)();
-// If user picking a video, this handle will be called.
-// If system version > iOS8,asset is kind of PHAsset class, else is ALAsset class.
-// 如果用户选择了一个视频，下面的handle会被执行
-// 如果系统版本大于iOS8，asset是PHAsset类的对象，否则是ALAsset类的对象
-@property (nonatomic, copy) void (^didFinishPickingVideoHandle)(UIImage *coverImage,id asset);
+@property (nonatomic, assign) BOOL allowSelectGif;                  // default YES
+@property (nonatomic, assign) BOOL allowSelectLivePhoto;            // default YES
+@property (nonatomic, assign) BOOL allowTakePhoto;                  // default YES
+@property (nonatomic, assign) BOOL sortAscending;                   // default NO
+@property (nonatomic, assign) BOOL showCaptureOnCell;               // default NO
+@property (nonatomic, assign) CLPickerSelectMode selectMode;        // default CLPickerSelectModeMixDisplay
+@property (nonatomic, strong) NSMutableArray<CLPhotoModel *> *selectedModels;
 
-@property (nonatomic, weak) id<CLPickerRootControllerDelegate> pickerDelegate;
+#pragma mark -- Delegate | Block --
+@property (nonatomic, weak) id<CLPickerRootControllerDelegate>pickerDelegate;
+@property (nonatomic, copy) CLPickingPhotosHandle   pickingPhotosHandle;
+@property (nonatomic, copy) CLPickingVideoHandle    pickingVideoHandle;
+@property (nonatomic, copy) CLPickerCancelHandle    pickerCancelHandle;
+@property (nonatomic, copy) CLPickerShootVideoHandle pickerShootVideoHandle;
+
+@property (nonatomic, assign) BOOL selectedOriginalImage;
+
+- (void)clickCancelAction;
+- (void)clickShootVideoAction;
+- (void)didFinishPickingPhotosAction;
+- (void)clickPickingVideoActionForAsset:(AVAsset *)asset range:(CMTimeRange)range;
+- (void)cancelExport;
+
+- (void)showText:(NSString *)text;
+- (void)showText:(NSString *)text delay:(NSTimeInterval)delay;
+- (void)showProgress;
+- (void)showProgressWithText:(NSString *)text;
+- (void)hideProgress;
 
 @end
 
-@protocol CLPickerRootControllerDelegate <NSObject>
+@protocol CLPickerRootControllerDelegate <UINavigationControllerDelegate>
+
 @optional
-// The picker should dismiss itself; when it dismissed these handle will be called.
-// If isOriginalPhoto is YES, user picked the original photo.
-// You can get original photo with asset, by the method [[CLImageManager manager] getOriginalPhotoWithAsset:completion:].
-// The UIImage Object in photos default width is 828px, you can set it by photoWidth property.
-// 这个照片选择器会自己dismiss，当选择器dismiss的时候，会执行下面的handle
-// 如果isSelectOriginalPhoto为YES，表明用户选择了原图
-// 你可以通过一个asset获得原图，通过这个方法：[[CLImageManager manager] getOriginalPhotoWithAsset:completion:]
-// photos数组里的UIImage对象，默认是828像素宽，你可以通过设置photoWidth属性的值来改变它
-- (void)imagePickerController:(CLPickerRootController *)picker didFinishPickingPhotos:(NSArray<UIImage *> *)photos sourceAssets:(NSArray *)assets isSelectOriginalPhoto:(BOOL)isSelectOriginalPhoto;
-- (void)imagePickerController:(CLPickerRootController *)picker didFinishPickingPhotos:(NSArray<UIImage *> *)photos sourceAssets:(NSArray *)assets isSelectOriginalPhoto:(BOOL)isSelectOriginalPhoto infos:(NSArray<NSDictionary *> *)infos;
-- (void)imagePickerControllerDidCancel:(CLPickerRootController *)picker;
-// If user picking a video, this callback will be called.
-// If system version > iOS8,asset is kind of PHAsset class, else is ALAsset class.
-// 如果用户选择了一个视频，下面的handle会被执行
-// 如果系统版本大于iOS8，asset是PHAsset类的对象，否则是ALAsset类的对象
-- (void)imagePickerController:(CLPickerRootController *)picker didFinishPickingVideo:(UIImage *)coverImage sourceAssets:(id)asset;
+
+// images
+- (void)clPickerController:(CLPickerRootController *)picker didFinishPickingPhotos:(NSArray<UIImage *> *)photos assets:(NSArray *)assets;
+
+// video
+- (void)clPickerController:(CLPickerRootController *)picker didFinishPickingVideoCover:(UIImage *)videoCover videoURL:(NSURL *)videoURL;
+
+// Cancel Picker
+- (void)clPickerControllerDidCancel:(CLPickerRootController *)picker;
+
+// User can write Custom video camera.
+- (void)clPickerControllerDidShootVideo:(CLPickerRootController *)picker;
 
 @end
 
