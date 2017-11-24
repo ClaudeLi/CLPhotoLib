@@ -11,6 +11,14 @@
 
 @implementation CLPhotoModel
 
++ (instancetype)modelWithAsset:(PHAsset *)asset{
+    CLPhotoModel *model = [[CLPhotoModel alloc] init];
+    model.asset = asset;
+    model.isSelected = NO;
+    model.type = [CLPhotoModel transformAssetType:asset];
+    return model;
+}
+    
 + (instancetype)modelWithAsset:(PHAsset *)asset type:(CLAssetMediaType)type{
     CLPhotoModel *model = [[CLPhotoModel alloc] init];
     model.asset = asset;
@@ -39,6 +47,23 @@
         NSInteger m = (duration % 3600) / 60;
         NSInteger s = duration % 60;
         return [NSString stringWithFormat:@"%02ld:%02ld:%02ld", (long)h, (long)m, (long)s];
+    }
+}
+    
++ (CLAssetMediaType)transformAssetType:(PHAsset *)asset{
+    switch (asset.mediaType) {
+        case PHAssetMediaTypeAudio:
+        return CLAssetMediaTypeAudio;
+        case PHAssetMediaTypeVideo:
+        return CLAssetMediaTypeVideo;
+        case PHAssetMediaTypeImage:
+        if ([[asset valueForKey:@"filename"] hasSuffix:@"GIF"]) return CLAssetMediaTypeGif;
+        if (@available(iOS 9.1, *)) {
+            if (asset.mediaSubtypes == PHAssetMediaSubtypePhotoLive || asset.mediaSubtypes == 10) return CLAssetMediaTypeLivePhoto;
+        }
+        return CLAssetMediaTypeImage;
+        default:
+        return CLAssetMediaTypeUnknown;
     }
 }
 

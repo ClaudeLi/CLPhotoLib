@@ -59,9 +59,7 @@
 - (PHImageRequestID)requestImageForAsset:(PHAsset *)asset size:(CGSize)size resizeMode:(PHImageRequestOptionsResizeMode)resizeMode completion:(void (^)(UIImage *image, NSDictionary *info))completion;
 
 #pragma mark -
-#pragma mark -- Public Class Methods --
-+ (void)judgeAssetisInLocalAblum:(PHAsset *)asset completion:(void (^)(BOOL isInLocal))completion;
-
+#pragma mark -- Public Class Methods --    
 // gif data转图片
 + (UIImage *)transformToGifImageWithData:(NSData *)data;
 

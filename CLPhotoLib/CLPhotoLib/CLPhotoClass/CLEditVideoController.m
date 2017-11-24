@@ -455,7 +455,6 @@ CLRatioMake(CGFloat start, CGFloat end){
         if (!asset) return;
         strongSelf.asset = asset;
         AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset:strongSelf.asset];
-        CLLog(@"%@", NSStringFromCGSize(playerItem.presentationSize));
         if (!playerItem) return;
         [strongSelf requestThumbnailImages];
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -660,12 +659,16 @@ CLRatioMake(CGFloat start, CGFloat end){
         [self.playerLayer.player pause];
         [self.picker showProgressWithText:[NSString stringWithFormat:@"%@..", CLString(@"CLText_Processing")]];
         
-        [self.picker clickPickingVideoActionForAsset:_asset range:[self getTimeRange]];
+        [self.picker clickPickingVideoActionForAsset:_asset range:[self getTimeRange] mustRecode:YES];
     }
 }
 
 - (void)dealloc{
     [self stopTimer];
+    if (_playerLayer.player){
+        [_playerLayer.player pause];
+        _playerLayer.player = nil;
+    }
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     CLLog(@"%s", __func__);
 }

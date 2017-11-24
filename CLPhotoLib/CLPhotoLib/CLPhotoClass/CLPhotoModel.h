@@ -18,6 +18,7 @@ typedef NS_ENUM(NSUInteger, CLAssetMediaType) {
     CLAssetMediaTypeAudio,
     CLAssetMediaTypeNetImage,
 };
+
 @interface CLPhotoModel : NSObject
 
 @property (nonatomic, strong) PHAsset *asset;           // asset对象
@@ -26,10 +27,13 @@ typedef NS_ENUM(NSUInteger, CLAssetMediaType) {
 @property (nonatomic, copy)   NSString *timeFormat;     // video or audio duration
 @property (nonatomic, assign) CGFloat duration;         // video or audio duration
 
++ (instancetype)modelWithAsset:(PHAsset *)asset;
 + (instancetype)modelWithAsset:(PHAsset *)asset type:(CLAssetMediaType)type;
 + (instancetype)modelWithAsset:(PHAsset *)asset type:(CLAssetMediaType)type duration:(CGFloat)duration;
 
 + (NSString *)timeWithFormat:(CGFloat)dur;
+
++ (CLAssetMediaType)transformAssetType:(PHAsset *)asset;
 
 @end
 

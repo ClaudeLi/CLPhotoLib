@@ -19,11 +19,11 @@
 static NSString *takeIdentifier = @"CLTakePhotoCellIdentifier";
 static NSString *itemIdentifier = @"CLPhotoCollectionCellIdentifier";
 
-@interface CLCameraViewController : UIImagePickerController
+@interface CLImagePickerController : UIImagePickerController
 
 @end
 
-@implementation CLCameraViewController
+@implementation CLImagePickerController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -185,6 +185,7 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
                 if (strongSelf) {
                     strongSelf.albumModel = albumModel;
                     strongSelf.photoArray = albumModel.models.mutableCopy;
+                    [self checkSelectedModels];
                     dispatch_async(dispatch_get_main_queue(), ^{
                         strongSelf.title = albumModel.title;
                         [strongSelf.collectionView reloadData];
@@ -196,6 +197,20 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
     }
 }
 
+- (void)checkSelectedModels {
+    for (CLPhotoModel *model in self.photoArray) {
+        if (!model.isSelected){
+            for (PHAsset *asset in self.picker.selectedAssets) {
+                if ([asset.localIdentifier isEqualToString:model.asset.localIdentifier]){
+                    model.isSelected = YES;
+                    if (![CLPhotoManager checkSelcectedWithModel:model identifiers:[CLPhotoManager getLocalIdentifierArrayWithArray:self.picker.selectedModels]]) {
+                        [self.picker.selectedModels addObject:model];
+                    }
+                }
+            }
+        }
+    }
+}
 
 #pragma mark -
 #pragma mark -- UICollectionViewDataSource & UICollectionViewDelegate --
@@ -354,9 +369,9 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
         if (self.picker.allowDoneOnToolBar) {
             _toolBar.doneBtn.number = self.picker.selectedModels.count;
         }
-        if (_doneBtn) {
-            _doneBtn.number = self.picker.selectedModels.count;
-        }
+    }
+    if (_doneBtn) {
+        _doneBtn.number = self.picker.selectedModels.count;
     }
 }
 
@@ -419,7 +434,7 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
         return;
     }
     if ([UIImagePickerController isSourceTypeAvailable: UIImagePickerControllerSourceTypeCamera]) {
-        CLCameraViewController *imageCamera = [[CLCameraViewController alloc] init];
+        CLImagePickerController *imageCamera = [[CLImagePickerController alloc] init];
         imageCamera.delegate = self;
         imageCamera.videoQuality = UIImagePickerControllerQualityTypeMedium;
         imageCamera.sourceType = UIImagePickerControllerSourceTypeCamera;

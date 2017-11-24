@@ -7,8 +7,8 @@
 //
 
 #import "CLPhotoManager.h"
-#import "CLPhotoModel.h"
 #import "CLConfig.h"
+#import "CLPhotoModel.h"
 
 static NSString *sortDescriptorKey = @"modificationDate";
 @implementation CLPhotoManager
@@ -276,7 +276,7 @@ static NSString *sortDescriptorKey = @"modificationDate";
     NSMutableArray<CLPhotoModel *> *arrModel = [NSMutableArray array];
     __block NSInteger count = 1;
     [result enumerateObjectsUsingBlock:^(PHAsset * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        CLAssetMediaType type = [self transformAssetType:obj];
+        CLAssetMediaType type = [self getPHAssetType:obj];
         
         if (type == CLAssetMediaTypeImage && selectMode == CLPickerSelectModeAllowVideo) return;
         if (type == CLAssetMediaTypeGif && selectMode == CLPickerSelectModeAllowVideo) return;
@@ -295,21 +295,8 @@ static NSString *sortDescriptorKey = @"modificationDate";
 }
 
 // 系统mediatype 转换为 自定义type
-- (CLAssetMediaType)transformAssetType:(PHAsset *)asset{
-    switch (asset.mediaType) {
-        case PHAssetMediaTypeAudio:
-            return CLAssetMediaTypeAudio;
-        case PHAssetMediaTypeVideo:
-            return CLAssetMediaTypeVideo;
-        case PHAssetMediaTypeImage:
-            if ([[asset valueForKey:@"filename"] hasSuffix:@"GIF"]) return CLAssetMediaTypeGif;
-            if (@available(iOS 9.1, *)) {
-                if (asset.mediaSubtypes == PHAssetMediaSubtypePhotoLive || asset.mediaSubtypes == 10) return CLAssetMediaTypeLivePhoto;
-            }
-            return CLAssetMediaTypeImage;
-        default:
-            return CLAssetMediaTypeUnknown;
-    }
+- (CLAssetMediaType)getPHAssetType:(PHAsset *)asset{
+    return [CLPhotoModel transformAssetType:asset];
 }
 
 #pragma mark -

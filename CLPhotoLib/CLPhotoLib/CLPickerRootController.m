@@ -49,6 +49,7 @@
         self.outputVideoScale           = CLVideoOutputScale;
         self.allowEditVideo             = YES;
         self.allowAlbumDropDown         = NO;
+        self.allowPanGestureSelect      = YES;
         
         self.allowPreviewImage          = YES;
         self.allowEditImage             = NO;
@@ -75,6 +76,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.previousStatusBarStyle = UIStatusBarStyleLightContent;
     self.statusBarStyle = UIStatusBarStyleLightContent;
     self.navigationColor = [UIColor grayColor];
     self.navigationBar.translucent = YES;
@@ -132,6 +134,14 @@
 - (void)setSortAscending:(BOOL)sortAscending{
     _sortAscending = sortAscending;
     CLSortAscending = _sortAscending;
+}
+- (void)setSelectedAssets:(NSArray *)selectedAssets{
+    _selectedAssets = selectedAssets;
+    for (id asset in _selectedAssets) {
+        CLPhotoModel *model = [CLPhotoModel modelWithAsset:asset];
+        model.isSelected = YES;
+        [self.selectedModels addObject:model];
+    }
 }
 
 - (NSMutableArray<CLPhotoModel *> *)selectedModels{
@@ -287,7 +297,7 @@
     }];
 }
 
-- (void)clickPickingVideoActionForAsset:(AVAsset *)asset range:(CMTimeRange)range{
+- (void)clickPickingVideoActionForAsset:(AVAsset *)asset range:(CMTimeRange)range mustRecode:(BOOL)mustRecode{
     _canRotate = self.allowAutorotate;
     self.allowAutorotate = NO;
     [self.editManager exportEditVideoForAsset:asset
@@ -296,7 +306,7 @@
                               isDistinguishWH:self.isDistinguishWH
                                       cutMode:CLVideoCutModeScaleAspectFit
                                     fillColor:CLVideoFillColor
-                                    mustRecode:NO];
+                                    mustRecode:mustRecode];
 }
 
 - (void)cancelExport{

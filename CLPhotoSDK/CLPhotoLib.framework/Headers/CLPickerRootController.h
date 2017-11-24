@@ -31,8 +31,8 @@ typedef void(^CLPickerShootVideoHandle)(void);
 @interface CLPickerRootController : UINavigationController
 
 /**
- 启动选择器前状态栏样式
- previous status bar style
+ 启动选择器前状态栏样式 默认UIStatusBarStyleLightContent
+ previous status bar style defatlt UIStatusBarStyleLightContent
  */
 @property (nonatomic, assign) UIStatusBarStyle previousStatusBarStyle;
 
@@ -44,6 +44,7 @@ typedef void(^CLPickerShootVideoHandle)(void);
 
 /**
  是否允许旋转
+ default NO
  */
 @property (nonatomic, assign) BOOL allowAutorotate;
 
@@ -108,7 +109,7 @@ typedef void(^CLPickerShootVideoHandle)(void);
 @property (nonatomic, assign) BOOL allowEditVideo;                  // default YES
 
 @property (nonatomic, assign) BOOL allowAlbumDropDown;              // default NO
-@property (nonatomic, assign) BOOL allowPanGestureSelect;           // default NO
+@property (nonatomic, assign) BOOL allowPanGestureSelect;           // default YES
 @property (nonatomic, assign) BOOL allowPreviewImage;               // default YES
 @property (nonatomic, assign) BOOL allowEditImage;                  // default NO
 @property (nonatomic, assign) BOOL allowSelectOriginalImage;        // default NO
@@ -120,8 +121,8 @@ typedef void(^CLPickerShootVideoHandle)(void);
 @property (nonatomic, assign) BOOL sortAscending;                   // default NO
 @property (nonatomic, assign) BOOL showCaptureOnCell;               // default NO
 @property (nonatomic, assign) CLPickerSelectMode selectMode;        // default CLPickerSelectModeMixDisplay
-@property (nonatomic, strong) NSMutableArray<CLPhotoModel *> *selectedModels;
-
+@property (nonatomic, strong) NSArray *selectedAssets;              
+    
 #pragma mark -- Delegate | Block --
 @property (nonatomic, weak) id<CLPickerRootControllerDelegate>pickerDelegate;
 @property (nonatomic, copy) CLPickingPhotosHandle   pickingPhotosHandle;
@@ -129,12 +130,13 @@ typedef void(^CLPickerShootVideoHandle)(void);
 @property (nonatomic, copy) CLPickerCancelHandle    pickerCancelHandle;
 @property (nonatomic, copy) CLPickerShootVideoHandle pickerShootVideoHandle;
 
+@property (nonatomic, strong) NSMutableArray<CLPhotoModel *> *selectedModels;
 @property (nonatomic, assign) BOOL selectedOriginalImage;
 
 - (void)clickCancelAction;
 - (void)clickShootVideoAction;
 - (void)didFinishPickingPhotosAction;
-- (void)clickPickingVideoActionForAsset:(AVAsset *)asset range:(CMTimeRange)range;
+- (void)clickPickingVideoActionForAsset:(AVAsset *)asset range:(CMTimeRange)range mustRecode:(BOOL)mustRecode;
 - (void)cancelExport;
 
 - (void)showText:(NSString *)text;

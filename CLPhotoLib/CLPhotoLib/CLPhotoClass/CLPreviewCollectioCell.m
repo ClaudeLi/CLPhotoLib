@@ -502,11 +502,6 @@
     [self clearPlayer];
     self.imageView.image = nil;
     self.icloudView.hidden = YES;
-    [CLPhotoManager judgeAssetisInLocalAblum:asset completion:^(BOOL isInLocal) {
-        if (!isInLocal) {
-            [self initVideoLoadFailedFromiCloudUI];
-        }
-    }];
     self.playBtn.enabled = YES;
     self.imageView.hidden = NO;
     

@@ -33,9 +33,9 @@
 // 视频输出比例
 static CGFloat CLVideoOutputScale       = 16.0/9.0;
 
-static CGFloat CLBarAlpha               = 0.98;
+static CGFloat CLBarAlpha               = 0.97;
 static CGFloat CLToolBarAlpha           = 0.9;
-static CGFloat CLBarEnabledAlpha        = 0.5;
+static CGFloat CLBarEnabledAlpha        = 0.4;
 static CGFloat CLShadowViewAlpha        = 0.2;
 
 static CGFloat CLNavigationItemFontSize = 16.0;

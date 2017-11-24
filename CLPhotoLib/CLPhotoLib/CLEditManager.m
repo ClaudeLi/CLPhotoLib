@@ -77,12 +77,11 @@
     } else {
         renderSize = videoAssetTrack.naturalSize;
     }
-    
     // 是否处理
     if (!mustRecode) {
         if (CMTimeRangeEqual(range, CMTimeRangeMake(kCMTimeZero, asset.duration))) {
             if (isDistinguishWH) {
-                if (renderSize.width/renderSize.height == sizeScale) {
+                if (floor(renderSize.width/renderSize.height * 10.0)/10.0 == floor(sizeScale * 10.0)/10.0) {
                     if ([asset valueForKey:@"URL"]) {
                         // 不处理
                         [self didFinishedOutputURL:[asset valueForKey:@"URL"]];
@@ -90,7 +89,8 @@
                     }
                 }
             }else{
-                if (renderSize.width/renderSize.height == sizeScale || renderSize.width/renderSize.height == 1.0/sizeScale) {
+                if (floor(renderSize.width/renderSize.height * 10.0)/10.0 == floor(sizeScale * 10.0)/10.0 ||
+                    floor(renderSize.height/renderSize.width * 10.0)/10.0 == floor(sizeScale * 10.0)/10.0) {
                     if ([asset valueForKey:@"URL"]) {
                         // 不处理
                         [self didFinishedOutputURL:[asset valueForKey:@"URL"]];
@@ -322,7 +322,6 @@
         // 相当于center
         videoLayer.position = parentLayer.position;
     }
-    CLLog(@"%@", NSStringFromCGRect(videoLayer.frame));
     //    [parentLayer addSublayer:backgroundLayer];
     [parentLayer addSublayer:videoLayer];
     

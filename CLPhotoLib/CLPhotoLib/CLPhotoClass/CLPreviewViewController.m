@@ -137,7 +137,7 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
                 if ([[tracks firstObject] isKindOfClass:[AVCompositionTrack class]]) {
                     [strongSelf.picker showText:CLString(@"CLText_UnableToDecode")];
                 }else{
-                    [strongSelf.picker clickPickingVideoActionForAsset:asset range:CMTimeRangeMake(kCMTimeZero, asset.duration)];
+                    [strongSelf.picker clickPickingVideoActionForAsset:asset range:CMTimeRangeMake(kCMTimeZero, asset.duration) mustRecode:NO];
                 }
             }else{
                 [strongSelf.picker showText:CLString(@"CLText_NotGetVideoInfo")];
@@ -290,7 +290,7 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
             _toolBar.editSelect = YES;
         }else{
             _toolBar.doneBtn.selected = YES;
-            _toolBar.tipLabel.hidden = NO;
+            _toolBar.tipLabel.hidden = YES;
             _toolBar.editSelect = YES;
         }
         return YES;
