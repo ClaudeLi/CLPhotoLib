@@ -120,6 +120,12 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
 }
 
 - (void)clickDoneItemAction{
+    if (_currentPage < _photoArray.count) {
+        CLPreviewCollectioCell *cell = (CLPreviewCollectioCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:_currentPage inSection:0]];
+        if (cell){
+            [cell pausePlay:YES];
+        }
+    }
     if (_currentModel.type == CLAssetMediaTypeVideo) {
         [self.picker showProgress];
         cl_weakSelf(self);
@@ -137,7 +143,7 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
                 if ([[tracks firstObject] isKindOfClass:[AVCompositionTrack class]]) {
                     [strongSelf.picker showText:CLString(@"CLText_UnableToDecode")];
                 }else{
-                    [strongSelf.picker clickPickingVideoActionForAsset:asset range:CMTimeRangeMake(kCMTimeZero, asset.duration) mustRecode:NO];
+                    [strongSelf.picker clickPickingVideoActionForAsset:asset range:CMTimeRangeMake(kCMTimeZero, asset.duration)];
                 }
             }else{
                 [strongSelf.picker showText:CLString(@"CLText_NotGetVideoInfo")];
@@ -152,7 +158,7 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
     if (_currentPage < _photoArray.count) {
         CLPreviewCollectioCell *cell = (CLPreviewCollectioCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:_currentPage inSection:0]];
         if (cell){
-            [cell pausePlay];
+            [cell pausePlay:YES];
         }
     }
     if (_currentModel.type == CLAssetMediaTypeVideo) {
@@ -193,7 +199,7 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath{
-    [(CLPreviewCollectioCell *)cell pausePlay];
+    [(CLPreviewCollectioCell *)cell pausePlay:YES];
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{

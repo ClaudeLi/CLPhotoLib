@@ -32,7 +32,7 @@
                       sizeScale:(CGFloat)sizeScale
                         cutMode:(CLVideoCutMode)cutMode
                       fillColor:(UIColor *)fillColor{
-    [self exportEditVideoForAsset:asset range:range sizeScale:sizeScale isDistinguishWH:YES cutMode:cutMode fillColor:fillColor mustRecode:YES];
+    [self exportEditVideoForAsset:asset range:range sizeScale:sizeScale isDistinguishWH:YES cutMode:cutMode fillColor:fillColor];
 }
 
 - (void)exportEditVideoForAsset:(AVAsset *)asset
@@ -41,7 +41,6 @@
                 isDistinguishWH:(BOOL)isDistinguishWH
                         cutMode:(CLVideoCutMode)cutMode
                       fillColor:(UIColor *)fillColor
-                     mustRecode:(BOOL)mustRecode
 {
     NSArray *videoTracks = [asset tracksWithMediaType:AVMediaTypeVideo];
     if (!videoTracks.count) {
@@ -77,29 +76,10 @@
     } else {
         renderSize = videoAssetTrack.naturalSize;
     }
-    // 是否处理
-    if (!mustRecode) {
-        if (CMTimeRangeEqual(range, CMTimeRangeMake(kCMTimeZero, asset.duration))) {
-            if (isDistinguishWH) {
-                if (floor(renderSize.width/renderSize.height * 10.0)/10.0 == floor(sizeScale * 10.0)/10.0) {
-                    if ([asset valueForKey:@"URL"]) {
-                        // 不处理
-                        [self didFinishedOutputURL:[asset valueForKey:@"URL"]];
-                        return;
-                    }
-                }
-            }else{
-                if (floor(renderSize.width/renderSize.height * 10.0)/10.0 == floor(sizeScale * 10.0)/10.0 ||
-                    floor(renderSize.height/renderSize.width * 10.0)/10.0 == floor(sizeScale * 10.0)/10.0) {
-                    if ([asset valueForKey:@"URL"]) {
-                        // 不处理
-                        [self didFinishedOutputURL:[asset valueForKey:@"URL"]];
-                        return;
-                    }
-                }
-            }
-        }
-    }
+//    // 视频URL
+//    if ([asset valueForKey:@"URL"]) {
+//        return;
+//    }
     NSArray *compatiblePresets = [AVAssetExportSession exportPresetsCompatibleWithAsset:asset];
     if ([compatiblePresets containsObject:AVAssetExportPreset640x480]) {
         /*
@@ -160,8 +140,8 @@
         
         // 判断是否区分横竖比例
         if (!isDistinguishWH) {
-            if (renderSize.width/renderSize.height > 1.0) {
-                sizeScale = sizeScale > 1.0 ? sizeScale:1.0/sizeScale;
+            if (renderSize.width/renderSize.height >= 1.0) {
+                sizeScale = sizeScale >= 1.0 ? sizeScale:1.0/sizeScale;
             }else{
                 sizeScale = sizeScale < 1.0 ? sizeScale:1.0/sizeScale;
             }

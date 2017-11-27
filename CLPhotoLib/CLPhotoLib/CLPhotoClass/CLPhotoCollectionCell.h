@@ -23,6 +23,7 @@
 
 @interface CLTakePhotoCell : UICollectionViewCell
 
+@property (nonatomic) BOOL allowSelectVideo;
 @property (nonatomic) BOOL showCaptureOnCell;
 
 @end

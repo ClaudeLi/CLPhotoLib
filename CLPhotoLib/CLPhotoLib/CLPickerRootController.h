@@ -49,11 +49,6 @@ typedef void(^CLPickerShootVideoHandle)(void);
 @property (nonatomic, assign) BOOL allowAutorotate;
 
 /**
- default UIInterfaceOrientationUnknown
- */
-@property (nonatomic, assign) UIInterfaceOrientation preferredInterfaceOrientation;
-
-/**
  选择器背景色 默认白色
  background color default whiteColor
  */
@@ -136,7 +131,7 @@ typedef void(^CLPickerShootVideoHandle)(void);
 - (void)clickCancelAction;
 - (void)clickShootVideoAction;
 - (void)didFinishPickingPhotosAction;
-- (void)clickPickingVideoActionForAsset:(AVAsset *)asset range:(CMTimeRange)range mustRecode:(BOOL)mustRecode;
+- (void)clickPickingVideoActionForAsset:(AVAsset *)asset range:(CMTimeRange)range;
 - (void)cancelExport;
 
 - (void)showText:(NSString *)text;

@@ -226,7 +226,11 @@ static CGFloat CLTimeLabelFontSize  = 12.0f;
         self.imageView.contentMode = UIViewContentModeScaleAspectFit;
     }else{
         [self removeSession];
-        self.imageView.image = [UIImage imageNamedFromBundle:@"clicon_take_photo"];
+        if (_allowSelectVideo) {
+            self.imageView.image = [UIImage imageNamedFromBundle:@"clicon_take_video"];
+        }else{
+            self.imageView.image = [UIImage imageNamedFromBundle:@"clicon_take_photo"];
+        }
         self.imageView.contentMode = UIViewContentModeScaleAspectFill;
     }
 }

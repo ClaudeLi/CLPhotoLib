@@ -16,6 +16,8 @@
 #import "CLEditImageController.h"
 #import "CLExtHeader.h"
 
+NSNotificationName const CLPhotoLibReloadAlbumList = @"CLPhotoLibReloadAlbumList";
+
 static NSString *takeIdentifier = @"CLTakePhotoCellIdentifier";
 static NSString *itemIdentifier = @"CLPhotoCollectionCellIdentifier";
 
@@ -52,6 +54,7 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
 };
 
 @interface CLPhotosViewController ()<UICollectionViewDelegate, UICollectionViewDataSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate>{
+    BOOL _reloadAlbumList;
     // 开始滑动选择 或 取消
     BOOL _beginSelect;
     // 滑动选择 或 取消
@@ -224,6 +227,7 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     if (_photoArray && self.picker.allowTakePhoto && ((self.picker.sortAscending && indexPath.row >= _photoArray.count) || (!self.picker.sortAscending && indexPath.row == 0))) {
         CLTakePhotoCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:takeIdentifier forIndexPath:indexPath];
+        cell.allowSelectVideo = self.picker.selectMode == CLPickerSelectModeAllowVideo ? YES:NO;
         cell.showCaptureOnCell = self.picker.showCaptureOnCell;
         return cell;
     }
@@ -263,8 +267,8 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
                 model.isSelected = YES;
                 if (![CLPhotoManager checkSelcectedWithModel:model identifiers:[CLPhotoManager getLocalIdentifierArrayWithArray:strongSelf.picker.selectedModels]]) {
                     [strongSelf.picker.selectedModels addObject:model];
+                    [strongSelf refreshBottomToolBarStatus];
                 }
-                [strongSelf refreshBottomToolBarStatus];
             } else {
                 [strongSelf.picker showText:[NSString stringWithFormat:CLString(@"CLText_MaxImagesCount"), strongSelf.picker.maxSelectCount]];
             }
@@ -461,6 +465,8 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
                     return;
                 }
                 if (success) {
+                    strongSelf->_reloadAlbumList = YES;
+                    [[NSNotificationCenter defaultCenter] postNotificationName:CLPhotoLibReloadAlbumList object:nil];
                     if (strongSelf) {
                         [strongSelf reloadPhotoArray];
                     }
@@ -494,7 +500,9 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
                 if (model) {
                     model.isSelected = YES;
                     [strongSelf.picker.selectedModels addObject:model];
-                    [strongSelf refreshBottomToolBarStatus];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [strongSelf refreshBottomToolBarStatus];
+                    });
                 }
             }
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -530,19 +538,8 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
 
 - (void)clickTitleViewAction:(UIButton *)sender{
     if (!sender.selected) {
-        if (_albumView.albumArray) {
-            for (CLAlbumModel *albumModel in self.albumView.albumArray) {
-                albumModel.selectedModels = self.picker.selectedModels;
-            }
-            [self.albumView showAlbumAnimated:YES];
-            [self.albumView reloadData];
-            [UIView animateWithDuration:CLLittleControlAnimationTime animations:^{
-                CGAffineTransform transform = self.titleBtn.imageView.transform;
-                CGAffineTransform transform2 =  CGAffineTransformRotate(transform, M_PI);
-                [self.titleBtn.imageView setTransform:transform2];
-            } completion:^(BOOL finished) {
-            }];
-        }else{
+        if (_reloadAlbumList || !_albumView.albumArray) {
+            _reloadAlbumList = NO;
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 cl_weakSelf(self);
                 [CLPhotoShareManager getAlbumListWithSelectMode:self.picker.selectMode completion:^(NSArray<CLAlbumModel *> *models) {
@@ -565,8 +562,19 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
                     });
                 }];
             });
+        }else{
+            for (CLAlbumModel *albumModel in self.albumView.albumArray) {
+                albumModel.selectedModels = self.picker.selectedModels;
+            }
+            [self.albumView showAlbumAnimated:YES];
+            [self.albumView reloadData];
+            [UIView animateWithDuration:CLLittleControlAnimationTime animations:^{
+                CGAffineTransform transform = self.titleBtn.imageView.transform;
+                CGAffineTransform transform2 =  CGAffineTransformRotate(transform, M_PI);
+                [self.titleBtn.imageView setTransform:transform2];
+            } completion:^(BOOL finished) {
+            }];
         }
-        
     }else{
         [_albumView dismiss];
     }
@@ -903,7 +911,6 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
     }
     return CGSizeMake(w, h);
 }
-
 
 -(void)dealloc{
     CLLog(@"%s", __func__);

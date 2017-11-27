@@ -155,12 +155,17 @@
     return self.allowAutorotate;
 }
 
--(UIInterfaceOrientationMask)supportedInterfaceOrientations{
-    return [self.viewControllers.lastObject supportedInterfaceOrientations];
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations{
+    if (self.allowAutorotate) {
+        return UIInterfaceOrientationMaskAll;
+    }
+    else {
+        return UIInterfaceOrientationMaskPortrait;
+    }
 }
 
 -(UIInterfaceOrientation)preferredInterfaceOrientationForPresentation{
-    return self.preferredInterfaceOrientation?:[self.viewControllers.lastObject preferredInterfaceOrientationForPresentation];
+    return [self.viewControllers.lastObject preferredInterfaceOrientationForPresentation];
 }
 
 - (void)observeAuthrizationStatusChange {
@@ -297,7 +302,7 @@
     }];
 }
 
-- (void)clickPickingVideoActionForAsset:(AVAsset *)asset range:(CMTimeRange)range mustRecode:(BOOL)mustRecode{
+- (void)clickPickingVideoActionForAsset:(AVAsset *)asset range:(CMTimeRange)range{
     _canRotate = self.allowAutorotate;
     self.allowAutorotate = NO;
     [self.editManager exportEditVideoForAsset:asset
@@ -305,8 +310,7 @@
                                     sizeScale:self.outputVideoScale
                               isDistinguishWH:self.isDistinguishWH
                                       cutMode:CLVideoCutModeScaleAspectFit
-                                    fillColor:CLVideoFillColor
-                                    mustRecode:mustRecode];
+                                    fillColor:CLVideoFillColor];
 }
 
 - (void)cancelExport{
@@ -372,7 +376,9 @@
 
 #import "CLAlbumTableView.h"
 #import "CLPhotoModel.h"
-@interface CLAlbumPickerController ()
+@interface CLAlbumPickerController (){
+    BOOL _reload;
+}
 
 @property (nonatomic, strong) CLAlbumTableView *tableView;
 
@@ -418,6 +424,11 @@
             [self presentViewController:alert animated:YES completion:nil];
         }
     }
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadAlbumList) name:CLPhotoLibReloadAlbumList object:nil];
+}
+
+- (void)reloadAlbumList{
+    _reload = YES;
 }
 
 - (void)viewWillLayoutSubviews{
@@ -429,12 +440,8 @@
 
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    if (_tableView.albumArray) {
-        for (CLAlbumModel *albumModel in _tableView.albumArray) {
-            albumModel.selectedModels = self.picker.selectedModels;
-        }
-        [_tableView reloadData];
-    } else {
+    if (_reload || !_tableView.albumArray) {
+        _reload = NO;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             cl_weakSelf(self);
             [CLPhotoShareManager getAlbumListWithSelectMode:self.picker.selectMode completion:^(NSArray<CLAlbumModel *> *models) {
@@ -449,6 +456,11 @@
                 }
             }];
         });
+    }else{
+        for (CLAlbumModel *albumModel in _tableView.albumArray) {
+            albumModel.selectedModels = self.picker.selectedModels;
+        }
+        [_tableView reloadData];
     }
 }
 

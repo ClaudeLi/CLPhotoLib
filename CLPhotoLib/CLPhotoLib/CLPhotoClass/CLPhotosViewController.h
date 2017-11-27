@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+FOUNDATION_EXTERN NSNotificationName const CLPhotoLibReloadAlbumList;
+
 @class CLAlbumModel;
 @interface CLPhotosViewController : UIViewController
 

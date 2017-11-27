@@ -97,13 +97,13 @@
     }
 }
 
-- (void)pausePlay{
+- (void)pausePlay:(BOOL)stop{
     if (self.model.type == CLAssetMediaTypeGif) {
         [self.imageView pauseGif];
     } else if (self.model.type == CLAssetMediaTypeLivePhoto) {
         [self.imageView stopPlayLivePhoto];
     } else if (self.model.type == CLAssetMediaTypeVideo) {
-        [self.videoView stopPlayVideo];
+        [self.videoView stopPlayVideo:stop];
     }
 }
 
@@ -685,11 +685,16 @@
     }
 }
 
-- (void)stopPlayVideo{
+- (void)stopPlayVideo:(BOOL)stop{
     if (!_playLayer) {
         return;
     }
     AVPlayer *player = self.playLayer.player;
+    if (!stop) {
+        [player pause];
+        self.playBtn.hidden = NO;
+        return;
+    }
     if (player.rate != .0) {
         [player pause];
         self.playBtn.hidden = NO;

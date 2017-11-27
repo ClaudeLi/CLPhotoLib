@@ -659,7 +659,7 @@ CLRatioMake(CGFloat start, CGFloat end){
         [self.playerLayer.player pause];
         [self.picker showProgressWithText:[NSString stringWithFormat:@"%@..", CLString(@"CLText_Processing")]];
         
-        [self.picker clickPickingVideoActionForAsset:_asset range:[self getTimeRange] mustRecode:YES];
+        [self.picker clickPickingVideoActionForAsset:_asset range:[self getTimeRange]];
     }
 }
 

@@ -23,7 +23,7 @@
 
 - (void)reloadGif;
 
-- (void)pausePlay;
+- (void)pausePlay:(BOOL)stop;
 
 - (void)resetScale;
 
@@ -74,6 +74,6 @@
 @property (nonatomic, strong) UIImageView   *icloudView;
 @property (nonatomic, strong) UIButton      *playBtn;
 
-- (void)stopPlayVideo;
+- (void)stopPlayVideo:(BOOL)stop;
 
 @end
