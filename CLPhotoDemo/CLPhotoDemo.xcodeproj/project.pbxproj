@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		D33636081FC7D61F0049F992 /* CLPhotoLib.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D33636071FC7D61F0049F992 /* CLPhotoLib.bundle */; };
-		D33636091FC7D64D0049F992 /* CLPhotoLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D33636021FC7D5F00049F992 /* CLPhotoLib.framework */; };
+		D32BEC011FCBB7650030F56F /* CLPhotoLib.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D32BEC001FCBB7650030F56F /* CLPhotoLib.bundle */; };
+		D32BEC021FCBB7840030F56F /* CLPhotoLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D32BEBFD1FCBB75B0030F56F /* CLPhotoLib.framework */; };
 		D3C2F1BB1FC6C63800D8C505 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D3C2F1BA1FC6C63800D8C505 /* AppDelegate.m */; };
 		D3C2F1BE1FC6C63800D8C505 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D3C2F1BD1FC6C63800D8C505 /* ViewController.m */; };
 		D3C2F1C11FC6C63800D8C505 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D3C2F1BF1FC6C63800D8C505 /* Main.storyboard */; };
@@ -20,16 +20,16 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		D33636011FC7D5F00049F992 /* PBXContainerItemProxy */ = {
+		D32BEBFC1FCBB75B0030F56F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = D33635FC1FC7D5F00049F992 /* CLPhotoLib.xcodeproj */;
+			containerPortal = D32BEBF71FCBB75B0030F56F /* CLPhotoLib.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = D3C258791FC680E500126FB9;
 			remoteInfo = CLPhotoLib;
 		};
-		D33636031FC7D5F00049F992 /* PBXContainerItemProxy */ = {
+		D32BEBFE1FCBB75B0030F56F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = D33635FC1FC7D5F00049F992 /* CLPhotoLib.xcodeproj */;
+			containerPortal = D32BEBF71FCBB75B0030F56F /* CLPhotoLib.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = D3C258821FC680E500126FB9;
 			remoteInfo = CLPhotoLibTests;
@@ -51,8 +51,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		D33635FC1FC7D5F00049F992 /* CLPhotoLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CLPhotoLib.xcodeproj; path = ../../../CLPhotoLib/CLPhotoLib.xcodeproj; sourceTree = "<group>"; };
-		D33636071FC7D61F0049F992 /* CLPhotoLib.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = CLPhotoLib.bundle; path = ../../../CLPhotoSDK/CLPhotoLib.bundle; sourceTree = "<group>"; };
+		D32BEBF71FCBB75B0030F56F /* CLPhotoLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CLPhotoLib.xcodeproj; path = ../../CLPhotoLib/CLPhotoLib.xcodeproj; sourceTree = "<group>"; };
+		D32BEC001FCBB7650030F56F /* CLPhotoLib.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = CLPhotoLib.bundle; path = ../../CLPhotoSDK/CLPhotoLib.bundle; sourceTree = "<group>"; };
 		D3C2F1B61FC6C63800D8C505 /* CLPhotoDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CLPhotoDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D3C2F1B91FC6C63800D8C505 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		D3C2F1BA1FC6C63800D8C505 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -76,7 +76,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D33636091FC7D64D0049F992 /* CLPhotoLib.framework in Frameworks */,
+				D32BEC021FCBB7840030F56F /* CLPhotoLib.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -97,11 +97,11 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		D33635FD1FC7D5F00049F992 /* Products */ = {
+		D32BEBF81FCBB75B0030F56F /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D33636021FC7D5F00049F992 /* CLPhotoLib.framework */,
-				D33636041FC7D5F00049F992 /* CLPhotoLibTests.xctest */,
+				D32BEBFD1FCBB75B0030F56F /* CLPhotoLib.framework */,
+				D32BEBFF1FCBB75B0030F56F /* CLPhotoLibTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -130,7 +130,8 @@
 		D3C2F1B81FC6C63800D8C505 /* CLPhotoDemo */ = {
 			isa = PBXGroup;
 			children = (
-				D3DF15EA1FC6C6AF00A81AD3 /* CLPhotoLib */,
+				D32BEC001FCBB7650030F56F /* CLPhotoLib.bundle */,
+				D32BEBF71FCBB75B0030F56F /* CLPhotoLib.xcodeproj */,
 				D3C2F1B91FC6C63800D8C505 /* AppDelegate.h */,
 				D3C2F1BA1FC6C63800D8C505 /* AppDelegate.m */,
 				D3C2F1BC1FC6C63800D8C505 /* ViewController.h */,
@@ -160,15 +161,6 @@
 				D3C2F1DF1FC6C63900D8C505 /* Info.plist */,
 			);
 			path = CLPhotoDemoUITests;
-			sourceTree = "<group>";
-		};
-		D3DF15EA1FC6C6AF00A81AD3 /* CLPhotoLib */ = {
-			isa = PBXGroup;
-			children = (
-				D33636071FC7D61F0049F992 /* CLPhotoLib.bundle */,
-				D33635FC1FC7D5F00049F992 /* CLPhotoLib.xcodeproj */,
-			);
-			path = CLPhotoLib;
 			sourceTree = "<group>";
 		};
 		D3DF15F61FC6C70200A81AD3 /* Frameworks */ = {
@@ -272,8 +264,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = D33635FD1FC7D5F00049F992 /* Products */;
-					ProjectRef = D33635FC1FC7D5F00049F992 /* CLPhotoLib.xcodeproj */;
+					ProductGroup = D32BEBF81FCBB75B0030F56F /* Products */;
+					ProjectRef = D32BEBF71FCBB75B0030F56F /* CLPhotoLib.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -286,18 +278,18 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		D33636021FC7D5F00049F992 /* CLPhotoLib.framework */ = {
+		D32BEBFD1FCBB75B0030F56F /* CLPhotoLib.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = CLPhotoLib.framework;
-			remoteRef = D33636011FC7D5F00049F992 /* PBXContainerItemProxy */;
+			remoteRef = D32BEBFC1FCBB75B0030F56F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		D33636041FC7D5F00049F992 /* CLPhotoLibTests.xctest */ = {
+		D32BEBFF1FCBB75B0030F56F /* CLPhotoLibTests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
 			path = CLPhotoLibTests.xctest;
-			remoteRef = D33636031FC7D5F00049F992 /* PBXContainerItemProxy */;
+			remoteRef = D32BEBFE1FCBB75B0030F56F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -308,7 +300,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D3C2F1C61FC6C63800D8C505 /* LaunchScreen.storyboard in Resources */,
-				D33636081FC7D61F0049F992 /* CLPhotoLib.bundle in Resources */,
+				D32BEC011FCBB7650030F56F /* CLPhotoLib.bundle in Resources */,
 				D3C2F1C31FC6C63800D8C505 /* Assets.xcassets in Resources */,
 				D3C2F1C11FC6C63800D8C505 /* Main.storyboard in Resources */,
 			);
