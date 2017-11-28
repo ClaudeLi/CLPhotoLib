@@ -55,15 +55,13 @@ typedef NS_ENUM(NSInteger, CLVideoCutMode) {
  @param isDistinguishWH 是否区分横竖比
  @param cutMode     裁剪模式
  @param fillColor   填充色
- @param mustRecode  比例正确时是否必须重新编码
  */
 - (void)exportEditVideoForAsset:(AVAsset *)asset
                           range:(CMTimeRange)range
                       sizeScale:(CGFloat)sizeScale
                 isDistinguishWH:(BOOL)isDistinguishWH
                         cutMode:(CLVideoCutMode)cutMode
-                      fillColor:(UIColor *)fillColor
-                     mustRecode:(BOOL)mustRecode;
+                      fillColor:(UIColor *)fillColor;
 
 // 取消处理
 - (void)cancelExport;

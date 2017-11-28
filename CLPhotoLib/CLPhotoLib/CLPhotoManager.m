@@ -534,11 +534,12 @@ static NSString *sortDescriptorKey = @"modificationDate";
 
 //获取自定义相册
 + (PHAssetCollection *)getDestinationCollection{
-    NSString *name =  [[NSBundle mainBundle].infoDictionary valueForKey:(__bridge NSString *)kCFBundleNameKey];
+    NSString *appName = [[NSBundle mainBundle].infoDictionary valueForKey:@"CFBundleDisplayName"];
+    if (!appName) appName = [[NSBundle mainBundle].infoDictionary valueForKey:(__bridge NSString *)kCFBundleNameKey];
     // 找是否已经创建自定义相册
     PHFetchResult<PHAssetCollection *> *collectionResult = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:nil];
     for (PHAssetCollection *collection in collectionResult) {
-        if ([collection.localizedTitle isEqualToString:name]) {
+        if ([collection.localizedTitle isEqualToString:appName]) {
             return collection;
         }
     }
@@ -546,10 +547,10 @@ static NSString *sortDescriptorKey = @"modificationDate";
     __block NSString *collectionId = nil;
     NSError *error = nil;
     [[PHPhotoLibrary sharedPhotoLibrary] performChangesAndWait:^{
-        collectionId = [PHAssetCollectionChangeRequest creationRequestForAssetCollectionWithTitle:name].placeholderForCreatedAssetCollection.localIdentifier;
+        collectionId = [PHAssetCollectionChangeRequest creationRequestForAssetCollectionWithTitle:appName].placeholderForCreatedAssetCollection.localIdentifier;
     } error:&error];
     if (error) {
-        CLLog(@"Creat '%@' Ablum Error：%@", name, error.localizedDescription);
+        CLLog(@"Creat '%@' Ablum Error：%@", appName, error.localizedDescription);
         return nil;
     }
     return [PHAssetCollection fetchAssetCollectionsWithLocalIdentifiers:@[collectionId] options:nil].lastObject;
