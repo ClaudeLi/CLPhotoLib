@@ -6,6 +6,8 @@
 "CLText_OK" = "确定";
 "CLText_Done" = "确定";
 "CLText_NotAccessAlbumTip" = "请在%@的\"设置-隐私-照片\"选项中，\r允许%@访问你的本地相册。";
+"CLText_NotAccessCamera" = "请在%@的\"设置-隐私-相机\"选项中，\r允许%@访问你的相机。";
+"CLText_NotAccessMicrophone" = "请在%@的\"设置-隐私-麦克风\"选项中，\r允许%@访问你的麦克风。";
 "CLText_VideoLengthLeast"  = "(视频长度至少%@秒)";
 "CLText_VideoMaximumLength" = "(视频长度超过%@秒,请先裁剪)";
 "CLText_MaxImagesCount" = "最多只能选择%ld张图片";
@@ -17,3 +19,4 @@
 "CLText_NotGetVideoInfo" = "未获取到视频信息";
 "CLText_UnableToDecode" = "无法解码";
 "CLText_NotSupport"     = "暂不支持";
+"CLText_GotoSettings"   = "去设置";

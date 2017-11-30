@@ -115,6 +115,7 @@ typedef void(^CLPickerShootVideoHandle)(void);
 @property (nonatomic, assign) BOOL allowTakePhoto;                  // default YES
 @property (nonatomic, assign) BOOL sortAscending;                   // default NO
 @property (nonatomic, assign) BOOL showCaptureOnCell;               // default NO
+@property (nonatomic, assign) BOOL usedCustomRecording;             // default NO
 @property (nonatomic, assign) CLPickerSelectMode selectMode;        // default CLPickerSelectModeMixDisplay
 @property (nonatomic, strong) NSArray *selectedAssets;              
     

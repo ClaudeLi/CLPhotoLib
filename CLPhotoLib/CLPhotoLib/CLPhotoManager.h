@@ -11,6 +11,7 @@
 #import "CLPickerRootController.h"
 
 #define CLPhotoShareManager     [CLPhotoManager shareManager]
+#define CLAppName               CLPhotoShareManager.appName
 #define CLMinSize               CLPhotoShareManager.minSize
 #define CLAllowSelectGif        CLPhotoShareManager.allowSelectGif
 #define CLAllowSelectLivePhoto  CLPhotoShareManager.allowSelectLivePhoto
@@ -21,6 +22,8 @@
 @interface CLPhotoManager : NSObject
 
 + (instancetype)shareManager;
+
+@property (nonatomic, copy) NSString *appName;
 
 @property (nonatomic, assign) CGSize minSize;
 @property (nonatomic, assign) BOOL allowSelectGif;

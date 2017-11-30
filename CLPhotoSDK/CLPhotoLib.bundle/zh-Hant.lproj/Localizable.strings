@@ -6,6 +6,8 @@
 "CLText_OK" = "確定";
 "CLText_Done" = "確定";
 "CLText_NotAccessAlbumTip" = "請在%@的\"設置-隱私-照片\"選項中，\r允許%@訪問妳的本地相冊。";
+"CLText_NotAccessCamera" = "請在%@的\"設置-隱私-相機\"選項中，\r允許%@訪問妳的相機。";
+"CLText_NotAccessMicrophone" = "請在%@的\"設置-隱私-麥克風\"選項中，\r允許%@訪問妳的麥克風。";
 "CLText_VideoLengthLeast"  = "(視頻長度至少%@秒)";
 "CLText_VideoMaximumLength" = "(視頻長度超過%@秒,請先裁剪)";
 "CLText_MaxImagesCount" = "最多隻能選擇%ld張圖片";
@@ -17,3 +19,4 @@
 "CLText_NotGetVideoInfo" = "未獲取到視頻信息";
 "CLText_UnableToDecode" = "無法解碼";
 "CLText_NotSupport"     = "暫不支持";
+"CLText_GotoSettings"   = "去設置";

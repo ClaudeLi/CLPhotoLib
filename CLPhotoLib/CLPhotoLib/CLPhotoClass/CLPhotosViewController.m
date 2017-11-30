@@ -7,6 +7,7 @@
 //
 
 #import "CLPhotosViewController.h"
+#import <MobileCoreServices/MobileCoreServices.h>
 #import "CLConfig.h"
 #import "CLPhotoCollectionCell.h"
 #import "CLPickerToolBar.h"
@@ -283,7 +284,7 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     if ((self.picker.sortAscending && indexPath.row >= _photoArray.count) || (!self.picker.sortAscending && indexPath.row == 0 && self.picker.allowTakePhoto)) {
         if (self.picker.selectMode == CLPickerSelectModeAllowVideo) {
-            [self.picker clickShootVideoAction];
+            [self takeVideo];
             return;
         }else{
             if (self.picker.selectedModels.count < self.picker.maxSelectCount) {
@@ -421,31 +422,83 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
 - (void)takePhoto {
     AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
     // 无权限 做一个友好的提示
-    if (status == AVAuthorizationStatusRestricted ||
-        status == AVAuthorizationStatusDenied) {
-        NSString *message = [NSString stringWithFormat:@"%@", [[NSBundle mainBundle].infoDictionary valueForKey:(__bridge NSString *)kCFBundleNameKey]];
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:message preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction *action = [UIAlertAction actionWithTitle:CLString(@"CLText_OK") style:UIAlertActionStyleDefault handler:nil];
-        [alert addAction:action];
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            UIPopoverPresentationController *popPresenter = [alert popoverPresentationController];
-            popPresenter.sourceView = self.view;
-            popPresenter.sourceRect = self.view.bounds;
-            [self presentViewController:alert animated:YES completion:nil];
-        }else{
-            [self presentViewController:alert animated:YES completion:nil];
-        }
+    if (status == AVAuthorizationStatusRestricted || status == AVAuthorizationStatusDenied) {
+        [self showAlertWithMessage:CLString(@"CLText_NotAccessCamera")];
         return;
     }
     if ([UIImagePickerController isSourceTypeAvailable: UIImagePickerControllerSourceTypeCamera]) {
         CLImagePickerController *imageCamera = [[CLImagePickerController alloc] init];
         imageCamera.delegate = self;
-        imageCamera.videoQuality = UIImagePickerControllerQualityTypeMedium;
         imageCamera.sourceType = UIImagePickerControllerSourceTypeCamera;
 //        imageCamera.modalPresentationStyle = UIModalPresentationOverCurrentContext;
         [self showDetailViewController:imageCamera sender:self];
-    } else {
+    }else{
         [self.picker showText:CLString(@"CLText_CannotSimulatorCamera")];
+    }
+}
+
+- (void)takeVideo{
+    AVAuthorizationStatus authorizationStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+    if ([[AVAudioSession sharedInstance] respondsToSelector:@selector(requestRecordPermission:)]) {
+        cl_weakSelf(self);
+        [[AVAudioSession sharedInstance] performSelector:@selector(requestRecordPermission:) withObject:^(BOOL granted) {
+            cl_strongSelf(weakSelf);
+            if (!strongSelf) {
+                return;
+            }
+            if (granted) {
+                // Microphone is enabled
+                if (authorizationStatus == AVAuthorizationStatusRestricted|| authorizationStatus == AVAuthorizationStatusDenied){
+                    [strongSelf showAlertWithMessage:CLString(@"CLText_NotAccessCamera")];
+                }else{
+                    if ([UIImagePickerController isSourceTypeAvailable: UIImagePickerControllerSourceTypeCamera]) {
+                        if (strongSelf.picker.usedCustomRecording) {
+                            [strongSelf.picker clickShootVideoAction];
+                        }else{
+                            CLImagePickerController *imageCamera = [[CLImagePickerController alloc] init];
+                            imageCamera.delegate = strongSelf;
+//                            imageCamera.allowsEditing = YES;
+                            imageCamera.mediaTypes = @[(NSString*)kUTTypeMovie];
+                            imageCamera.videoQuality = UIImagePickerControllerQualityTypeIFrame960x540;
+                            imageCamera.sourceType = UIImagePickerControllerSourceTypeCamera;
+                            imageCamera.videoMaximumDuration = strongSelf.picker.maxDuration;
+                            [strongSelf showDetailViewController:imageCamera sender:strongSelf];
+                        }
+                    }else{
+                        [strongSelf.picker showText:CLString(@"CLText_CannotSimulatorCamera")];
+                    }
+                }
+            }else {
+                // Microphone disabled code
+                [strongSelf showAlertWithMessage:CLString(@"CLText_NotAccessMicrophone")];
+            }
+        }];
+    }
+}
+
+- (void)showAlertWithMessage:(NSString *)message{
+    message = [NSString stringWithFormat:message, [UIDevice currentDevice].model, CLAppName];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:message preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *action = [UIAlertAction actionWithTitle:CLString(@"CLText_GotoSettings") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+        NSURL *URL = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+        if ([[UIApplication sharedApplication] respondsToSelector:@selector(openURL:options:completionHandler:)]) {
+            [[UIApplication sharedApplication] openURL:URL options:@{} completionHandler:nil];
+        } else {
+            if ([[UIApplication sharedApplication] canOpenURL:URL]) {
+                [[UIApplication sharedApplication] openURL:URL];
+            }
+        }
+    }];
+    [alert addAction:action];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:CLString(@"CLText_OK") style:UIAlertActionStyleCancel handler:nil];
+    [alert addAction:cancelAction];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        UIPopoverPresentationController *popPresenter = [alert popoverPresentationController];
+        popPresenter.sourceView = self.view;
+        popPresenter.sourceRect = self.view.bounds;
+        [self presentViewController:alert animated:YES completion:nil];
+    }else{
+        [self presentViewController:alert animated:YES completion:nil];
     }
 }
 
@@ -468,18 +521,38 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
                     strongSelf->_reloadAlbumList = YES;
                     [[NSNotificationCenter defaultCenter] postNotificationName:CLPhotoLibReloadAlbumList object:nil];
                     if (strongSelf) {
-                        [strongSelf reloadPhotoArray];
+                        [strongSelf reloadPhotoArray:NO];
                     }
                 }else{
                     [strongSelf.picker showText:CLString(@"CLText_SaveImageError")];
+                }
+            }];
+        }else if ([type isEqualToString:@"public.movie"]) {
+            [ws.picker showProgress];
+            NSURL *URL = [info objectForKey:UIImagePickerControllerMediaURL];
+            cl_weakSelf(self);
+            [CLPhotoManager saveVideoToAblum:URL completion:^(BOOL success, PHAsset *asset) {
+                cl_strongSelf(weakSelf);
+                if (!strongSelf) {
+                    return;
+                }
+                if (success) {
+                    strongSelf->_reloadAlbumList = YES;
+                    [[NSNotificationCenter defaultCenter] postNotificationName:CLPhotoLibReloadAlbumList object:nil];
+                    if (strongSelf) {
+                        [strongSelf reloadPhotoArray:YES];
+                    }
+                }else{
+                    [strongSelf.picker showText:CLString(@"CLText_SaveVideoError")];
                 }
             }];
         }
     }];
 }
 
-- (void)reloadPhotoArray {
+- (void)reloadPhotoArray:(BOOL)isVideo{
     cl_weakSelf(self);
+    __block BOOL _isVideo = isVideo;
     [CLPhotoShareManager getCameraRollAlbumWithSelectMode:self.picker.selectMode complete:^(CLAlbumModel *albumModel) {
         cl_strongSelf(weakSelf);
         if (strongSelf) {
@@ -496,13 +569,15 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
                     [strongSelf.photoArray insertObject:model atIndex:0];
                 }
             }
-            if (strongSelf.picker.selectedModels.count < strongSelf.picker.maxSelectCount) {
-                if (model) {
-                    model.isSelected = YES;
-                    [strongSelf.picker.selectedModels addObject:model];
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [strongSelf refreshBottomToolBarStatus];
-                    });
+            if (!_isVideo) {
+                if (strongSelf.picker.selectedModels.count < strongSelf.picker.maxSelectCount) {
+                    if (model) {
+                        model.isSelected = YES;
+                        [strongSelf.picker.selectedModels addObject:model];
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [strongSelf refreshBottomToolBarStatus];
+                        });
+                    }
                 }
             }
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -745,9 +820,10 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
 - (UIButton *)titleBtn{
     if (!_titleBtn) {
         _titleBtn = [UIButton new];
-        _titleBtn.frame = CGRectMake(0, 0, self.view.width - 140, self.navigationController.navigationBar.height);
+        _titleBtn.frame = CGRectMake(0, 0, self.view.width - 160, self.navigationController.navigationBar.height);
         _titleBtn.contentHorizontalAlignment = UIControlContentVerticalAlignmentCenter;
         _titleBtn.titleLabel.adjustsFontSizeToFitWidth = YES;
+        _titleBtn.titleLabel.font = [UIFont systemFontOfSize:CLNavigationItemFontSize];
         [_titleBtn setImage:[UIImage imageNamedFromBundle:@"btn_album_more"] forState:UIControlStateNormal];
         _titleBtn.hidden = YES;
         [_titleBtn addTarget:self action:@selector(clickTitleViewAction:) forControlEvents:UIControlEventTouchUpInside];

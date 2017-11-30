@@ -199,9 +199,7 @@
         _tipLable.font = [UIFont systemFontOfSize:16];
         _tipLable.textColor = [UIColor blackColor];
         _tipLable.adjustsFontSizeToFitWidth = YES;
-        NSString *appName = [[NSBundle mainBundle].infoDictionary valueForKey:@"CFBundleDisplayName"];
-        if (!appName) appName = [[NSBundle mainBundle].infoDictionary valueForKey:@"CFBundleName"];
-        _tipLable.text = [NSString stringWithFormat:CLString(@"CLText_NotAccessAlbumTip"), [UIDevice currentDevice].model, appName];
+        _tipLable.text = [NSString stringWithFormat:CLString(@"CLText_NotAccessAlbumTip"), [UIDevice currentDevice].model, CLAppName];
         [self.view addSubview:_tipLable];
     }
     return _tipLable;

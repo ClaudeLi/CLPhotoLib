@@ -22,6 +22,14 @@ static NSString *sortDescriptorKey = @"modificationDate";
     return manager;
 }
 
+- (NSString *)appName{
+    if (!_appName) {
+        _appName = [[NSBundle mainBundle].infoDictionary valueForKey:@"CFBundleDisplayName"];
+        if (!_appName) _appName = [[NSBundle mainBundle].infoDictionary valueForKey:@"CFBundleName"];
+    }
+    return _appName;
+}
+
 #pragma mark -
 #pragma mark -- Public Object Methods --
 // 获得（相册交卷/所有图片）所在的相册
@@ -534,12 +542,10 @@ static NSString *sortDescriptorKey = @"modificationDate";
 
 //获取自定义相册
 + (PHAssetCollection *)getDestinationCollection{
-    NSString *appName = [[NSBundle mainBundle].infoDictionary valueForKey:@"CFBundleDisplayName"];
-    if (!appName) appName = [[NSBundle mainBundle].infoDictionary valueForKey:(__bridge NSString *)kCFBundleNameKey];
     // 找是否已经创建自定义相册
     PHFetchResult<PHAssetCollection *> *collectionResult = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:nil];
     for (PHAssetCollection *collection in collectionResult) {
-        if ([collection.localizedTitle isEqualToString:appName]) {
+        if ([collection.localizedTitle isEqualToString:CLAppName]) {
             return collection;
         }
     }
@@ -547,10 +553,10 @@ static NSString *sortDescriptorKey = @"modificationDate";
     __block NSString *collectionId = nil;
     NSError *error = nil;
     [[PHPhotoLibrary sharedPhotoLibrary] performChangesAndWait:^{
-        collectionId = [PHAssetCollectionChangeRequest creationRequestForAssetCollectionWithTitle:appName].placeholderForCreatedAssetCollection.localIdentifier;
+        collectionId = [PHAssetCollectionChangeRequest creationRequestForAssetCollectionWithTitle:CLAppName].placeholderForCreatedAssetCollection.localIdentifier;
     } error:&error];
     if (error) {
-        CLLog(@"Creat '%@' Ablum Error：%@", appName, error.localizedDescription);
+        CLLog(@"Creat '%@' Ablum Error：%@", CLAppName, error.localizedDescription);
         return nil;
     }
     return [PHAssetCollection fetchAssetCollectionsWithLocalIdentifiers:@[collectionId] options:nil].lastObject;
