@@ -117,9 +117,8 @@ CLRatioMake(CGFloat start, CGFloat end){
 
 - (void)setValidRect:(CGRect)validRect{
     _validRect = validRect;
-    CGFloat width = _validRect.size.width>=self.height*0.3 ? _validRect.size.width : self.height*0.3;
     _leftView.frame = CGRectMake(validRect.origin.x - self.height*0.3, 0, self.height*0.6, self.height);
-    _rightView.frame = CGRectMake(validRect.origin.x + width - self.height*0.3, _leftView.top, _leftView.width, _leftView.height);
+    _rightView.frame = CGRectMake(validRect.origin.x - self.height*0.3 + _validRect.size.width, _leftView.top, _leftView.width, _leftView.height);
     [self setNeedsDisplay];
 }
 
@@ -227,18 +226,18 @@ CLRatioMake(CGFloat start, CGFloat end){
 - (void)drawRect:(CGRect)rect{
     CGContextRef context = UIGraphicsGetCurrentContext();
     
-    CGContextClearRect(context, self.validRect);
+    CGContextClearRect(context, _validRect);
     
     CGContextSetStrokeColorWithColor(context, [UIColor whiteColor].CGColor);
     CGContextSetLineWidth(context, 4.0);
     
     CGPoint topPoints[2];
-    topPoints[0] = CGPointMake(self.validRect.origin.x, 0);
-    topPoints[1] = CGPointMake(self.validRect.origin.x+self.validRect.size.width, 0);
+    topPoints[0] = CGPointMake(_validRect.origin.x, 0);
+    topPoints[1] = CGPointMake(_validRect.origin.x+_validRect.size.width, 0);
     
     CGPoint bottomPoints[2];
-    bottomPoints[0] = CGPointMake(self.validRect.origin.x, self.validRect.size.height);
-    bottomPoints[1] = CGPointMake(self.validRect.origin.x+self.validRect.size.width, self.validRect.size.height);
+    bottomPoints[0] = CGPointMake(_validRect.origin.x, _validRect.size.height);
+    bottomPoints[1] = CGPointMake(_validRect.origin.x+_validRect.size.width, _validRect.size.height);
     
     CGContextAddLines(context, topPoints, 2);
     CGContextAddLines(context, bottomPoints, 2);
@@ -664,6 +663,7 @@ CLRatioMake(CGFloat start, CGFloat end){
 }
 
 - (void)dealloc{
+    [CLEditManager cancelAllCGImageGeneration];
     [self stopTimer];
     if (_playerLayer.player){
         [_playerLayer.player pause];

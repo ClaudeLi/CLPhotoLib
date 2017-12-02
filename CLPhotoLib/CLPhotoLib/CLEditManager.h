@@ -98,4 +98,6 @@ typedef NS_ENUM(NSInteger, CLVideoCutMode) {
                            eachThumbnail:(void (^)(UIImage *image))eachThumbnail
                                 complete:(void (^)(AVAsset *asset, NSArray<UIImage *> *images))complete;
 
++ (void)cancelAllCGImageGeneration;
+
 @end

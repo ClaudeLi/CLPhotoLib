@@ -17,7 +17,7 @@
 
     2.plist添加
         <key>CFBundleAllowMixedLocalizations</key>
-        < true/>
+        <true/>
         <key>UIViewControllerBasedStatusBarAppearance</key>
         <false/>
         <key>NSCameraUsageDescription</key>

@@ -10,6 +10,14 @@
 #import "CLConfig.h"
 #import "CLExtHeader.h"
 
+NSString * const CLErrorDomain = @"CLPhotoLibErrorDomain";
+typedef enum {
+    CLErrorDefaultCode          = -1000,
+    CLErrorNotFoundVideoInfo,
+    CLErrorNotFoundAudioInfo,
+    CLErrorUnableToDecode,
+}CLErrorCode;
+
 @interface CLEditManager (){
     NSTimer *_timerEffect;
 }
@@ -44,13 +52,9 @@
 {
     NSArray *videoTracks = [asset tracksWithMediaType:AVMediaTypeVideo];
     if (!videoTracks.count) {
-        [self onError:[NSError errorWithDomain:NSCocoaErrorDomain
-                                          code:0
-                                      userInfo:@{
-                                                 CLString(@"CLText_VideoProcessingError"):NSLocalizedDescriptionKey,
-                                                 CLString(@"CLText_NotGetVideoInfo"):NSLocalizedFailureReasonErrorKey
-                                                 }
-                       ]];
+        NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:CLString(@"CLText_VideoProcessingError"), NSLocalizedDescriptionKey, CLString(@"CLText_NotGetVideoInfo"), NSLocalizedFailureReasonErrorKey, nil];
+        NSError *error = [[NSError alloc] initWithDomain:CLErrorDomain code:CLErrorNotFoundVideoInfo userInfo:userInfo];
+        [self onError:error];
         return;
     }
     AVAssetTrack *videoAssetTrack = [videoTracks objectAtIndex:0];
@@ -81,18 +85,14 @@
 //        return;
 //    }
     NSArray *compatiblePresets = [AVAssetExportSession exportPresetsCompatibleWithAsset:asset];
-    if ([compatiblePresets containsObject:AVAssetExportPreset640x480]) {
+    if (![compatiblePresets containsObject:AVAssetExportPreset640x480]) {
         /*
         // 这里可以处理背景音乐
         NSArray *audioTracks = [asset tracksWithMediaType:AVMediaTypeAudio];
         if (!audioTracks.count) {
-            [self onError:[NSError errorWithDomain:NSCocoaErrorDomain
-                                              code:0
-                                          userInfo:@{
-                                                     @"Audio Processing Error":NSLocalizedDescriptionKey,
-                                                     @"Not Found Audio Information":NSLocalizedFailureReasonErrorKey
-                                                     }
-                           ]];
+            NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:CLString(@"CLText_AudioProcessingError"), NSLocalizedDescriptionKey, CLString(@"CLText_NotGetAudioInfo"), NSLocalizedFailureReasonErrorKey, nil];
+            NSError *error = [[NSError alloc] initWithDomain:CLErrorDomain code:CLErrorNotFoundVideoInfo userInfo:userInfo];
+            [self onError:error];
             return;
         }
         AVMutableComposition *mixComposition = [[AVMutableComposition alloc] init];
@@ -255,13 +255,9 @@
             }
         }];
     }else{
-        [self onError:[NSError errorWithDomain:NSCocoaErrorDomain
-                                          code:0
-                                      userInfo:@{
-                                                 CLString(@"CLText_VideoProcessingError"):NSLocalizedDescriptionKey,
-                                                 CLString(@"CLText_UnableToDecode"):NSLocalizedFailureReasonErrorKey
-                                                 }
-                       ]];
+        NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:CLString(@"CLText_VideoProcessingError"), NSLocalizedDescriptionKey, CLString(@"CLText_UnableToDecode"), NSLocalizedFailureReasonErrorKey, nil];
+        NSError *error = [[NSError alloc] initWithDomain:CLErrorDomain code:CLErrorUnableToDecode userInfo:userInfo];
+        [self onError:error];
     }
 }
 
@@ -383,6 +379,8 @@
 
 #pragma mark -
 #pragma mark -- Public Class Methods --
+static AVAssetImageGenerator *_generator;
+
 + (UIImage *)requestThumbnailImageForAVAsset:(AVAsset *)asset
                                 timeBySecond:(NSTimeInterval)timeBySecond
 {
@@ -390,10 +388,10 @@
         return nil;
     }
     // 根据AVURLAsset创建AVAssetImageGenerator
-    AVAssetImageGenerator *imageGenerator=[AVAssetImageGenerator assetImageGeneratorWithAsset:asset];
-    imageGenerator.appliesPreferredTrackTransform = YES;
-    imageGenerator.requestedTimeToleranceAfter = kCMTimeZero;
-    imageGenerator.requestedTimeToleranceBefore = kCMTimeZero;
+    _generator =[AVAssetImageGenerator assetImageGeneratorWithAsset:asset];
+    _generator.appliesPreferredTrackTransform = YES;
+    _generator.requestedTimeToleranceAfter = kCMTimeZero;
+    _generator.requestedTimeToleranceBefore = kCMTimeZero;
     /*截图
      * requestTime:缩略图创建时间
      * actualTime:缩略图实际生成的时间
@@ -402,8 +400,8 @@
     // CMTime是表示电影时间信息的结构体，第一个参数是视频第几秒，第二个参数时每秒帧数.(如果要活的某一秒的第几帧可以使用CMTimeMake方法)
     CMTime time = CMTimeMakeWithSeconds(timeBySecond, 30);
     CMTime actualTime;
-    CGImageRef cgImage= [imageGenerator copyCGImageAtTime:time actualTime:&actualTime error:&error];
-    imageGenerator = nil;
+    CGImageRef cgImage= [_generator copyCGImageAtTime:time actualTime:&actualTime error:&error];
+    _generator = nil;
     if(error){
         CLLog(@"截取视频缩略图时发生错误，错误信息：%@",error.localizedDescription);
         CGImageRelease(cgImage);
@@ -433,11 +431,12 @@
                            eachThumbnail:(void (^)(UIImage *image))eachThumbnail
                                 complete:(void (^)(AVAsset *asset, NSArray<UIImage *> *images))complete
 {
-    AVAssetImageGenerator *generator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
-    generator.maximumSize = size;
-    generator.appliesPreferredTrackTransform = YES;
-    generator.requestedTimeToleranceBefore = kCMTimeZero;
-    generator.requestedTimeToleranceAfter = kCMTimeZero;
+    [self cancelAllCGImageGeneration];
+    _generator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
+    _generator.maximumSize = size;
+    _generator.appliesPreferredTrackTransform = YES;
+    _generator.requestedTimeToleranceBefore = kCMTimeZero;
+    _generator.requestedTimeToleranceAfter = kCMTimeZero;
 
     NSMutableArray *arr = [NSMutableArray array];
     NSTimeInterval imgTime = 0;
@@ -456,7 +455,7 @@
     }
     NSMutableArray *arrImages = [NSMutableArray array];
     __block long count = 0;
-    [generator generateCGImagesAsynchronouslyForTimes:arr
+    [_generator generateCGImagesAsynchronouslyForTimes:arr
                                     completionHandler:^(CMTime requestedTime, CGImageRef  _Nullable image, CMTime actualTime, AVAssetImageGeneratorResult result, NSError * _Nullable error) {
         switch (result) {
             case AVAssetImageGeneratorSucceeded:
@@ -484,6 +483,13 @@
             });
         }
     }];
+}
+
++ (void)cancelAllCGImageGeneration{
+    if (_generator) {
+        [_generator cancelAllCGImageGeneration];
+        _generator = nil;
+    }
 }
 
 @end
