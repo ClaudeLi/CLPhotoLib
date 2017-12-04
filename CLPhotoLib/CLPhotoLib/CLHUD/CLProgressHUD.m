@@ -91,6 +91,16 @@ CGFloat whiteSpace = 10.0f;
 }
 
 - (void)showText:(NSString *)text delay:(NSTimeInterval)delay canTouch:(BOOL)canTouch{
+    if ([[NSThread currentThread] isMainThread]) {
+        [self _showText:text delay:delay canTouch:canTouch];
+    }else{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self _showText:text delay:delay canTouch:canTouch];
+        });
+    }
+}
+
+- (void)_showText:(NSString *)text delay:(NSTimeInterval)delay canTouch:(BOOL)canTouch{
     if (!text.length) {
         return;
     }
@@ -118,7 +128,18 @@ CGFloat whiteSpace = 10.0f;
     [[NSRunLoop currentRunLoop] addTimer:_timer forMode:NSRunLoopCommonModes];
 }
 
+
 - (void)showProgress:(BOOL)canTouch{
+    if ([[NSThread currentThread] isMainThread]) {
+        [self _showProgress:canTouch];
+    }else{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self _showProgress:canTouch];
+        });
+    }
+}
+
+- (void)_showProgress:(BOOL)canTouch{
     _hudLabel.hidden = YES;
     if (canTouch) {
         self.bounds = CGRectMake(0, 0, 68, 68);
@@ -138,6 +159,16 @@ CGFloat whiteSpace = 10.0f;
 }
 
 - (void)showProgressWithText:(NSString *)text canTouch:(BOOL)canTouch{
+    if ([[NSThread currentThread] isMainThread]) {
+        [self _showProgressWithText:text canTouch:canTouch];
+    }else{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self _showProgressWithText:text canTouch:canTouch];
+        });
+    }
+}
+
+- (void)_showProgressWithText:(NSString *)text canTouch:(BOOL)canTouch{
     if (!text.length) {
         return;
     }
@@ -160,6 +191,16 @@ CGFloat whiteSpace = 10.0f;
 }
 
 - (void)hideProgress{
+    if ([[NSThread currentThread] isMainThread]) {
+        [self _hideProgress];
+    }else{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self _hideProgress];
+        });
+    }
+}
+
+- (void)_hideProgress{
     [UIView animateWithDuration:0.2 animations:^{
         self.alpha = 0;
         _hudView.alpha = 0;

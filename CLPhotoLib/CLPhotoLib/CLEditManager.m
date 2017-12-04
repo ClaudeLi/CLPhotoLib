@@ -85,7 +85,7 @@ typedef enum {
 //        return;
 //    }
     NSArray *compatiblePresets = [AVAssetExportSession exportPresetsCompatibleWithAsset:asset];
-    if (![compatiblePresets containsObject:AVAssetExportPreset640x480]) {
+    if ([compatiblePresets containsObject:AVAssetExportPreset640x480]) {
         /*
         // 这里可以处理背景音乐
         NSArray *audioTracks = [asset tracksWithMediaType:AVMediaTypeAudio];
