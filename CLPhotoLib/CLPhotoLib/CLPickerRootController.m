@@ -36,7 +36,7 @@
         self.navigationItemColor = _navigationItemColor?:CLBarItemTitleDefaultColor;
         self.minSize = CGSizeMake(750.0f, 750.0f);
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            self.columnCount = 6;
+            self.columnCount = 5;
         } else {
             self.columnCount = 3;
         }

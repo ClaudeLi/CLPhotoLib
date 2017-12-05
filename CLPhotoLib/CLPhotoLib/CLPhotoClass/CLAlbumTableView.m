@@ -85,7 +85,7 @@ static NSString *cellIdentifier = @"CLAlbumTableViewCellIdentifier";
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return CLAlbumDefaultRowHeight;
+    return CLAlbumRowHeight();
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -118,12 +118,12 @@ static NSString *cellIdentifier = @"CLAlbumTableViewCellIdentifier";
 - (void)showAlbumAnimated:(BOOL)animated{
     _isAnimated = animated;
     if (_isAnimated) {
-        if (CLAlbumDefaultRowHeight * _albumArray.count > self.height*CLAlbumDropDownScale) {
+        if (CLAlbumRowHeight() * _albumArray.count > self.height*CLAlbumDropDownScale) {
             self.tableView.scrollEnabled = YES;
             _tableHeight = self.height*CLAlbumDropDownScale;
         }else{
             self.tableView.scrollEnabled = NO;
-            _tableHeight = CLAlbumDefaultRowHeight * self.albumArray.count;
+            _tableHeight = CLAlbumRowHeight() * self.albumArray.count;
         }
         self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.4];
         self.tableView.frame = CGRectMake(0, - _tableHeight, self.width, _tableHeight);
@@ -139,10 +139,10 @@ static NSString *cellIdentifier = @"CLAlbumTableViewCellIdentifier";
 - (void)layoutSubviews{
     [super layoutSubviews];
     if (_isAnimated) {
-        if (CLAlbumDefaultRowHeight * _albumArray.count > self.height*CLAlbumDropDownScale) {
+        if (CLAlbumRowHeight() * _albumArray.count > self.height*CLAlbumDropDownScale) {
             _tableHeight = self.height*CLAlbumDropDownScale;
         }else{
-            _tableHeight = CLAlbumDefaultRowHeight * self.albumArray.count;
+            _tableHeight = CLAlbumRowHeight() * self.albumArray.count;
         }
         self.tableView.frame = CGRectMake(0, 0, self.width, _tableHeight);
     }else{

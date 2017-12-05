@@ -91,7 +91,7 @@ typedef void(^CLPickerShootVideoHandle)(void);
  */
 @property (nonatomic, assign) CGSize    minSize;
 
-@property (nonatomic, assign) NSInteger columnCount;                // default ipad:6 else 3
+@property (nonatomic, assign) NSInteger columnCount;                // default ipad:5 else 3
 @property (nonatomic, assign) CGFloat   minimumInteritemSpacing;    // default 1.0
 @property (nonatomic, assign) CGFloat   minimumLineSpacing;         // default 1.0
 @property (nonatomic, assign) UIEdgeInsets sectionInset;            // default UIEdgeInsetsMake(1, 0, 1, 0)

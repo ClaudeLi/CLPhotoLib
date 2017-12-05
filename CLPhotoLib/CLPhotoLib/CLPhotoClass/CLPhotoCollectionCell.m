@@ -363,7 +363,7 @@ static CGFloat CLAlbumSelectFontSize    = 14.0f;
     self.headImageView.hidden = NO;
     cl_weakSelf(self);
     self.localIdentifier = model.firstAsset.localIdentifier;
-    [CLPhotoShareManager requestCustomImageForAsset:model.firstAsset size:CGSizeMake(CLAlbumDefaultRowHeight * [UIScreen mainScreen].scale, CLAlbumDefaultRowHeight * [UIScreen mainScreen].scale) completion:^(UIImage *image, NSDictionary *info) {
+    [CLPhotoShareManager requestCustomImageForAsset:model.firstAsset size:CGSizeMake(CLAlbumRowHeight() * [UIScreen mainScreen].scale, CLAlbumRowHeight() * [UIScreen mainScreen].scale) completion:^(UIImage *image, NSDictionary *info) {
         cl_strongSelf(weakSelf);
         if ([strongSelf.localIdentifier isEqualToString:model.firstAsset.localIdentifier]) {
             strongSelf.headImageView.image = image?:[UIImage imageNamedFromBundle:@"icon_default_photo"];

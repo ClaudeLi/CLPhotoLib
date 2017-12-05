@@ -26,7 +26,7 @@
 // Bar Item Title Color
 #define CLBarItemTitleDefaultColor      CLColor_RGBA(255, 219, 15, 1)
 // Album Seleted Round Color
-#define CLAlbumSeletedRoundColor          CLColor_RGBA(255, 219, 15, 1)
+#define CLAlbumSeletedRoundColor        CLColor_RGBA(255, 219, 15, 1)
 
 // 视频填充色
  #define CLVideoFillColor               [UIColor blackColor]
@@ -42,12 +42,19 @@ static CGFloat CLNavigationItemFontSize = 16.0;
 static CGFloat CLToolBarTitleFontSize   = 16.0;
 static CGFloat CLToolBarHeight          = 42.0;
 
-static CGFloat CLAlbumDefaultRowHeight  = 70.0;
 static CGFloat CLAlbumDropDownScale     = 0.7;
 
 static CGFloat CLAlbumDropDownAnimationTime = 0.3;
 static CGFloat CLAlbumPackUpAnimationTime   = 0.2;
 static CGFloat CLLittleControlAnimationTime = 0.2;
+
+static inline CGFloat CLAlbumRowHeight(void) {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        return 90.0f;
+    } else {
+        return 70.0f;
+    }
+}
 
 // 视频输出路径
 static inline NSString *CLVideoOutputPath(void) {
