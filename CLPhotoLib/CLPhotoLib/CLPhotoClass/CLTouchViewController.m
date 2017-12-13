@@ -71,6 +71,7 @@
 - (void)loadLivePhoto{
     PHLivePhotoView *lpView = [[PHLivePhotoView alloc] init];
     lpView.contentMode = UIViewContentModeScaleAspectFit;
+    lpView.muted = NO;
     lpView.frame = (CGRect){CGPointZero, self.preferredContentSize};
     [self.view addSubview:lpView];
     cl_weakSelf(self);

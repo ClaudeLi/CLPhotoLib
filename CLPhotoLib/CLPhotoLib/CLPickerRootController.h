@@ -103,7 +103,7 @@ typedef void(^CLPickerShootVideoHandle)(void);
 @property (nonatomic, assign) BOOL isDistinguishWH;                 // 是否区分视频宽高比(outputScale宽高比是否可以互换), default NO
 @property (nonatomic, assign) BOOL allowEditVideo;                  // default YES
 
-@property (nonatomic, assign) BOOL allowAlbumDropDown;              // default NO
+@property (nonatomic, assign) BOOL allowAlbumDropDown;              // default NO (是否下拉选择相册)
 @property (nonatomic, assign) BOOL allowPanGestureSelect;           // default YES
 @property (nonatomic, assign) BOOL allowPreviewImage;               // default YES
 @property (nonatomic, assign) BOOL allowEditImage;                  // default NO
