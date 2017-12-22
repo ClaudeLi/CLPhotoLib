@@ -85,7 +85,7 @@ typedef enum {
 //        return;
 //    }
     NSArray *compatiblePresets = [AVAssetExportSession exportPresetsCompatibleWithAsset:asset];
-    if ([compatiblePresets containsObject:AVAssetExportPreset960x540]) {
+    if ([compatiblePresets containsObject:AVAssetExportPreset1280x720]) {
         /*
         // 这里可以处理背景音乐
         NSArray *audioTracks = [asset tracksWithMediaType:AVMediaTypeAudio];
@@ -136,7 +136,6 @@ typedef enum {
         AVMutableVideoComposition *mainCompositionInst = [AVMutableVideoComposition videoComposition];
 //        mainCompositionInst.renderSize = renderSize;
         mainCompositionInst.instructions = [NSArray arrayWithObject:mainInstruction];
-        mainCompositionInst.frameDuration = CMTimeMake(1, 30);
         
         // 判断是否区分横竖比例
         if (!isDistinguishWH) {
@@ -194,14 +193,18 @@ typedef enum {
             }
                 break;
         }
-        
+        if (MAX(outputSize.width, outputSize.height) >= 640) {
+            mainCompositionInst.frameDuration = CMTimeMake(1, 25);
+        }else{
+            mainCompositionInst.frameDuration = CMTimeMake(1, 30);
+        }
         [self removeTimer];
         NSString *outputPath = CLVideoOutputPath();
         [self deleteFilePath:outputPath];
         [UIApplication sharedApplication].idleTimerDisabled = YES;
-        // AVAssetExportPreset640x480 压缩质量
+        // AVAssetExportPreset1280x720 压缩质量
         self.exportSession = [[AVAssetExportSession alloc]
-                              initWithAsset:asset presetName:AVAssetExportPreset640x480];
+                              initWithAsset:asset presetName:AVAssetExportPreset1280x720];
         _exportSession.timeRange = range;
         
         NSURL *furl = [NSURL fileURLWithPath:outputPath];

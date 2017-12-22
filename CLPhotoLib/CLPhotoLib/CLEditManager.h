@@ -35,7 +35,7 @@ typedef NS_ENUM(NSInteger, CLVideoCutMode) {
  视频处理
  
  @param asset       video asset
- @param range       裁剪范围
+ @param range       视频时长裁剪范围
  @param sizeScale   输出比例
  @param cutMode     裁剪模式
  @param fillColor   填充色
@@ -50,7 +50,7 @@ typedef NS_ENUM(NSInteger, CLVideoCutMode) {
  视频处理
 
  @param asset       video asset
- @param range       裁剪范围
+ @param range       视频时长裁剪范围
  @param sizeScale   输出比例
  @param isDistinguishWH 是否区分横竖比
  @param cutMode     裁剪模式
