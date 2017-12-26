@@ -6,6 +6,20 @@
 	objectVersion = 48;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		D31A94DA1FF1FA6F005691EA /* CLPhotoLibFramework */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = D31A94DD1FF1FA6F005691EA /* Build configuration list for PBXAggregateTarget "CLPhotoLibFramework" */;
+			buildPhases = (
+				D31A94DE1FF1FA7A005691EA /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = CLPhotoLibFramework;
+			productName = CLPhotoLibFramework;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		D33D4FDD1FC69FE900A25ABF /* CLExtHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = D33D4FDC1FC69FE900A25ABF /* CLExtHeader.h */; };
 		D33D4FDE1FC6A30400A25ABF /* CLPhotoModel.h in Headers */ = {isa = PBXBuildFile; fileRef = D3C2589A1FC6820800126FB9 /* CLPhotoModel.h */; };
@@ -310,6 +324,10 @@
 				LastUpgradeCheck = 0910;
 				ORGANIZATIONNAME = ClaudeLi;
 				TargetAttributes = {
+					D31A94DA1FF1FA6F005691EA = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
 					D3C258781FC680E500126FB9 = {
 						CreatedOnToolsVersion = 9.1;
 						ProvisioningStyle = Automatic;
@@ -334,6 +352,7 @@
 			targets = (
 				D3C258781FC680E500126FB9 /* CLPhotoLib */,
 				D3C258811FC680E500126FB9 /* CLPhotoLibTests */,
+				D31A94DA1FF1FA6F005691EA /* CLPhotoLibFramework */,
 			);
 		};
 /* End PBXProject section */
@@ -354,6 +373,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		D31A94DE1FF1FA7A005691EA /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Sets the target folders and the final framework product.\n# 如果工程名称和Framework的Target名称不一样的话，要自定义FMKNAME\n# 例如: FMK_NAME = TTPlayerSDK\nFMK_NAME=CLPhotoLib\n# Install dir will be the final output to the framework.\n# The following line create it in the root folder of the current project.\nINSTALL_DIR=${SRCROOT}/Products/${FMK_NAME}.framework\n# Working dir will be deleted after the framework creation.\nWRK_DIR=build\nDEVICE_DIR=${WRK_DIR}/Release-iphoneos/${FMK_NAME}.framework\nSIMULATOR_DIR=${WRK_DIR}/Release-iphonesimulator/${FMK_NAME}.framework\n# -configuration ${CONFIGURATION}\n# Clean and Building both architectures.\nxcodebuild -configuration \"Release\" -target \"${FMK_NAME}\" -sdk iphoneos clean build\nxcodebuild -configuration \"Release\" -target \"${FMK_NAME}\" -sdk iphonesimulator clean build\n# Cleaning the oldest.\nif [ -d \"${INSTALL_DIR}\" ]\nthen\nrm -rf \"${INSTALL_DIR}\"\nfi\nmkdir -p \"${INSTALL_DIR}\"\ncp -R \"${DEVICE_DIR}/\" \"${INSTALL_DIR}/\"\n# Uses the Lipo Tool to merge both binary files (i386 + armv6/armv7) into one Universal final product.\nlipo -create \"${DEVICE_DIR}/${FMK_NAME}\" \"${SIMULATOR_DIR}/${FMK_NAME}\" -output \"${INSTALL_DIR}/${FMK_NAME}\"\nrm -r \"${WRK_DIR}\"\nopen \"${INSTALL_DIR}\"";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		D3C258741FC680E500126FB9 /* Sources */ = {
@@ -401,6 +436,22 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		D31A94DB1FF1FA6F005691EA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		D31A94DC1FF1FA6F005691EA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		D3C2588B1FC680E500126FB9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -596,6 +647,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		D31A94DD1FF1FA6F005691EA /* Build configuration list for PBXAggregateTarget "CLPhotoLibFramework" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D31A94DB1FF1FA6F005691EA /* Debug */,
+				D31A94DC1FF1FA6F005691EA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		D3C258731FC680E500126FB9 /* Build configuration list for PBXProject "CLPhotoLib" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
