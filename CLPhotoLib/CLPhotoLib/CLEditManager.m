@@ -193,7 +193,7 @@ typedef enum {
             }
                 break;
         }
-        if (MAX(outputSize.width, outputSize.height) >= 640) {
+        if (MIN(outputSize.width, outputSize.height) >= 540) {
             mainCompositionInst.frameDuration = CMTimeMake(1, 25);
         }else{
             mainCompositionInst.frameDuration = CMTimeMake(1, 30);
