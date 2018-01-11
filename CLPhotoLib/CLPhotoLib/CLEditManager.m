@@ -137,61 +137,66 @@ typedef enum {
 //        mainCompositionInst.renderSize = renderSize;
         mainCompositionInst.instructions = [NSArray arrayWithObject:mainInstruction];
         
-        // 判断是否区分横竖比例
-        if (!isDistinguishWH) {
-            if (renderSize.width/renderSize.height >= 1.0) {
-                sizeScale = sizeScale >= 1.0 ? sizeScale:1.0/sizeScale;
-            }else{
-                sizeScale = sizeScale < 1.0 ? sizeScale:1.0/sizeScale;
-            }
-        }
         // 设置输出视频尺寸大小及方向
         CGSize outputSize = renderSize;
-        switch (cutMode) {
-            case CLVideoCutModeScaleAspectFit:
-            {
-                if (renderSize.width/renderSize.height > sizeScale) {
-                    outputSize.width = renderSize.width;
-                    outputSize.height = renderSize.width/sizeScale;
+        if (sizeScale) {
+            // 判断是否区分横竖比例
+            if (!isDistinguishWH) {
+                if (renderSize.width/renderSize.height >= 1.0) {
+                    sizeScale = sizeScale >= 1.0 ? sizeScale:1.0/sizeScale;
                 }else{
-                    outputSize.height = renderSize.height;
-                    outputSize.width = renderSize.height*sizeScale;
+                    sizeScale = sizeScale < 1.0 ? sizeScale:1.0/sizeScale;
                 }
-                // 方向
-                [videoLayerInstruction setTransform:videoTransform atTime:kCMTimeZero];
-                [self layerWithOutputSize:outputSize
-                               renderSize:renderSize
-                                  cutMode:cutMode
-                                fillColor:fillColor
-                      mainCompositionInst:mainCompositionInst];
             }
-                break;
-            case CLVideoCutModeScaleAspectFill:
-            {
-                if (renderSize.width/renderSize.height > sizeScale) {
-                    outputSize.height = renderSize.height;
-                    outputSize.width = outputSize.height*sizeScale;
-                    videoTransform.tx -= (renderSize.width-outputSize.width)/2.0;
+            switch (cutMode) {
+                case CLVideoCutModeScaleAspectFit:
+                {
+                    if (renderSize.width/renderSize.height > sizeScale) {
+                        outputSize.width = renderSize.width;
+                        outputSize.height = renderSize.width/sizeScale;
+                    }else{
+                        outputSize.height = renderSize.height;
+                        outputSize.width = renderSize.height*sizeScale;
+                    }
+                    // 方向
                     [videoLayerInstruction setTransform:videoTransform atTime:kCMTimeZero];
-                }else{
-                    outputSize.width = renderSize.width;
-                    outputSize.height = outputSize.width/sizeScale;
-                    videoTransform.ty -= (renderSize.height-outputSize.height)/2.0;
-                    [videoLayerInstruction setTransform:videoTransform atTime:kCMTimeZero];
+                    [self layerWithOutputSize:outputSize
+                                   renderSize:renderSize
+                                      cutMode:cutMode
+                                    fillColor:fillColor
+                          mainCompositionInst:mainCompositionInst];
                 }
-                [self layerWithOutputSize:outputSize
-                               renderSize:renderSize
-                                  cutMode:cutMode
-                                fillColor:fillColor
-                      mainCompositionInst:mainCompositionInst];
+                    break;
+                case CLVideoCutModeScaleAspectFill:
+                {
+                    if (renderSize.width/renderSize.height > sizeScale) {
+                        outputSize.height = renderSize.height;
+                        outputSize.width = outputSize.height*sizeScale;
+                        videoTransform.tx -= (renderSize.width-outputSize.width)/2.0;
+                        [videoLayerInstruction setTransform:videoTransform atTime:kCMTimeZero];
+                    }else{
+                        outputSize.width = renderSize.width;
+                        outputSize.height = outputSize.width/sizeScale;
+                        videoTransform.ty -= (renderSize.height-outputSize.height)/2.0;
+                        [videoLayerInstruction setTransform:videoTransform atTime:kCMTimeZero];
+                    }
+                    [self layerWithOutputSize:outputSize
+                                   renderSize:renderSize
+                                      cutMode:cutMode
+                                    fillColor:fillColor
+                          mainCompositionInst:mainCompositionInst];
+                }
+                    break;
+                default:
+                {
+                    [videoLayerInstruction setTransform:videoTransform atTime:kCMTimeZero];
+                    mainCompositionInst.renderSize = outputSize;
+                }
+                    break;
             }
-                break;
-            default:
-            {
-                [videoLayerInstruction setTransform:videoTransform atTime:kCMTimeZero];
-                mainCompositionInst.renderSize = outputSize;
-            }
-                break;
+        }else{
+            [videoLayerInstruction setTransform:videoTransform atTime:kCMTimeZero];
+            mainCompositionInst.renderSize = outputSize;
         }
         if (MIN(outputSize.width, outputSize.height) >= 540) {
             mainCompositionInst.frameDuration = CMTimeMake(1, 25);

@@ -99,7 +99,7 @@ typedef void(^CLPickerShootVideoHandle)(void);
 @property (nonatomic, assign) NSInteger maxSelectCount;             // image max default 9
 @property (nonatomic, assign) CGFloat minDuration;                  // default 0.0
 @property (nonatomic, assign) CGFloat maxDuration;                  // default MAXFLOAT
-@property (nonatomic, assign) CGFloat outputVideoScale;             // default 16.0:9.0
+@property (nonatomic, assign) CGFloat outputVideoScale;             // default 16/9, 注:0为不处理比例
 @property (nonatomic, assign) BOOL isDistinguishWH;                 // 是否区分视频宽高比(outputScale宽高比是否可以互换), default NO
 @property (nonatomic, assign) BOOL allowEditVideo;                  // default YES
 
