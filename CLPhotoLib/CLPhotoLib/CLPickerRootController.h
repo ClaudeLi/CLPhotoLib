@@ -61,6 +61,11 @@ typedef void(^CLPickerShootVideoHandle)(void);
 @property (nonatomic) UIColor *navigationColor;
 
 /**
+ 导航栏背景图
+ */
+@property (nonatomic) UIImage *navigationBarImage;
+
+/**
  标题颜色 默认白色
  title color default whiteColor
  */

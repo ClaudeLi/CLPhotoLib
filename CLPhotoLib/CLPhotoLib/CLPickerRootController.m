@@ -78,7 +78,7 @@
     [super viewDidLoad];
     self.previousStatusBarStyle = UIStatusBarStyleLightContent;
     self.statusBarStyle = UIStatusBarStyleLightContent;
-    self.navigationColor = [UIColor grayColor];
+    self.navigationColor = [[UIColor grayColor] colorWithAlphaComponent:CLBarAlpha]; 
     self.navigationBar.translucent = YES;
 }
 
@@ -102,7 +102,12 @@
 
 - (void)setNavigationColor:(UIColor *)navigationColor{
     _navigationColor = navigationColor;
-    [self.navigationBar setBackgroundImage:[UIImage imageWithColor:[_navigationColor colorWithAlphaComponent:CLBarAlpha]] forBarMetrics:UIBarMetricsDefault];
+    [self.navigationBar setBackgroundImage:[UIImage imageWithColor:_navigationColor] forBarMetrics:UIBarMetricsDefault];
+    [self.navigationBar setShadowImage:[UIImage new]];
+}
+
+- (void)setNavigationBarImage:(UIImage *)navigationBarImage{
+    [self.navigationBar setBackgroundImage:navigationBarImage forBarMetrics:UIBarMetricsDefault];
     [self.navigationBar setShadowImage:[UIImage new]];
 }
 
