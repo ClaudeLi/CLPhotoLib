@@ -78,8 +78,9 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
     [leftItem setImage:[UIImage imageNamedFromBundle:@"btn_backItem_icon"] forState:UIControlStateNormal];
     [leftItem addTarget:self action:@selector(clickCancelItemAction) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:leftItem];
-    
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.rightItem];
+    if (self.picker.allowImgMultiple) {
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.rightItem];
+    }
 }
 
 #pragma mark -
@@ -150,7 +151,17 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
             }
         }];
     }else{
-        [self.picker didFinishPickingPhotosAction];
+        if (self.picker.allowImgMultiple) {
+            [self.picker didFinishPickingPhotosAction];
+        }else{
+            if (_photoArray.count > _currentIndex) {
+                CLPhotoModel *model = _photoArray[_currentIndex];
+                if (![CLPhotoManager checkSelcectedWithModel:model identifiers:[CLPhotoManager getLocalIdentifierArrayWithArray:self.picker.selectedModels]]) {
+                    [self.picker.selectedModels addObject:model];
+                    [self.picker didFinishPickingPhotosAction];
+                }
+            }
+        }
     }
 }
 
@@ -312,7 +323,11 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
             }
         }
         if (self.picker.selectedModels.count == 0) {
-            _toolBar.doneBtn.selected = NO;
+            if (self.picker.allowImgMultiple) {
+                _toolBar.doneBtn.selected = NO;
+            }else{
+                _toolBar.doneBtn.selected = YES;
+            }
         }
         if (_toolBar.doneBtn.number != self.picker.selectedModels.count) {
             _toolBar.doneBtn.number = self.picker.selectedModels.count;

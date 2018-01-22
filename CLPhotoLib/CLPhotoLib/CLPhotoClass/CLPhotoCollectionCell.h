@@ -19,6 +19,8 @@
 
 @property (nonatomic, assign) BOOL selectBtnSelect;
 
+@property (nonatomic, assign) BOOL allowImgMultiple;
+
 @end
 
 @interface CLTakePhotoCell : UICollectionViewCell

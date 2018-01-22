@@ -44,7 +44,8 @@ typedef NS_ENUM(NSInteger, CLVideoCutMode) {
                           range:(CMTimeRange)range
                       sizeScale:(CGFloat)sizeScale
                         cutMode:(CLVideoCutMode)cutMode
-                      fillColor:(UIColor *)fillColor;
+                      fillColor:(UIColor *)fillColor
+                     presetName:(NSString *)presetName;
 
 /**
  视频处理
@@ -61,7 +62,8 @@ typedef NS_ENUM(NSInteger, CLVideoCutMode) {
                       sizeScale:(CGFloat)sizeScale
                 isDistinguishWH:(BOOL)isDistinguishWH
                         cutMode:(CLVideoCutMode)cutMode
-                      fillColor:(UIColor *)fillColor;
+                      fillColor:(UIColor *)fillColor
+                     presetName:(NSString *)presetName;
 
 // 取消处理
 - (void)cancelExport;

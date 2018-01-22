@@ -58,6 +58,10 @@ static CGFloat CLTimeLabelFontSize  = 12.0f;
     } else {
         self.bottomView.hidden = YES;
     }
+    if (!_allowImgMultiple || _model.type == CLAssetMediaTypeVideo) {
+        _selectButton.hidden = YES;
+        _selectButton.enabled = NO;
+    }
     _selectButton.selected = model.isSelected;
     _shadowView.alpha = model.isSelected;
     if (model.asset && self.imageRequestID >= PHInvalidImageRequestID) {

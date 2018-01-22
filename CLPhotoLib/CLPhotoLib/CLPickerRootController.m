@@ -50,6 +50,8 @@
         self.allowEditVideo             = YES;
         self.allowAlbumDropDown         = NO;
         self.allowPanGestureSelect      = YES;
+        self.allowImgMultiple           = YES;
+        self.presetName                 = AVAssetExportPresetMediumQuality;
         
         self.allowPreviewImage          = YES;
         self.allowEditImage             = NO;
@@ -313,7 +315,8 @@
                                     sizeScale:self.outputVideoScale
                               isDistinguishWH:self.isDistinguishWH
                                       cutMode:CLVideoCutModeScaleAspectFit
-                                    fillColor:CLVideoFillColor];
+                                    fillColor:CLVideoFillColor
+                                   presetName:self.presetName];
 }
 
 - (void)cancelExport{

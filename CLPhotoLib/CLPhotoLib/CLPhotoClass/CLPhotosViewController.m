@@ -87,7 +87,7 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
 #pragma mark -- Life Cycle Methods --
 - (void)viewDidLoad {
     [super viewDidLoad];
-    if (self.picker.selectMode != CLPickerSelectModeAllowVideo) {
+    if (self.picker.selectMode != CLPickerSelectModeAllowVideo && self.picker.allowImgMultiple) {
         if (self.picker.allowPreviewImage ||
             self.picker.allowEditImage ||
             self.picker.allowSelectOriginalImage ||
@@ -233,6 +233,7 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
         return cell;
     }
     CLPhotoCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:itemIdentifier forIndexPath:indexPath];
+    cell.allowImgMultiple = self.picker.allowImgMultiple;
     CLPhotoModel *model;
     if (!self.picker.allowTakePhoto || self.picker.sortAscending) {
         if (_photoArray.count > indexPath.row) {

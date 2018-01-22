@@ -39,8 +39,15 @@ typedef enum {
                           range:(CMTimeRange)range
                       sizeScale:(CGFloat)sizeScale
                         cutMode:(CLVideoCutMode)cutMode
-                      fillColor:(UIColor *)fillColor{
-    [self exportEditVideoForAsset:asset range:range sizeScale:sizeScale isDistinguishWH:YES cutMode:cutMode fillColor:fillColor];
+                      fillColor:(UIColor *)fillColor
+                     presetName:(NSString *)presetName{
+    [self exportEditVideoForAsset:asset
+                            range:range
+                        sizeScale:sizeScale
+                  isDistinguishWH:YES
+                          cutMode:cutMode
+                        fillColor:fillColor
+                       presetName:presetName];
 }
 
 - (void)exportEditVideoForAsset:(AVAsset *)asset
@@ -49,6 +56,7 @@ typedef enum {
                 isDistinguishWH:(BOOL)isDistinguishWH
                         cutMode:(CLVideoCutMode)cutMode
                       fillColor:(UIColor *)fillColor
+                     presetName:(NSString *)presetName
 {
     NSArray *videoTracks = [asset tracksWithMediaType:AVMediaTypeVideo];
     if (!videoTracks.count) {
@@ -85,7 +93,7 @@ typedef enum {
 //        return;
 //    }
     NSArray *compatiblePresets = [AVAssetExportSession exportPresetsCompatibleWithAsset:asset];
-    if ([compatiblePresets containsObject:AVAssetExportPreset1280x720]) {
+    if ([compatiblePresets containsObject:presetName]) {
         /*
         // 这里可以处理背景音乐
         NSArray *audioTracks = [asset tracksWithMediaType:AVMediaTypeAudio];
@@ -198,24 +206,20 @@ typedef enum {
             [videoLayerInstruction setTransform:videoTransform atTime:kCMTimeZero];
             mainCompositionInst.renderSize = outputSize;
         }
-        if (MIN(outputSize.width, outputSize.height) >= 540) {
-            mainCompositionInst.frameDuration = CMTimeMake(1, 25);
-        }else{
-            mainCompositionInst.frameDuration = CMTimeMake(1, 30);
-        }
+        mainCompositionInst.frameDuration = CMTimeMake(1, 30);
         [self removeTimer];
         NSString *outputPath = CLVideoOutputPath();
         [self deleteFilePath:outputPath];
         [UIApplication sharedApplication].idleTimerDisabled = YES;
-        // AVAssetExportPreset1280x720 压缩质量
+        // presetName 压缩质量
         self.exportSession = [[AVAssetExportSession alloc]
-                              initWithAsset:asset presetName:AVAssetExportPreset1280x720];
+                              initWithAsset:asset
+                              presetName:presetName];
         _exportSession.timeRange = range;
         
         NSURL *furl = [NSURL fileURLWithPath:outputPath];
         _exportSession.outputURL = furl;
         _exportSession.outputFileType = AVFileTypeMPEG4;
-        
         [_exportSession setVideoComposition:mainCompositionInst];
         [_exportSession setShouldOptimizeForNetworkUse:YES];
         
