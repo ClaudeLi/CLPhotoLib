@@ -202,11 +202,16 @@ typedef enum {
                 }
                     break;
             }
+            if (MIN(outputSize.width, outputSize.height)>540) {
+                mainCompositionInst.frameDuration = CMTimeMake(1, 25);
+            }else{
+                mainCompositionInst.frameDuration = CMTimeMake(1, 30);
+            }
         }else{
             [videoLayerInstruction setTransform:videoTransform atTime:kCMTimeZero];
             mainCompositionInst.renderSize = outputSize;
+            mainCompositionInst.frameDuration = CMTimeMake(1, 30);
         }
-        mainCompositionInst.frameDuration = CMTimeMake(1, 30);
         [self removeTimer];
         NSString *outputPath = CLVideoOutputPath();
         [self deleteFilePath:outputPath];
@@ -261,6 +266,9 @@ typedef enum {
                     strongSelf.exportSession = nil;
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [strongSelf didFinishedOutputURL:furl];
+//                        [CLPhotoManager saveVideoToAblum:furl completion:^(BOOL success, PHAsset *asset) {
+//                            CLLog(@"%@", asset);
+//                        }];
                     });
                 }
                     break;
