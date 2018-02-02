@@ -582,6 +582,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACH_O_TYPE = staticlib;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "-fembed-bitcode";
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.claudeli.CLPhotoLib;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
@@ -611,6 +612,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACH_O_TYPE = staticlib;
 				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = "-fembed-bitcode";
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.claudeli.CLPhotoLib;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
