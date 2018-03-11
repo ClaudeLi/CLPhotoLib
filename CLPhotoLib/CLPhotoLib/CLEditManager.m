@@ -215,7 +215,6 @@ typedef enum {
         [self removeTimer];
         NSString *outputPath = CLVideoOutputPath();
         [self deleteFilePath:outputPath];
-        [UIApplication sharedApplication].idleTimerDisabled = YES;
         // presetName 压缩质量
         self.exportSession = [[AVAssetExportSession alloc]
                               initWithAsset:asset
@@ -229,6 +228,7 @@ typedef enum {
         [_exportSession setShouldOptimizeForNetworkUse:YES];
         
         dispatch_async(dispatch_get_main_queue(), ^{
+            [UIApplication sharedApplication].idleTimerDisabled = YES;
             // Progress monitor for effect
             _timerEffect = [NSTimer scheduledTimerWithTimeInterval:0.3f
                                                             target:self

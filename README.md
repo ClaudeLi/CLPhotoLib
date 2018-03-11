@@ -31,4 +31,4 @@
         <string>请允许访问你的相册</string>
 
     3. CLPhotoLib中使用了category 在Other Linker Flags 添加 -ObjC、-all_load
-    4.案例 跳跳App
+    4.例: 跳跳App
