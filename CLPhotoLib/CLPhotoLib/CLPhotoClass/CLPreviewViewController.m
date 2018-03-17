@@ -443,7 +443,7 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
         }
         _toolBar.tipLabel.hidden = YES;
         _toolBar.doneBtn.hidden = NO;
-        _toolBar.doneBtn.numberColor = self.picker.navigationColor;
+        _toolBar.doneBtn.numberColor = CLSeletedNumberColor;
         [_toolBar.doneBtn setClickDoneBlock:^{
             [ws clickDoneItemAction];
         }];

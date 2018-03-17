@@ -543,7 +543,7 @@
 - (UIButton *)playBtn{
     if (!_playBtn) {
         _playBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_playBtn setBackgroundImage:[UIImage imageNamedFromBundle:@"btn_preview_play"] forState:UIControlStateNormal];
+        [_playBtn setImage:[UIImage imageNamedFromBundle:@"btn_preview_play"] forState:UIControlStateNormal];
         _playBtn.frame = CGRectMake(0, 0, 74, 74);
         [_playBtn addTarget:self action:@selector(playBtnClick) forControlEvents:UIControlEventTouchUpInside];
     }

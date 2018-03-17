@@ -24,9 +24,11 @@
 
 #define CLColor_RGBA(r, g, b, a)        [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a];
 // Bar Item Title Color
-#define CLBarItemTitleDefaultColor      CLColor_RGBA(255, 219, 15, 1)
+#define CLBarItemTitleDefaultColor      [UIColor whiteColor]
+#define CLSeletedNumberColor            CLColor_RGBA(86, 248, 0, 1)
 // Album Seleted Round Color
-#define CLAlbumSeletedRoundColor        CLColor_RGBA(255, 219, 15, 1)
+#define CLAlbumSeletedRoundColor        CLColor_RGBA(86, 248, 0, 1)
+#define CLAlbumSeletedNumberColor       [UIColor whiteColor]
 
 // 视频填充色
  #define CLVideoFillColor               [UIColor blackColor]

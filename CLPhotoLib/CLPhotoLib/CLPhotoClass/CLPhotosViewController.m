@@ -880,7 +880,7 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
         CGFloat doneWidth = GetMatchValue(CLString(@"CLText_Done"), CLNavigationItemFontSize, YES, CLToolBarHeight) + CLNavigationItemFontSize + 2;
         _doneBtn.frame = CGRectMake(0, 0, doneWidth, self.navigationController.navigationBar.height);
         _doneBtn.titleColor = self.picker.navigationItemColor;
-        _doneBtn.numberColor = self.picker.navigationColor;
+        _doneBtn.numberColor = CLSeletedNumberColor;
         _doneBtn.titleFontSize = CLNavigationItemFontSize;
         cl_WS(ws);
         [_doneBtn setClickDoneBlock:^{
@@ -921,7 +921,7 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
         }
         if (self.picker.allowDoneOnToolBar) {
             _toolBar.doneBtn.hidden = NO;
-            _toolBar.doneBtn.numberColor = self.picker.navigationColor;
+            _toolBar.doneBtn.numberColor = CLSeletedNumberColor;
             [_toolBar.doneBtn setClickDoneBlock:^{
                 [ws clickDoneItemAction];
             }];

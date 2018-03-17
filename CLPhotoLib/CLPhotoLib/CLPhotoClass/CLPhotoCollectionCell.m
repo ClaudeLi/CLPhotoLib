@@ -439,6 +439,7 @@ static CGFloat CLAlbumSelectFontSize    = 14.0f;
         _selectButton.titleLabel.font = [UIFont systemFontOfSize:CLAlbumSelectFontSize];
         _selectButton.userInteractionEnabled = NO;
         _selectButton.titleLabel.adjustsFontSizeToFitWidth = YES;
+        [_selectButton setTitleColor:CLAlbumSeletedNumberColor forState:UIControlStateNormal];
         [self.contentView addSubview:_selectButton];
     }
     return _selectButton;
