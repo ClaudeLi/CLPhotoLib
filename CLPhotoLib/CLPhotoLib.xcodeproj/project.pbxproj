@@ -30,7 +30,6 @@
 		D3C258881FC680E500126FB9 /* CLPhotoLibTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D3C258871FC680E500126FB9 /* CLPhotoLibTests.m */; };
 		D3C2588A1FC680E500126FB9 /* CLPhotoLib.h in Headers */ = {isa = PBXBuildFile; fileRef = D3C2587C1FC680E500126FB9 /* CLPhotoLib.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D3C258B91FC6820E00126FB9 /* CLProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = D3C258931FC6820700126FB9 /* CLProgressHUD.m */; };
-		D3C258BB1FC6820E00126FB9 /* CLEditManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D3C258951FC6820700126FB9 /* CLEditManager.m */; };
 		D3C258BC1FC6820E00126FB9 /* CLEditVideoController.h in Headers */ = {isa = PBXBuildFile; fileRef = D3C258961FC6820700126FB9 /* CLEditVideoController.h */; };
 		D3C258BD1FC6820E00126FB9 /* NSBundle+CLExt.m in Sources */ = {isa = PBXBuildFile; fileRef = D3C258971FC6820800126FB9 /* NSBundle+CLExt.m */; };
 		D3C258BE1FC6820E00126FB9 /* UIColor+CLExt.m in Sources */ = {isa = PBXBuildFile; fileRef = D3C258981FC6820800126FB9 /* UIColor+CLExt.m */; };
@@ -64,6 +63,7 @@
 		D3C258DC1FC6820E00126FB9 /* CLPickerToolBar.h in Headers */ = {isa = PBXBuildFile; fileRef = D3C258B61FC6820E00126FB9 /* CLPickerToolBar.h */; };
 		D3C258DD1FC6820E00126FB9 /* CLPickerToolBar.m in Sources */ = {isa = PBXBuildFile; fileRef = D3C258B71FC6820E00126FB9 /* CLPickerToolBar.m */; };
 		D3C258DE1FC6820E00126FB9 /* CLPreviewCollectioCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D3C258B81FC6820E00126FB9 /* CLPreviewCollectioCell.m */; };
+		D3D23AE7206D10910087F29A /* CLEditManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D3D23AE6206D10910087F29A /* CLEditManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -88,7 +88,6 @@
 		D3C258891FC680E500126FB9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D3C258931FC6820700126FB9 /* CLProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLProgressHUD.m; sourceTree = "<group>"; };
 		D3C258941FC6820700126FB9 /* NSBundle+CLExt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSBundle+CLExt.h"; sourceTree = "<group>"; };
-		D3C258951FC6820700126FB9 /* CLEditManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLEditManager.m; sourceTree = "<group>"; };
 		D3C258961FC6820700126FB9 /* CLEditVideoController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLEditVideoController.h; sourceTree = "<group>"; };
 		D3C258971FC6820800126FB9 /* NSBundle+CLExt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+CLExt.m"; sourceTree = "<group>"; };
 		D3C258981FC6820800126FB9 /* UIColor+CLExt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+CLExt.m"; sourceTree = "<group>"; };
@@ -123,6 +122,7 @@
 		D3C258B61FC6820E00126FB9 /* CLPickerToolBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLPickerToolBar.h; sourceTree = "<group>"; };
 		D3C258B71FC6820E00126FB9 /* CLPickerToolBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLPickerToolBar.m; sourceTree = "<group>"; };
 		D3C258B81FC6820E00126FB9 /* CLPreviewCollectioCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLPreviewCollectioCell.m; sourceTree = "<group>"; };
+		D3D23AE6206D10910087F29A /* CLEditManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLEditManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -224,7 +224,7 @@
 				D3C258A21FC6820900126FB9 /* CLPhotoManager.h */,
 				D3C258A91FC6820A00126FB9 /* CLPhotoManager.m */,
 				D3C258B01FC6820C00126FB9 /* CLEditManager.h */,
-				D3C258951FC6820700126FB9 /* CLEditManager.m */,
+				D3D23AE6206D10910087F29A /* CLEditManager.m */,
 				D3C258AE1FC6820C00126FB9 /* CLPickerRootController.h */,
 				D3C258A61FC6820A00126FB9 /* CLPickerRootController.m */,
 				D33D4FDB1FC69D8500A25ABF /* CLPhotoClass */,
@@ -402,8 +402,8 @@
 				D3C258CA1FC6820E00126FB9 /* CLPreviewViewController.m in Sources */,
 				D3C258BD1FC6820E00126FB9 /* NSBundle+CLExt.m in Sources */,
 				D3C258D31FC6820E00126FB9 /* CLTouchViewController.m in Sources */,
-				D3C258BB1FC6820E00126FB9 /* CLEditManager.m in Sources */,
 				D3C258DD1FC6820E00126FB9 /* CLPickerToolBar.m in Sources */,
+				D3D23AE7206D10910087F29A /* CLEditManager.m in Sources */,
 				D3C258C31FC6820E00126FB9 /* CLPhotoCollectionCell.m in Sources */,
 				D33D50091FC6BC0C00A25ABF /* CLEditImageController.m in Sources */,
 				D3C258BE1FC6820E00126FB9 /* UIColor+CLExt.m in Sources */,

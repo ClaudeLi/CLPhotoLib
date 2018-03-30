@@ -77,8 +77,10 @@ typedef enum {
         isVideoAssetPortrait_ = YES;
     }
     if (videoTransform.a == 1.0 && videoTransform.b == 0 && videoTransform.c == 0 && videoTransform.d == 1.0) {
+        
     }
     if (videoTransform.a == -1.0 && videoTransform.b == 0 && videoTransform.c == 0 && videoTransform.d == -1.0) {
+        
     }
     
     // 视频显示大小
@@ -147,13 +149,18 @@ typedef enum {
         
         // 设置输出视频尺寸大小及方向
         CGSize outputSize = renderSize;
+        BOOL needComposition = YES;
         if (sizeScale) {
             // 判断是否区分横竖比例
             if (!isDistinguishWH) {
-                if (renderSize.width/renderSize.height >= 1.0) {
-                    sizeScale = sizeScale >= 1.0 ? sizeScale:1.0/sizeScale;
+                CGFloat renderScale = renderSize.width/renderSize.height;
+                if (renderScale > 1.0) {
+                    sizeScale = sizeScale > 1.0 ? sizeScale:1.0/sizeScale;
                 }else{
-                    sizeScale = sizeScale < 1.0 ? sizeScale:1.0/sizeScale;
+                    sizeScale = sizeScale <= 1.0 ? sizeScale:1.0/sizeScale;
+                }
+                if (renderScale > sizeScale-0.1 && renderScale < sizeScale+0.1) {
+                    needComposition = NO;
                 }
             }
             switch (cutMode) {
@@ -224,7 +231,9 @@ typedef enum {
         NSURL *furl = [NSURL fileURLWithPath:outputPath];
         _exportSession.outputURL = furl;
         _exportSession.outputFileType = AVFileTypeMPEG4;
-        [_exportSession setVideoComposition:mainCompositionInst];
+        if (needComposition) {
+            [_exportSession setVideoComposition:mainCompositionInst];
+        }
         [_exportSession setShouldOptimizeForNetworkUse:YES];
         
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -349,8 +358,7 @@ typedef enum {
         };
         [parentLayer addSublayer:maskLayer];
     }
-    mainCompositionInst.animationTool = [AVVideoCompositionCoreAnimationTool
-                                         videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayer:videoLayer inLayer:parentLayer];
+    mainCompositionInst.animationTool = [AVVideoCompositionCoreAnimationTool videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayer:videoLayer inLayer:parentLayer];
 }
 
 - (void)deleteFilePath:(NSString *)path{
