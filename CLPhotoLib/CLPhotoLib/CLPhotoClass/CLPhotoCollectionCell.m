@@ -375,13 +375,13 @@ static CGFloat CLAlbumSelectFontSize    = 14.0f;
     }];
     if (_model.title) {
         NSMutableAttributedString *nameString = [[NSMutableAttributedString alloc] initWithString:_model.title attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:CLAlbumTitleFontSize],NSForegroundColorAttributeName:[UIColor blackColor]}];
-        NSAttributedString *countString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"  (%zd)", _model.count] attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:CLAlbumTitleFontSize],NSForegroundColorAttributeName:[UIColor lightGrayColor]}];
+        NSAttributedString *countString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"  (%ld)", (long)_model.count] attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:CLAlbumTitleFontSize],NSForegroundColorAttributeName:[UIColor lightGrayColor]}];
         [nameString appendAttributedString:countString];
         self.titleLabel.attributedText = nameString;
     }
     if (_model.selectedCount) {
         self.selectButton.hidden = NO;
-        [self.selectButton setTitle:[NSString stringWithFormat:@"%zd", _model.selectedCount] forState:UIControlStateNormal];
+        [self.selectButton setTitle:[NSString stringWithFormat:@"%lu", (unsigned long)_model.selectedCount] forState:UIControlStateNormal];
     }else{
         _selectButton.hidden = YES;
     }

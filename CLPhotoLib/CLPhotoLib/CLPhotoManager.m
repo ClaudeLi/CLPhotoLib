@@ -411,7 +411,7 @@ static NSString *sortDescriptorKey = @"modificationDate";
     } else if (dataLength >= 1024) {
         bytes = [NSString stringWithFormat:@"%.0fK",dataLength/1024.0];
     } else {
-        bytes = [NSString stringWithFormat:@"%zdB",dataLength];
+        bytes = [NSString stringWithFormat:@"%ldB",(long)dataLength];
     }
     return bytes;
 }
