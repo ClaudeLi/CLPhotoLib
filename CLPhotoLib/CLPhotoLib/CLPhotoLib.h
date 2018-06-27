@@ -20,8 +20,3 @@ FOUNDATION_EXPORT const unsigned char CLPhotoLibVersionString[];
 #import <CLPhotoLib/CLPhotoManager.h>
 #import <CLPhotoLib/CLEditManager.h>
 #import <CLPhotoLib/CLProgressHUD.h>
-
-#import <CLPhotoLib/UIView+CLExt.h>
-#import <CLPhotoLib/UIImage+CLExt.h>
-#import <CLPhotoLib/UIColor+CLExt.h>
-#import <CLPhotoLib/UIButton+CLExt.h>

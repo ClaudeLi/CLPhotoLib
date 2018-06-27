@@ -12,7 +12,6 @@
 #import "NSBundle+CLExt.h"
 #import "UIView+CLExt.h"
 #import "UIImage+CLExt.h"
-#import "UIColor+CLExt.h"
 #import "UIButton+CLExt.h"
 
 #import "CLPhotoModel.h"

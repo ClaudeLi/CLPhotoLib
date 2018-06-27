@@ -32,7 +32,6 @@
 		D3C258B91FC6820E00126FB9 /* CLProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = D3C258931FC6820700126FB9 /* CLProgressHUD.m */; };
 		D3C258BC1FC6820E00126FB9 /* CLEditVideoController.h in Headers */ = {isa = PBXBuildFile; fileRef = D3C258961FC6820700126FB9 /* CLEditVideoController.h */; };
 		D3C258BD1FC6820E00126FB9 /* NSBundle+CLExt.m in Sources */ = {isa = PBXBuildFile; fileRef = D3C258971FC6820800126FB9 /* NSBundle+CLExt.m */; };
-		D3C258BE1FC6820E00126FB9 /* UIColor+CLExt.m in Sources */ = {isa = PBXBuildFile; fileRef = D3C258981FC6820800126FB9 /* UIColor+CLExt.m */; };
 		D3C258C11FC6820E00126FB9 /* CLEditVideoController.m in Sources */ = {isa = PBXBuildFile; fileRef = D3C2589B1FC6820800126FB9 /* CLEditVideoController.m */; };
 		D3C258C21FC6820E00126FB9 /* UIImage+CLExt.h in Headers */ = {isa = PBXBuildFile; fileRef = D3C2589C1FC6820800126FB9 /* UIImage+CLExt.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D3C258C31FC6820E00126FB9 /* CLPhotoCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D3C2589D1FC6820800126FB9 /* CLPhotoCollectionCell.m */; };
@@ -46,7 +45,6 @@
 		D3C258CB1FC6820E00126FB9 /* UIButton+CLExt.h in Headers */ = {isa = PBXBuildFile; fileRef = D3C258A51FC6820900126FB9 /* UIButton+CLExt.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D3C258CC1FC6820E00126FB9 /* CLPickerRootController.m in Sources */ = {isa = PBXBuildFile; fileRef = D3C258A61FC6820A00126FB9 /* CLPickerRootController.m */; };
 		D3C258CD1FC6820E00126FB9 /* CLAlbumTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = D3C258A71FC6820A00126FB9 /* CLAlbumTableView.m */; };
-		D3C258CE1FC6820E00126FB9 /* UIColor+CLExt.h in Headers */ = {isa = PBXBuildFile; fileRef = D3C258A81FC6820A00126FB9 /* UIColor+CLExt.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D3C258CF1FC6820E00126FB9 /* CLPhotoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D3C258A91FC6820A00126FB9 /* CLPhotoManager.m */; };
 		D3C258D01FC6820E00126FB9 /* UIView+CLExt.h in Headers */ = {isa = PBXBuildFile; fileRef = D3C258AA1FC6820B00126FB9 /* UIView+CLExt.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D3C258D11FC6820E00126FB9 /* CLPhotoModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D3C258AB1FC6820B00126FB9 /* CLPhotoModel.m */; };
@@ -90,7 +88,6 @@
 		D3C258941FC6820700126FB9 /* NSBundle+CLExt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSBundle+CLExt.h"; sourceTree = "<group>"; };
 		D3C258961FC6820700126FB9 /* CLEditVideoController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLEditVideoController.h; sourceTree = "<group>"; };
 		D3C258971FC6820800126FB9 /* NSBundle+CLExt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+CLExt.m"; sourceTree = "<group>"; };
-		D3C258981FC6820800126FB9 /* UIColor+CLExt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+CLExt.m"; sourceTree = "<group>"; };
 		D3C2589A1FC6820800126FB9 /* CLPhotoModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLPhotoModel.h; sourceTree = "<group>"; };
 		D3C2589B1FC6820800126FB9 /* CLEditVideoController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLEditVideoController.m; sourceTree = "<group>"; };
 		D3C2589C1FC6820800126FB9 /* UIImage+CLExt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+CLExt.h"; sourceTree = "<group>"; };
@@ -105,7 +102,6 @@
 		D3C258A51FC6820900126FB9 /* UIButton+CLExt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+CLExt.h"; sourceTree = "<group>"; };
 		D3C258A61FC6820A00126FB9 /* CLPickerRootController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLPickerRootController.m; sourceTree = "<group>"; };
 		D3C258A71FC6820A00126FB9 /* CLAlbumTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLAlbumTableView.m; sourceTree = "<group>"; };
-		D3C258A81FC6820A00126FB9 /* UIColor+CLExt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+CLExt.h"; sourceTree = "<group>"; };
 		D3C258A91FC6820A00126FB9 /* CLPhotoManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLPhotoManager.m; sourceTree = "<group>"; };
 		D3C258AA1FC6820B00126FB9 /* UIView+CLExt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+CLExt.h"; sourceTree = "<group>"; };
 		D3C258AB1FC6820B00126FB9 /* CLPhotoModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLPhotoModel.m; sourceTree = "<group>"; };
@@ -151,8 +147,6 @@
 				D3C258971FC6820800126FB9 /* NSBundle+CLExt.m */,
 				D3C258A51FC6820900126FB9 /* UIButton+CLExt.h */,
 				D3C2589E1FC6820900126FB9 /* UIButton+CLExt.m */,
-				D3C258A81FC6820A00126FB9 /* UIColor+CLExt.h */,
-				D3C258981FC6820800126FB9 /* UIColor+CLExt.m */,
 				D3C2589C1FC6820800126FB9 /* UIImage+CLExt.h */,
 				D3C2589F1FC6820900126FB9 /* UIImage+CLExt.m */,
 				D3C258AA1FC6820B00126FB9 /* UIView+CLExt.h */,
@@ -258,7 +252,6 @@
 				D3C258D61FC6820E00126FB9 /* CLEditManager.h in Headers */,
 				D3C258D81FC6820E00126FB9 /* CLProgressHUD.h in Headers */,
 				D3C258C71FC6820E00126FB9 /* CLTouchViewController.h in Headers */,
-				D3C258CE1FC6820E00126FB9 /* UIColor+CLExt.h in Headers */,
 				D3C258C21FC6820E00126FB9 /* UIImage+CLExt.h in Headers */,
 				D3C258D01FC6820E00126FB9 /* UIView+CLExt.h in Headers */,
 				D33D4FDF1FC6A31300A25ABF /* NSBundle+CLExt.h in Headers */,
@@ -406,7 +399,6 @@
 				D3D23AE7206D10910087F29A /* CLEditManager.m in Sources */,
 				D3C258C31FC6820E00126FB9 /* CLPhotoCollectionCell.m in Sources */,
 				D33D50091FC6BC0C00A25ABF /* CLEditImageController.m in Sources */,
-				D3C258BE1FC6820E00126FB9 /* UIColor+CLExt.m in Sources */,
 				D3C258CC1FC6820E00126FB9 /* CLPickerRootController.m in Sources */,
 				D3C258C41FC6820E00126FB9 /* UIButton+CLExt.m in Sources */,
 				D3C258D11FC6820E00126FB9 /* CLPhotoModel.m in Sources */,
@@ -588,7 +580,10 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				WARNING_CFLAGS = "-Wno-unguarded-availability";
+				WARNING_CFLAGS = (
+					"-Wno-unguarded-availability",
+					"-Wno-incomplete-umbrella",
+				);
 			};
 			name = Debug;
 		};
@@ -618,7 +613,10 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				WARNING_CFLAGS = "-Wno-unguarded-availability";
+				WARNING_CFLAGS = (
+					"-Wno-unguarded-availability",
+					"-Wno-incomplete-umbrella",
+				);
 			};
 			name = Release;
 		};

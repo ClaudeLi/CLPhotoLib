@@ -544,7 +544,7 @@
     if (!_playBtn) {
         _playBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_playBtn setImage:[UIImage imageNamedFromBundle:@"btn_preview_play"] forState:UIControlStateNormal];
-        _playBtn.frame = CGRectMake(0, 0, 74, 74);
+        _playBtn.frame = CGRectMake(0, 0, 60, 60);
         [_playBtn addTarget:self action:@selector(playBtnClick) forControlEvents:UIControlEventTouchUpInside];
     }
     [self bringSubviewToFront:_playBtn];
@@ -610,29 +610,37 @@
             if (!strongSelf) {
                 return;
             }
-            if (!asset) {
-                [strongSelf initVideoLoadFailedFromiCloudUI];
-                return;
+            if ([[NSThread currentThread] isMainThread]) {
+                [strongSelf loadVideoWithAsset:asset];
+            }else{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [strongSelf loadVideoWithAsset:asset];
+                });
             }
-            strongSelf.playerItem = [AVPlayerItem playerItemWithAsset:asset];
-            if (!strongSelf.playerItem) {
-                [strongSelf initVideoLoadFailedFromiCloudUI];
-                return;
-            }
-            dispatch_async(dispatch_get_main_queue(), ^{
-                strongSelf.icloudView.hidden = YES;
-                AVPlayer *player = [AVPlayer playerWithPlayerItem:strongSelf.playerItem];
-                [strongSelf.layer addSublayer:strongSelf.playLayer];
-                strongSelf.playLayer.player = player;
-                [strongSelf switchVideoStatus];
-                [strongSelf.playLayer addObserver:strongSelf forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
-                [[NSNotificationCenter defaultCenter] addObserver:strongSelf selector:@selector(playFinished:) name:AVPlayerItemDidPlayToEndTimeNotification object:player.currentItem];
-                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enterBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
-            });
         }];
     } else {
         [self switchVideoStatus];
     }
+}
+
+- (void)loadVideoWithAsset:(AVAsset *)asset{
+    if (!asset || ![asset isKindOfClass:[AVAsset class]]) {
+        [self initVideoLoadFailedFromiCloudUI];
+        return;
+    }
+    self.playerItem = [AVPlayerItem playerItemWithAsset:asset];
+    if (!self.playerItem || ![self.playerItem isKindOfClass:[AVPlayerItem class]]) {
+        [self initVideoLoadFailedFromiCloudUI];
+        return;
+    }
+    self.icloudView.hidden = YES;
+    AVPlayer *player = [AVPlayer playerWithPlayerItem:self.playerItem];
+    [self.layer addSublayer:self.playLayer];
+    self.playLayer.player = player;
+    [self switchVideoStatus];
+    [self.playLayer addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playFinished:) name:AVPlayerItemDidPlayToEndTimeNotification object:player.currentItem];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enterBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
 }
 
 - (void)initVideoLoadFailedFromiCloudUI{
@@ -646,11 +654,13 @@
 
 - (void)switchVideoStatus{
     AVPlayer *player = self.playLayer.player;
+    if (!player) return;
+    if (!player.currentItem) return;
     CMTime stop = player.currentItem.currentTime;
     CMTime duration = player.currentItem.duration;
     if (player.rate == .0) {
         self.playBtn.hidden = YES;
-        if (stop.value == duration.value) {
+        if (stop.value >= (duration.value-0.5)) {
             [player.currentItem seekToTime:CMTimeMake(0, 1)];
         }
         [player play];
