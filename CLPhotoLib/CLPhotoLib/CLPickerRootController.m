@@ -80,7 +80,7 @@
     [super viewDidLoad];
     self.previousStatusBarStyle = UIStatusBarStyleLightContent;
     self.statusBarStyle = UIStatusBarStyleLightContent;
-    self.navigationColor = [[UIColor grayColor] colorWithAlphaComponent:CLBarAlpha]; 
+    self.navigationColor = [UIColor darkGrayColor]; 
     self.navigationBar.translucent = YES;
 }
 

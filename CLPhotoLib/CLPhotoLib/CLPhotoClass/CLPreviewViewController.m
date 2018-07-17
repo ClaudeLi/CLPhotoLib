@@ -455,7 +455,6 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
 
 - (void)dealloc{
     [self.picker cancelExport];
-    CLLog(@"%s", __func__);
 }
 
 - (void)didReceiveMemoryWarning {

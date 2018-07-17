@@ -55,8 +55,8 @@ typedef void(^CLPickerShootVideoHandle)(void);
 @property (nonatomic) UIColor *backgroundColor;
 
 /**
- 导航栏背景色 默认 grayColor
- navigation color default grayColor
+ 导航栏背景色 默认 darkGrayColor
+ navigation color default darkGrayColor
  */
 @property (nonatomic) UIColor *navigationColor;
 

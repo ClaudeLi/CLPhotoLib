@@ -990,7 +990,6 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
 }
 
 -(void)dealloc{
-    CLLog(@"%s", __func__);
 }
 
 - (void)didReceiveMemoryWarning {

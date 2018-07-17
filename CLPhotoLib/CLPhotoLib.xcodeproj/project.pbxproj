@@ -33,7 +33,7 @@
 		D3C258BC1FC6820E00126FB9 /* CLEditVideoController.h in Headers */ = {isa = PBXBuildFile; fileRef = D3C258961FC6820700126FB9 /* CLEditVideoController.h */; };
 		D3C258BD1FC6820E00126FB9 /* NSBundle+CLExt.m in Sources */ = {isa = PBXBuildFile; fileRef = D3C258971FC6820800126FB9 /* NSBundle+CLExt.m */; };
 		D3C258C11FC6820E00126FB9 /* CLEditVideoController.m in Sources */ = {isa = PBXBuildFile; fileRef = D3C2589B1FC6820800126FB9 /* CLEditVideoController.m */; };
-		D3C258C21FC6820E00126FB9 /* UIImage+CLExt.h in Headers */ = {isa = PBXBuildFile; fileRef = D3C2589C1FC6820800126FB9 /* UIImage+CLExt.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D3C258C21FC6820E00126FB9 /* UIImage+CLExt.h in Headers */ = {isa = PBXBuildFile; fileRef = D3C2589C1FC6820800126FB9 /* UIImage+CLExt.h */; };
 		D3C258C31FC6820E00126FB9 /* CLPhotoCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D3C2589D1FC6820800126FB9 /* CLPhotoCollectionCell.m */; };
 		D3C258C41FC6820E00126FB9 /* UIButton+CLExt.m in Sources */ = {isa = PBXBuildFile; fileRef = D3C2589E1FC6820900126FB9 /* UIButton+CLExt.m */; };
 		D3C258C51FC6820E00126FB9 /* UIImage+CLExt.m in Sources */ = {isa = PBXBuildFile; fileRef = D3C2589F1FC6820900126FB9 /* UIImage+CLExt.m */; };
@@ -42,11 +42,11 @@
 		D3C258C81FC6820E00126FB9 /* CLPhotoManager.h in Headers */ = {isa = PBXBuildFile; fileRef = D3C258A21FC6820900126FB9 /* CLPhotoManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D3C258C91FC6820E00126FB9 /* CLPhotosViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = D3C258A31FC6820900126FB9 /* CLPhotosViewController.h */; };
 		D3C258CA1FC6820E00126FB9 /* CLPreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D3C258A41FC6820900126FB9 /* CLPreviewViewController.m */; };
-		D3C258CB1FC6820E00126FB9 /* UIButton+CLExt.h in Headers */ = {isa = PBXBuildFile; fileRef = D3C258A51FC6820900126FB9 /* UIButton+CLExt.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D3C258CB1FC6820E00126FB9 /* UIButton+CLExt.h in Headers */ = {isa = PBXBuildFile; fileRef = D3C258A51FC6820900126FB9 /* UIButton+CLExt.h */; };
 		D3C258CC1FC6820E00126FB9 /* CLPickerRootController.m in Sources */ = {isa = PBXBuildFile; fileRef = D3C258A61FC6820A00126FB9 /* CLPickerRootController.m */; };
 		D3C258CD1FC6820E00126FB9 /* CLAlbumTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = D3C258A71FC6820A00126FB9 /* CLAlbumTableView.m */; };
 		D3C258CF1FC6820E00126FB9 /* CLPhotoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D3C258A91FC6820A00126FB9 /* CLPhotoManager.m */; };
-		D3C258D01FC6820E00126FB9 /* UIView+CLExt.h in Headers */ = {isa = PBXBuildFile; fileRef = D3C258AA1FC6820B00126FB9 /* UIView+CLExt.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D3C258D01FC6820E00126FB9 /* UIView+CLExt.h in Headers */ = {isa = PBXBuildFile; fileRef = D3C258AA1FC6820B00126FB9 /* UIView+CLExt.h */; };
 		D3C258D11FC6820E00126FB9 /* CLPhotoModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D3C258AB1FC6820B00126FB9 /* CLPhotoModel.m */; };
 		D3C258D21FC6820E00126FB9 /* CLAlbumTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = D3C258AC1FC6820C00126FB9 /* CLAlbumTableView.h */; };
 		D3C258D31FC6820E00126FB9 /* CLTouchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D3C258AD1FC6820C00126FB9 /* CLTouchViewController.m */; };
@@ -254,9 +254,9 @@
 				D3C258C71FC6820E00126FB9 /* CLTouchViewController.h in Headers */,
 				D3C258C21FC6820E00126FB9 /* UIImage+CLExt.h in Headers */,
 				D3C258D01FC6820E00126FB9 /* UIView+CLExt.h in Headers */,
+				D3C258CB1FC6820E00126FB9 /* UIButton+CLExt.h in Headers */,
 				D33D4FDF1FC6A31300A25ABF /* NSBundle+CLExt.h in Headers */,
 				D33D4FDE1FC6A30400A25ABF /* CLPhotoModel.h in Headers */,
-				D3C258CB1FC6820E00126FB9 /* UIButton+CLExt.h in Headers */,
 				D33D4FDD1FC69FE900A25ABF /* CLExtHeader.h in Headers */,
 				D3C258C91FC6820E00126FB9 /* CLPhotosViewController.h in Headers */,
 				D3C258D51FC6820E00126FB9 /* CLPhotoCollectionCell.h in Headers */,
