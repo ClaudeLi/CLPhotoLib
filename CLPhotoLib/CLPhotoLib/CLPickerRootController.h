@@ -139,7 +139,9 @@ typedef void(^CLPickerShootVideoHandle)(void);
 - (void)clickCancelAction;
 - (void)clickShootVideoAction;
 - (void)didFinishPickingPhotosAction;
-- (void)clickPickingVideoActionForAsset:(AVAsset *)asset range:(CMTimeRange)range;
+- (void)clickPickingVideoActionForAsset:(AVAsset *)asset
+                                  range:(CMTimeRange)range
+                                degrees:(CGFloat)degrees;
 - (void)cancelExport;
 
 - (void)showText:(NSString *)text;

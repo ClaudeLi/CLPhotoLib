@@ -307,12 +307,13 @@
     }];
 }
 
-- (void)clickPickingVideoActionForAsset:(AVAsset *)asset range:(CMTimeRange)range{
+- (void)clickPickingVideoActionForAsset:(AVAsset *)asset range:(CMTimeRange)range degrees:(CGFloat)degrees{
     _canRotate = self.allowAutorotate;
     self.allowAutorotate = NO;
     [self.editManager exportEditVideoForAsset:asset
                                         range:range
                                     sizeScale:self.outputVideoScale
+                                      degrees:degrees
                               isDistinguishWH:self.isDistinguishWH
                                       cutMode:CLVideoCutModeScaleAspectFit
                                     fillColor:CLVideoFillColor

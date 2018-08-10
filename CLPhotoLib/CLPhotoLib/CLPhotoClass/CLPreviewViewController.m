@@ -144,7 +144,9 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
                 if ([[tracks firstObject] isKindOfClass:[AVCompositionTrack class]]) {
                     [strongSelf.picker showText:CLString(@"CLText_UnableToDecode")];
                 }else{
-                    [strongSelf.picker clickPickingVideoActionForAsset:asset range:CMTimeRangeMake(kCMTimeZero, asset.duration)];
+                    [strongSelf.picker clickPickingVideoActionForAsset:asset
+                                                                 range:CMTimeRangeMake(kCMTimeZero, asset.duration)
+                                                               degrees:0];
                 }
             }else{
                 [strongSelf.picker showText:CLString(@"CLText_NotGetVideoInfo")];

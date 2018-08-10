@@ -38,12 +38,14 @@ typedef enum {
 - (void)exportEditVideoForAsset:(AVAsset *)asset
                           range:(CMTimeRange)range
                       sizeScale:(CGFloat)sizeScale
+                        degrees:(CGFloat)degrees
                         cutMode:(CLVideoCutMode)cutMode
                       fillColor:(UIColor *)fillColor
                      presetName:(NSString *)presetName{
     [self exportEditVideoForAsset:asset
                             range:range
                         sizeScale:sizeScale
+                          degrees:degrees
                   isDistinguishWH:YES
                           cutMode:cutMode
                         fillColor:fillColor
@@ -53,6 +55,7 @@ typedef enum {
 - (void)exportEditVideoForAsset:(AVAsset *)asset
                           range:(CMTimeRange)range
                       sizeScale:(CGFloat)sizeScale
+                        degrees:(CGFloat)degrees
                 isDistinguishWH:(BOOL)isDistinguishWH
                         cutMode:(CLVideoCutMode)cutMode
                       fillColor:(UIColor *)fillColor
@@ -66,7 +69,6 @@ typedef enum {
         return;
     }
     AVAssetTrack *videoAssetTrack = [videoTracks objectAtIndex:0];
-    
     // 判断视频方向
     BOOL isVideoAssetPortrait_ = NO;
     CGAffineTransform videoTransform = videoAssetTrack.preferredTransform;
@@ -82,7 +84,27 @@ typedef enum {
     if (videoTransform.a == -1.0 && videoTransform.b == 0 && videoTransform.c == 0 && videoTransform.d == -1.0) {
         
     }
-    
+//    CGAffineTransform translateToCenter;
+//    if (degrees != 0) {
+//        CGAffineTransform mixedTransform;
+//        if(degrees == 90){
+//            //顺时针旋转90°
+//            NSLog(@"视频旋转90度,home按键在左");
+//            translateToCenter = CGAffineTransformMakeTranslation(videoAssetTrack.naturalSize.height, 0.0);
+//            mixedTransform = CGAffineTransformRotate(translateToCenter, M_PI_2);
+//        }else if(degrees == 180){
+//            //顺时针旋转180°
+//            NSLog(@"视频旋转180度，home按键在上");
+//            translateToCenter = CGAffineTransformMakeTranslation(videoAssetTrack.naturalSize.width, videoAssetTrack.naturalSize.height);
+//            mixedTransform = CGAffineTransformRotate(translateToCenter, M_PI);
+//        }else if(degrees == 270){
+//            //顺时针旋转270°
+//            NSLog(@"视频旋转270度，home按键在右");
+//            translateToCenter = CGAffineTransformMakeTranslation(0.0, videoAssetTrack.naturalSize.width);
+//            mixedTransform = CGAffineTransformRotate(translateToCenter, M_PI_2*3.0);
+//        }
+//    }
+//
     // 视频显示大小
     CGSize renderSize;
     if(isVideoAssetPortrait_){

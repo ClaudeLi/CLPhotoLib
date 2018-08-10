@@ -258,6 +258,7 @@ CLRatioMake(CGFloat start, CGFloat end){
     NSTimeInterval  _maxValidTime;
     NSTimer        *_timer;
     BOOL            _canRotate;
+    NSInteger       _degrees;
 }
 
 @property (nonatomic, strong) AVAsset          *asset;
@@ -268,6 +269,8 @@ CLRatioMake(CGFloat start, CGFloat end){
 
 @property (nonatomic, strong) UILabel   *timeLabel;
 @property (nonatomic, strong) UIView    *progressView;
+
+@property (nonatomic, strong) UIButton *rotateBtn;
 
 @property (nonatomic, strong) UIButton  *cancelBtn;
 @property (nonatomic, strong) UIButton  *doneBtn;
@@ -334,6 +337,18 @@ CLRatioMake(CGFloat start, CGFloat end){
         [self.editView addSubview:_progressView];
     }
     return _progressView;
+}
+
+- (UIButton *)rotateBtn{
+    if (!_rotateBtn) {
+        _rotateBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_rotateBtn setTitle:CLString(@"旋转") forState:UIControlStateNormal];
+        [_rotateBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        _rotateBtn.titleLabel.adjustsFontSizeToFitWidth = YES;
+        _rotateBtn.titleLabel.font = [UIFont systemFontOfSize:CLNavigationItemFontSize];
+        [_rotateBtn addTarget:self action:@selector(clickRotateBtn:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _rotateBtn;
 }
 
 - (UIButton *)cancelBtn{
@@ -411,6 +426,8 @@ CLRatioMake(CGFloat start, CGFloat end){
     _editView.frame = _collectionView.frame;
     _cancelBtn.frame = CGRectMake(inset.left + 15, _collectionView.bottom + cancelTopSpacing, 70, CLToolBarHeight);
     _doneBtn.frame = CGRectMake(self.view.width - inset.right - 15 - 70, _cancelBtn.top, 70, _cancelBtn.height);
+    _rotateBtn.frame = CGRectMake(0, 0, 70, _cancelBtn.height);
+    _rotateBtn.center = CGPointMake(self.view.center.x, _cancelBtn.center.y);
 }
 
 - (void)_initValue{
@@ -437,6 +454,7 @@ CLRatioMake(CGFloat start, CGFloat end){
     [self.view addSubview:self.cancelBtn];
     [self.view addSubview:self.doneBtn];
     [self.view addSubview:self.editView];
+//    [self.view addSubview:self.rotateBtn];
 }
 
 - (void)_initData{
@@ -639,6 +657,12 @@ CLRatioMake(CGFloat start, CGFloat end){
 
 #pragma mark -
 #pragma mark -- Target Methods --
+- (void)clickRotateBtn:(UIButton *)sender{
+    _degrees+=90;
+    _degrees = _degrees % 360;
+    [_playerLayer setTransform:CATransform3DMakeRotation(M_PI*_degrees/180.0, 0, 0, 1)];
+}
+
 - (void)clickCancelBtn:(UIButton *)sender{
     [self.picker cancelExport];
     [self stopTimer];
@@ -658,7 +682,9 @@ CLRatioMake(CGFloat start, CGFloat end){
         [self.playerLayer.player pause];
         [self.picker showProgressWithText:[NSString stringWithFormat:@"%@..", CLString(@"CLText_Processing")]];
         
-        [self.picker clickPickingVideoActionForAsset:_asset range:[self getTimeRange]];
+        [self.picker clickPickingVideoActionForAsset:_asset
+                                               range:[self getTimeRange]
+                                             degrees:_degrees];
     }
 }
 

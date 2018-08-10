@@ -37,12 +37,14 @@ typedef NS_ENUM(NSInteger, CLVideoCutMode) {
  @param asset       video asset
  @param range       视频时长裁剪范围
  @param sizeScale   输出比例
+ @param degrees     旋转角度
  @param cutMode     裁剪模式
  @param fillColor   填充色
  */
 - (void)exportEditVideoForAsset:(AVAsset *)asset
                           range:(CMTimeRange)range
                       sizeScale:(CGFloat)sizeScale
+                        degrees:(CGFloat)degrees
                         cutMode:(CLVideoCutMode)cutMode
                       fillColor:(UIColor *)fillColor
                      presetName:(NSString *)presetName;
@@ -53,6 +55,7 @@ typedef NS_ENUM(NSInteger, CLVideoCutMode) {
  @param asset       video asset
  @param range       视频时长裁剪范围
  @param sizeScale   输出比例
+ @param degrees     旋转角度
  @param isDistinguishWH 是否区分横竖比
  @param cutMode     裁剪模式
  @param fillColor   填充色
@@ -60,6 +63,7 @@ typedef NS_ENUM(NSInteger, CLVideoCutMode) {
 - (void)exportEditVideoForAsset:(AVAsset *)asset
                           range:(CMTimeRange)range
                       sizeScale:(CGFloat)sizeScale
+                        degrees:(CGFloat)degrees
                 isDistinguishWH:(BOOL)isDistinguishWH
                         cutMode:(CLVideoCutMode)cutMode
                       fillColor:(UIColor *)fillColor
