@@ -176,7 +176,7 @@ typedef enum {
             // 判断是否区分横竖比例
             if (!isDistinguishWH) {
                 CGFloat renderScale = renderSize.width/renderSize.height;
-                if (renderScale > 1.0) {
+                if (renderScale >= 1.0) {
                     sizeScale = sizeScale > 1.0 ? sizeScale:1.0/sizeScale;
                 }else{
                     sizeScale = sizeScale <= 1.0 ? sizeScale:1.0/sizeScale;
@@ -190,10 +190,10 @@ typedef enum {
                 {
                     if (renderSize.width/renderSize.height > sizeScale) {
                         outputSize.width = renderSize.width;
-                        outputSize.height = renderSize.width/sizeScale;
+                        outputSize.height = ceil(renderSize.width/sizeScale);
                     }else{
                         outputSize.height = renderSize.height;
-                        outputSize.width = renderSize.height*sizeScale;
+                        outputSize.width = ceil(renderSize.height*sizeScale);
                     }
                     // 方向
                     [videoLayerInstruction setTransform:videoTransform atTime:kCMTimeZero];
@@ -208,12 +208,12 @@ typedef enum {
                 {
                     if (renderSize.width/renderSize.height > sizeScale) {
                         outputSize.height = renderSize.height;
-                        outputSize.width = outputSize.height*sizeScale;
+                        outputSize.width = ceil(outputSize.height*sizeScale);
                         videoTransform.tx -= (renderSize.width-outputSize.width)/2.0;
                         [videoLayerInstruction setTransform:videoTransform atTime:kCMTimeZero];
                     }else{
                         outputSize.width = renderSize.width;
-                        outputSize.height = outputSize.width/sizeScale;
+                        outputSize.height = ceil(outputSize.width/sizeScale);
                         videoTransform.ty -= (renderSize.height-outputSize.height)/2.0;
                         [videoLayerInstruction setTransform:videoTransform atTime:kCMTimeZero];
                     }
@@ -231,11 +231,7 @@ typedef enum {
                 }
                     break;
             }
-            if (MIN(outputSize.width, outputSize.height)>540) {
-                mainCompositionInst.frameDuration = CMTimeMake(1, 25);
-            }else{
-                mainCompositionInst.frameDuration = CMTimeMake(1, 30);
-            }
+            mainCompositionInst.frameDuration = CMTimeMake(1, 30);
         }else{
             [videoLayerInstruction setTransform:videoTransform atTime:kCMTimeZero];
             mainCompositionInst.renderSize = outputSize;
@@ -330,7 +326,6 @@ typedef enum {
     // 2 - creat videoLayer
     CALayer *parentLayer = [CALayer layer];
     CALayer *videoLayer = [CALayer layer];
-    
     parentLayer.frame = (CGRect){CGPointZero, outputSize};
     parentLayer.backgroundColor = fillColor.CGColor;
     if (cutMode == CLVideoCutModeScaleAspectFit) {
@@ -437,29 +432,31 @@ static AVAssetImageGenerator *_generator;
     if (!asset) {
         return nil;
     }
-    // 根据AVURLAsset创建AVAssetImageGenerator
-    _generator =[AVAssetImageGenerator assetImageGeneratorWithAsset:asset];
-    _generator.appliesPreferredTrackTransform = YES;
-    _generator.requestedTimeToleranceAfter = kCMTimeZero;
-    _generator.requestedTimeToleranceBefore = kCMTimeZero;
-    /*截图
-     * requestTime:缩略图创建时间
-     * actualTime:缩略图实际生成的时间
-     */
-    NSError *error=nil;
-    // CMTime是表示电影时间信息的结构体，第一个参数是视频第几秒，第二个参数时每秒帧数.(如果要活的某一秒的第几帧可以使用CMTimeMake方法)
-    CMTime time = CMTimeMakeWithSeconds(timeBySecond, 30);
-    CMTime actualTime;
-    CGImageRef cgImage= [_generator copyCGImageAtTime:time actualTime:&actualTime error:&error];
-    _generator = nil;
-    if(error){
-        CLLog(@"截取视频缩略图时发生错误，错误信息：%@",error.localizedDescription);
+    @autoreleasepool {
+        // 根据AVURLAsset创建AVAssetImageGenerator
+        _generator =[AVAssetImageGenerator assetImageGeneratorWithAsset:asset];
+        _generator.appliesPreferredTrackTransform = YES;
+        _generator.requestedTimeToleranceAfter = kCMTimeZero;
+        _generator.requestedTimeToleranceBefore = kCMTimeZero;
+        /*截图
+         * requestTime:缩略图创建时间
+         * actualTime:缩略图实际生成的时间
+         */
+        NSError *error=nil;
+        // CMTime是表示电影时间信息的结构体，第一个参数是视频第几秒，第二个参数时每秒帧数.(如果要活的某一秒的第几帧可以使用CMTimeMake方法)
+        CMTime time = CMTimeMakeWithSeconds(timeBySecond, 30);
+        CMTime actualTime;
+        CGImageRef cgImage= [_generator copyCGImageAtTime:time actualTime:&actualTime error:&error];
+        _generator = nil;
+        if(error){
+            CLLog(@"截取视频缩略图时发生错误，错误信息：%@",error.localizedDescription);
+            CGImageRelease(cgImage);
+            return nil;
+        }
+        UIImage *image = [UIImage imageWithCGImage:cgImage];//转化为UIImage
         CGImageRelease(cgImage);
-        return nil;
+        return image;
     }
-    UIImage *image = [UIImage imageWithCGImage:cgImage];//转化为UIImage
-    CGImageRelease(cgImage);
-    return image;
 }
 
 + (void)requestThumbnailImagesForAVAsset:(AVAsset *)asset
