@@ -1,6 +1,0 @@
-framework module CLPhotoLib {
-  umbrella header "CLPhotoLib.h"
-
-  export *
-  module * { export * }
-}

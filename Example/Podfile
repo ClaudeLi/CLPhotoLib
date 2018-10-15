@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'CLPhotoLib_Example' do
+  pod 'CLPhotoLib', :path => '../'
+
+  target 'CLPhotoLib_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end

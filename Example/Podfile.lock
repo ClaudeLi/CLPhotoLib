@@ -1,0 +1,23 @@
+PODS:
+  - CLPhotoLib (0.1.0):
+    - CLProgressFPD
+  - CLProgressFPD (1.0.0)
+
+DEPENDENCIES:
+  - CLPhotoLib (from `../`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - CLProgressFPD
+
+EXTERNAL SOURCES:
+  CLPhotoLib:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  CLPhotoLib: 324b8987c913158d490bcecf3d15cad374f28094
+  CLProgressFPD: 903f02cdc88f513fdb0de1cc0c9e824d6a678e54
+
+PODFILE CHECKSUM: 34d19d87f4320d03b51967ca56c90a13b0be14f5
+
+COCOAPODS: 1.5.3
