@@ -28,9 +28,10 @@ it, simply add the following line to your Podfile:
 
 ```ruby
 pod 'CLPhotoLib'
+```
 
-
-注意: plist添加
+```
+Plist Notes:
 <key>CFBundleAllowMixedLocalizations</key>
 <true/>
 <key>UIViewControllerBasedStatusBarAppearance</key>
