@@ -11,7 +11,7 @@
 
 @implementation CLPhotoModel
 
-+ (instancetype)modelWithAsset:(PHAsset *)asset{
++ (instancetype)modelWithAsset:(PHAsset *)asset {
     CLPhotoModel *model = [[CLPhotoModel alloc] init];
     model.asset = asset;
     model.isSelected = NO;
@@ -19,7 +19,7 @@
     return model;
 }
     
-+ (instancetype)modelWithAsset:(PHAsset *)asset type:(CLAssetMediaType)type{
++ (instancetype)modelWithAsset:(PHAsset *)asset type:(CLAssetMediaType)type {
     CLPhotoModel *model = [[CLPhotoModel alloc] init];
     model.asset = asset;
     model.isSelected = NO;
@@ -27,14 +27,14 @@
     return model;
 }
 
-+ (instancetype)modelWithAsset:(PHAsset *)asset type:(CLAssetMediaType)type duration:(CGFloat)duration{
++ (instancetype)modelWithAsset:(PHAsset *)asset type:(CLAssetMediaType)type duration:(CGFloat)duration {
     CLPhotoModel *model = [self modelWithAsset:asset type:type];
     model.duration = duration;
     model.timeFormat = [self timeWithFormat:duration];
     return model;
 }
 
-+ (NSString *)timeWithFormat:(CGFloat)dur{
++ (NSString *)timeWithFormat:(CGFloat)dur {
     NSInteger duration = (NSInteger)round(dur);
     if (duration < 60) {
         return [NSString stringWithFormat:@"00:%02ld", (long)duration];
@@ -50,7 +50,7 @@
     }
 }
     
-+ (CLAssetMediaType)transformAssetType:(PHAsset *)asset{
++ (CLAssetMediaType)transformAssetType:(PHAsset *)asset {
     switch (asset.mediaType) {
         case PHAssetMediaTypeAudio:
         return CLAssetMediaTypeAudio;
@@ -69,7 +69,6 @@
 
 @end
 
-
 @implementation CLAlbumModel
 
 - (void)setSelectedModels:(NSArray *)selectedModels {
@@ -84,5 +83,3 @@
 }
 
 @end
-
-

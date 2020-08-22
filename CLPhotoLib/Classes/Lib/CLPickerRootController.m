@@ -12,7 +12,7 @@
 #import <CLProgressFPD/CLProgressFPD.h>
 #import "CLExtHeader.h"
 
-@interface CLPickerRootController ()<CLVideoProcessingDelegate>{
+@interface CLPickerRootController ()<CLVideoProcessingDelegate> {
     NSTimer *_timer;
     BOOL    _canRotate;
 }
@@ -27,7 +27,7 @@
 
 @implementation CLPickerRootController
 
-- (instancetype)init{
+- (instancetype)init {
     CLAlbumPickerController *albumPickerVc = [[CLAlbumPickerController alloc] init];
     self = [super initWithRootViewController:albumPickerVc];
     if (self) {
@@ -69,7 +69,7 @@
         if ([PHPhotoLibrary authorizationStatus] != PHAuthorizationStatusAuthorized) {
             self.tipLable.hidden = NO;
             _timer = [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(observeAuthrizationStatusChange) userInfo:nil repeats:YES];
-        }else{
+        } else {
             [self gotoPhotosViewController];
         }
     }
@@ -84,17 +84,17 @@
     self.navigationBar.translucent = YES;
 }
 
-- (UIStatusBarStyle)preferredStatusBarStyle{
+- (UIStatusBarStyle)preferredStatusBarStyle {
     return UIStatusBarStyleLightContent;
 }
 
-- (void)viewWillDisappear:(BOOL)animated{
+- (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [self clearTimer];
     [UIApplication sharedApplication].statusBarStyle = self.previousStatusBarStyle;
 }
 
-- (void)setStatusBarStyle:(UIStatusBarStyle)statusBarStyle{
+- (void)setStatusBarStyle:(UIStatusBarStyle)statusBarStyle {
     _statusBarStyle = statusBarStyle;
     if (_navigationColor) {
         self.navigationBar.barStyle = _statusBarStyle?UIBarStyleBlack:UIBarStyleDefault;
@@ -102,47 +102,47 @@
     [UIApplication sharedApplication].statusBarStyle = _statusBarStyle;
 }
 
-- (void)setNavigationColor:(UIColor *)navigationColor{
+- (void)setNavigationColor:(UIColor *)navigationColor {
     _navigationColor = navigationColor;
     [self.navigationBar setBackgroundImage:[UIImage imageWithColor:_navigationColor] forBarMetrics:UIBarMetricsDefault];
     [self.navigationBar setShadowImage:[UIImage new]];
 }
 
-- (void)setNavigationBarImage:(UIImage *)navigationBarImage{
+- (void)setNavigationBarImage:(UIImage *)navigationBarImage {
     [self.navigationBar setBackgroundImage:navigationBarImage forBarMetrics:UIBarMetricsDefault];
     [self.navigationBar setShadowImage:[UIImage new]];
 }
 
-- (void)setNavigationItemColor:(UIColor *)navigationItemColor{
+- (void)setNavigationItemColor:(UIColor *)navigationItemColor {
     _navigationItemColor = navigationItemColor;
     self.navigationBar.tintColor = _navigationItemColor;
 }
 
-- (void)setTitleColor:(UIColor *)titleColor{
+- (void)setTitleColor:(UIColor *)titleColor {
     _titleColor = titleColor;
     self.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObject:_titleColor forKey:NSForegroundColorAttributeName];
 }
 
-- (void)setMinSize:(CGSize)minSize{
+- (void)setMinSize:(CGSize)minSize {
     _minSize = minSize;
     CLMinSize = minSize;
 }
 
-- (void)setAllowSelectGif:(BOOL)allowSelectGif{
+- (void)setAllowSelectGif:(BOOL)allowSelectGif {
     _allowSelectGif = allowSelectGif;
     CLAllowSelectGif = _allowSelectGif;
 }
 
-- (void)setAllowSelectLivePhoto:(BOOL)allowSelectLivePhoto{
+- (void)setAllowSelectLivePhoto:(BOOL)allowSelectLivePhoto {
     _allowSelectLivePhoto = allowSelectLivePhoto;
     CLAllowSelectLivePhoto = _allowSelectLivePhoto;
 }
 
-- (void)setSortAscending:(BOOL)sortAscending{
+- (void)setSortAscending:(BOOL)sortAscending {
     _sortAscending = sortAscending;
     CLSortAscending = _sortAscending;
 }
-- (void)setSelectedAssets:(NSArray *)selectedAssets{
+- (void)setSelectedAssets:(NSArray *)selectedAssets {
     _selectedAssets = selectedAssets;
     for (id asset in _selectedAssets) {
         CLPhotoModel *model = [CLPhotoModel modelWithAsset:asset];
@@ -151,27 +151,26 @@
     }
 }
 
-- (NSMutableArray<CLPhotoModel *> *)selectedModels{
+- (NSMutableArray<CLPhotoModel *> *)selectedModels {
     if (!_selectedModels) {
         _selectedModels = [NSMutableArray array];
     }
     return _selectedModels;
 }
 
--(BOOL)shouldAutorotate{
+-(BOOL)shouldAutorotate {
     return self.allowAutorotate;
 }
 
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations{
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
     if (self.allowAutorotate) {
         return UIInterfaceOrientationMaskAll;
-    }
-    else {
+    } else {
         return UIInterfaceOrientationMaskPortrait;
     }
 }
 
--(UIInterfaceOrientation)preferredInterfaceOrientationForPresentation{
+-(UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
     return [self.viewControllers.lastObject preferredInterfaceOrientationForPresentation];
 }
 
@@ -182,7 +181,7 @@
     }
 }
 
-- (void)clearTimer{
+- (void)clearTimer {
     if (_timer) {
         [_tipLable removeFromSuperview];
         _tipLable = nil;
@@ -191,14 +190,14 @@
     }
 }
 
-- (void)gotoPhotosViewController{
+- (void)gotoPhotosViewController {
     CLPhotosViewController *imagePicker = [[CLPhotosViewController alloc] init];
     [self showViewController:imagePicker sender:nil];
 }
 
 #pragma mark -
 #pragma mark -- Lazy Loads --
-- (UILabel *)tipLable{
+- (UILabel *)tipLable {
     if (!_tipLable) {
         _tipLable = [[UILabel alloc] init];
         _tipLable.textAlignment = NSTextAlignmentCenter;
@@ -212,7 +211,7 @@
     return _tipLable;
 }
 
-- (CLProgressFPD *)progressHUD{
+- (CLProgressFPD *)progressHUD {
     if (!_progressHUD) {
         _progressHUD = [[CLProgressFPD alloc] init];
         [self.view addSubview:_progressHUD];
@@ -220,7 +219,7 @@
     return _progressHUD;
 }
 
-- (CLEditManager *)editManager{
+- (CLEditManager *)editManager {
     if (!_editManager) {
         _editManager = [[CLEditManager alloc] init];
         _editManager.delegate = self;
@@ -228,34 +227,34 @@
     return _editManager;
 }
 
-- (void)viewWillLayoutSubviews{
+- (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
     _tipLable.frame = CGRectMake(15, self.view.height/4.0, self.view.width - 30, 60);
 }
 
 #pragma mark -
 #pragma mark -- Public Methods --
-- (void)showText:(NSString *)text{
+- (void)showText:(NSString *)text {
     [self.progressHUD showText:text];
 }
 
-- (void)showText:(NSString *)text delay:(NSTimeInterval)delay{
+- (void)showText:(NSString *)text delay:(NSTimeInterval)delay {
     [self.progressHUD showText:text delay:delay];
 }
 
-- (void)showProgress{
+- (void)showProgress {
     [self.progressHUD showProgress:NO];
 }
 
-- (void)showProgressWithText:(NSString *)text{
+- (void)showProgressWithText:(NSString *)text {
     [self.progressHUD showProgressWithText:text];
 }
 
-- (void)hideProgress{
+- (void)hideProgress {
     [self.progressHUD hideProgress];
 }
 
-- (void)clickCancelAction{
+- (void)clickCancelAction {
     cl_weakSelf(self);
     [self dismissViewControllerAnimated:YES completion:^{
         cl_strongSelf(weakSelf);
@@ -271,7 +270,7 @@
     }];
 }
 
-- (void)clickShootVideoAction{
+- (void)clickShootVideoAction {
     cl_weakSelf(self);
     [self dismissViewControllerAnimated:YES completion:^{
         cl_strongSelf(weakSelf);
@@ -287,7 +286,7 @@
     }];
 }
 
-- (void)didFinishPickingPhotosAction{
+- (void)didFinishPickingPhotosAction {
     [self showProgress];
     cl_weakSelf(self);
     [CLPhotoShareManager requestImagesWithModelArray:self.selectedModels isOriginal:self.selectedOriginalImage completion:^(NSArray<UIImage *> *photos, NSArray *assets) {
@@ -307,7 +306,7 @@
     }];
 }
 
-- (void)clickPickingVideoActionForAsset:(AVAsset *)asset range:(CMTimeRange)range degrees:(CGFloat)degrees{
+- (void)clickPickingVideoActionForAsset:(AVAsset *)asset range:(CMTimeRange)range degrees:(CGFloat)degrees {
     _canRotate = self.allowAutorotate;
     self.allowAutorotate = NO;
     [self.editManager exportEditVideoForAsset:asset
@@ -320,13 +319,13 @@
                                    presetName:self.presetName];
 }
 
-- (void)cancelExport{
+- (void)cancelExport {
     if (_editManager) {
         [_editManager cancelExport];
     }
 }
 
-- (void)didFinishPickingVideoCover:(UIImage *)videoCover videoURL:(NSURL *)videoURL{
+- (void)didFinishPickingVideoCover:(UIImage *)videoCover videoURL:(NSURL *)videoURL {
     cl_weakSelf(self);
     [self dismissViewControllerAnimated:YES completion:^{
         cl_strongSelf(weakSelf);
@@ -344,7 +343,7 @@
 
 #pragma mark -
 #pragma mark -- CLVideoProcessingDelegate --
-- (void)editManager:(CLEditManager *)editManager didFinishedOutputURL:(NSURL *)outputURL{
+- (void)editManager:(CLEditManager *)editManager didFinishedOutputURL:(NSURL *)outputURL {
     UIImage *cover = [CLEditManager requestThumbnailImageForAVAsset:[AVAsset assetWithURL:outputURL] timeBySecond:0];
     [self hideProgress];
     if (_canRotate) {
@@ -360,18 +359,18 @@
      */
 }
 
--(void)editManager:(CLEditManager *)editManager handlingProgress:(CGFloat)progress{
+-(void)editManager:(CLEditManager *)editManager handlingProgress:(CGFloat)progress {
     [self showProgressWithText:[NSString stringWithFormat:@"%@ %.0f%%", CLString(@"CLText_Processing"), (progress * 100.0)]];
 }
 
--(void)editManager:(CLEditManager *)editManager operationFailure:(NSError *)error{
+-(void)editManager:(CLEditManager *)editManager operationFailure:(NSError *)error {
     if (_canRotate) {
         self.allowAutorotate = _canRotate;
     }
     [self showText:error.localizedDescription];
 }
 
--(void)dealloc{
+-(void)dealloc {
     CLLog(@"%s", __func__);
 }
 
@@ -383,7 +382,7 @@
 
 #import "CLAlbumTableView.h"
 #import "CLPhotoModel.h"
-@interface CLAlbumPickerController (){
+@interface CLAlbumPickerController () {
     BOOL _reload;
 }
 
@@ -393,7 +392,7 @@
 
 @implementation CLAlbumPickerController
 
-- (CLAlbumTableView *)tableView{
+- (CLAlbumTableView *)tableView {
     if (!_tableView) {
         _tableView = [[CLAlbumTableView alloc] init];
         _tableView.backgroundColor = [UIColor whiteColor];
@@ -403,7 +402,7 @@
     return _tableView;
 }
 
-- (CLPickerRootController *)picker{
+- (CLPickerRootController *)picker {
     return (CLPickerRootController *)self.navigationController;
 }
 
@@ -427,43 +426,44 @@
             popPresenter.sourceView = self.view;
             popPresenter.sourceRect = self.view.bounds;
             [self presentViewController:alert animated:YES completion:nil];
-        }else{
+        } else {
             [self presentViewController:alert animated:YES completion:nil];
         }
     }
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadAlbumList) name:CLPhotoLibReloadAlbumList object:nil];
 }
 
-- (void)reloadAlbumList{
+- (void)reloadAlbumList {
     _reload = YES;
 }
 
-- (void)viewWillLayoutSubviews{
+- (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
     [UIApplication sharedApplication].statusBarHidden = self.navigationController.navigationBar.hidden;
     _tableView.frame = self.view.bounds;
     [_tableView showAlbumAnimated:NO];
 }
 
-- (void)viewWillAppear:(BOOL)animated{
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     if (_reload || !_tableView.albumArray) {
         _reload = NO;
+        CLPickerRootController *pk = self.picker;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             cl_weakSelf(self);
-            [CLPhotoShareManager getAlbumListWithSelectMode:self.picker.selectMode completion:^(NSArray<CLAlbumModel *> *models) {
+            [CLPhotoShareManager getAlbumListWithSelectMode:pk.selectMode completion:^(NSArray<CLAlbumModel *> *models) {
                 cl_strongSelf(weakSelf);
                 if (strongSelf) {
-                    for (CLAlbumModel *albumModel in models) {
-                        albumModel.selectedModels = strongSelf.picker.selectedModels;
-                    }
                     dispatch_async(dispatch_get_main_queue(), ^{
+                        for (CLAlbumModel *albumModel in models) {
+                            albumModel.selectedModels = strongSelf.picker.selectedModels;
+                        }
                         strongSelf.tableView.albumArray = models;
                     });
                 }
             }];
         });
-    }else{
+    } else {
         for (CLAlbumModel *albumModel in _tableView.albumArray) {
             albumModel.selectedModels = self.picker.selectedModels;
         }
@@ -471,7 +471,7 @@
     }
 }
 
-- (void)_initRightItem{
+- (void)_initRightItem {
     UIButton *rightItem = [UIButton buttonWithType:UIButtonTypeCustom];
     rightItem.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
     CGFloat width = GetMatchValue(CLString(@"CLText_Cancel"), CLNavigationItemFontSize, YES, self.navigationController.navigationBar.height);
@@ -484,17 +484,14 @@
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightItem];
 }
 
-- (void)clickRightItemAction{
+- (void)clickRightItemAction {
     [self.picker clickCancelAction];
 }
 
-- (void)pushImagePickerWithModel:(CLAlbumModel *)model{
+- (void)pushImagePickerWithModel:(CLAlbumModel *)model {
     CLPhotosViewController *imagePicker = [[CLPhotosViewController alloc] init];
     imagePicker.albumModel = model;
     [self.navigationController showViewController:imagePicker sender:self];
-}
-
-- (void)dealloc{
 }
 
 - (void)didReceiveMemoryWarning {
@@ -503,4 +500,3 @@
 }
 
 @end
-

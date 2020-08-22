@@ -13,7 +13,7 @@
 static NSString *sortDescriptorKey = @"modificationDate";
 @implementation CLPhotoManager
 
-+ (instancetype)shareManager{
++ (instancetype)shareManager {
     static CLPhotoManager *manager;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -22,7 +22,7 @@ static NSString *sortDescriptorKey = @"modificationDate";
     return manager;
 }
 
-- (NSString *)appName{
+- (NSString *)appName {
     if (!_appName) {
         _appName = [[NSBundle mainBundle].infoDictionary valueForKey:@"CFBundleDisplayName"];
         if (!_appName) _appName = [[NSBundle mainBundle].infoDictionary valueForKey:@"CFBundleName"];
@@ -33,14 +33,14 @@ static NSString *sortDescriptorKey = @"modificationDate";
 #pragma mark -
 #pragma mark -- Public Object Methods --
 // 获得（相册交卷/所有图片）所在的相册
-- (void)getCameraRollAlbumWithSelectMode:(CLPickerSelectMode)selectMode complete:(void (^)(CLAlbumModel *albumModel))complete{
+- (void)getCameraRollAlbumWithSelectMode:(CLPickerSelectMode)selectMode complete:(void (^)(CLAlbumModel *albumModel))complete {
     if (complete) {
         complete([self getCameraRollAlbumWithSelectMode:selectMode]);
     }
 }
 
 // 获得 所有相册/相册数组
-- (void)getAlbumListWithSelectMode:(CLPickerSelectMode)selectMode completion:(void (^)(NSArray<CLAlbumModel *> *models))completion{
+- (void)getAlbumListWithSelectMode:(CLPickerSelectMode)selectMode completion:(void (^)(NSArray<CLAlbumModel *> *models))completion {
     PHFetchOptions *option = [[PHFetchOptions alloc] init];
     if (selectMode == CLPickerSelectModeAllowImage) option.predicate = [NSPredicate predicateWithFormat:@"mediaType == %ld", PHAssetMediaTypeImage];
     if (selectMode == CLPickerSelectModeAllowVideo) option.predicate = [NSPredicate predicateWithFormat:@"mediaType == %ld", PHAssetMediaTypeVideo];
@@ -85,11 +85,11 @@ static NSString *sortDescriptorKey = @"modificationDate";
     for (PHFetchResult<PHAssetCollection *> *album in allAlbums) {
         [album enumerateObjectsUsingBlock:^(PHAssetCollection * _Nonnull collection, NSUInteger idx, BOOL * _Nonnull stop) {
             // 过滤PHCollectionList对象
-            if (![collection isKindOfClass:PHAssetCollection.class]){
+            if (![collection isKindOfClass:PHAssetCollection.class]) {
                 return;
             }
             // 过滤最近删除
-            if (collection.assetCollectionSubtype > 215){
+            if (collection.assetCollectionSubtype > 215) {
                 return;
             }
             // 获取相册内asset result
@@ -107,7 +107,7 @@ static NSString *sortDescriptorKey = @"modificationDate";
     if (completion && albumArray.count > 0) completion(albumArray);
 }
 
-- (void)requestImagesWithModelArray:(NSMutableArray<CLPhotoModel *> *)modelArray isOriginal:(BOOL)isOriginal completion:(void (^)(NSArray<UIImage *> *photos, NSArray *assets))completion{
+- (void)requestImagesWithModelArray:(NSMutableArray<CLPhotoModel *> *)modelArray isOriginal:(BOOL)isOriginal completion:(void (^)(NSArray<UIImage *> *photos, NSArray *assets))completion {
     __block NSMutableArray *photos = [NSMutableArray arrayWithCapacity:modelArray.count];
     __block NSMutableArray *assets = [NSMutableArray arrayWithCapacity:modelArray.count];
     for (int i = 0; i < modelArray.count; i++) {
@@ -132,7 +132,7 @@ static NSString *sortDescriptorKey = @"modificationDate";
     }
 }
 
-- (void)requestLivePhotoForAsset:(PHAsset *)asset completion:(void (^)(PHLivePhoto *livePhoto, NSDictionary *info))completion{
+- (void)requestLivePhotoForAsset:(PHAsset *)asset completion:(void (^)(PHLivePhoto *livePhoto, NSDictionary *info))completion {
     PHLivePhotoRequestOptions *option = [[PHLivePhotoRequestOptions alloc] init];
     option.version = PHImageRequestOptionsVersionCurrent;
     option.deliveryMode = PHImageRequestOptionsDeliveryModeOpportunistic;
@@ -144,16 +144,16 @@ static NSString *sortDescriptorKey = @"modificationDate";
 }
 
 // 获取图片
-- (PHImageRequestID)requestCustomImageForAsset:(PHAsset *)asset size:(CGSize)size completion:(void (^)(UIImage *image, NSDictionary *info))completion{
+- (PHImageRequestID)requestCustomImageForAsset:(PHAsset *)asset size:(CGSize)size completion:(void (^)(UIImage *image, NSDictionary *info))completion {
     return [self requestImageForAsset:asset size:size resizeMode:PHImageRequestOptionsResizeModeFast completion:completion];
 }
 
 // 获取原图
-- (PHImageRequestID)requestOriginalImageForAsset:(PHAsset *)asset completion:(void (^)(UIImage *image, NSDictionary *))completion{
+- (PHImageRequestID)requestOriginalImageForAsset:(PHAsset *)asset completion:(void (^)(UIImage *image, NSDictionary *))completion {
     return [self requestImageForAsset:asset size:CGSizeMake(asset.pixelWidth, asset.pixelHeight) resizeMode:PHImageRequestOptionsResizeModeNone completion:completion];
 }
 
-- (PHImageRequestID)requestImageForAsset:(PHAsset *)asset size:(CGSize)size resizeMode:(PHImageRequestOptionsResizeMode)resizeMode completion:(void (^)(UIImage *image, NSDictionary *info))completion{
+- (PHImageRequestID)requestImageForAsset:(PHAsset *)asset size:(CGSize)size resizeMode:(PHImageRequestOptionsResizeMode)resizeMode completion:(void (^)(UIImage *image, NSDictionary *info))completion {
     PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
     /**
      resizeMode：对请求的图像怎样缩放。有三种选择：None，默认加载方式；Fast，尽快地提供接近或稍微大于要求的尺寸；Exact，精准提供要求的尺寸。
@@ -181,14 +181,13 @@ static NSString *sortDescriptorKey = @"modificationDate";
     }];
 }
 
-- (void)requestVideoPlayerItemForAsset:(PHAsset *)asset completion:(void (^)(AVPlayerItem *item, NSDictionary *info))completion
-{
+- (void)requestVideoPlayerItemForAsset:(PHAsset *)asset completion:(void (^)(AVPlayerItem *item, NSDictionary *info))completion {
     [[PHCachingImageManager defaultManager] requestPlayerItemForVideo:asset options:nil resultHandler:^(AVPlayerItem * _Nullable playerItem, NSDictionary * _Nullable info) {
         if (completion) completion(playerItem, info);
     }];
 }
 
-- (void)requestVideoAssetForAsset:(PHAsset *)asset completion:(void (^)(AVAsset *asset, NSDictionary *info))completion{
+- (void)requestVideoAssetForAsset:(PHAsset *)asset completion:(void (^)(AVAsset *asset, NSDictionary *info))completion {
     PHVideoRequestOptions* options = [[PHVideoRequestOptions alloc] init];
     options.version = PHVideoRequestOptionsVersionOriginal;
     options.deliveryMode = PHVideoRequestOptionsDeliveryModeAutomatic;
@@ -198,10 +197,9 @@ static NSString *sortDescriptorKey = @"modificationDate";
     }];
 }
 
-
 #pragma mark -
 #pragma mark -- Private Object Methods --
-- (void)requestImageForModel:(CLPhotoModel *)model isOriginal:(BOOL)isOriginal completion:(void (^)(UIImage *image, NSDictionary *info))completion{
+- (void)requestImageForModel:(CLPhotoModel *)model isOriginal:(BOOL)isOriginal completion:(void (^)(UIImage *image, NSDictionary *info))completion {
     if (model.type == CLAssetMediaTypeGif && self.allowSelectGif) {
         [self requestOriginalImageDataForAsset:model.asset completion:^(NSData *data, NSDictionary *info) {
             if (![[info objectForKey:PHImageResultIsDegradedKey] boolValue]) {
@@ -217,11 +215,11 @@ static NSString *sortDescriptorKey = @"modificationDate";
         } else {
             if (model.asset.pixelWidth < CLMinSize.width || model.asset.pixelHeight < CLMinSize.height) {
                 [self requestOriginalImageForAsset:model.asset completion:completion];
-            }else{
+            } else {
                 if (model.asset.pixelWidth < model.asset.pixelHeight) {
                     CGSize size = CGSizeMake(CLMinSize.width, CLMinSize.width/model.asset.pixelWidth * model.asset.pixelHeight);
                     [self requestCustomImageForAsset:model.asset size:size completion:completion];
-                }else{
+                } else {
                     CGSize size = CGSizeMake(CLMinSize.height/model.asset.pixelHeight * model.asset.pixelWidth, CLMinSize.height);
                     [self requestCustomImageForAsset:model.asset size:size completion:completion];
                 }
@@ -230,7 +228,7 @@ static NSString *sortDescriptorKey = @"modificationDate";
     }
 }
 
-- (void)requestOriginalImageDataForAsset:(PHAsset *)asset completion:(void (^)(NSData *data, NSDictionary *info))completion{
+- (void)requestOriginalImageDataForAsset:(PHAsset *)asset completion:(void (^)(NSData *data, NSDictionary *info))completion {
     PHImageRequestOptions *option = [[PHImageRequestOptions alloc]init];
     option.networkAccessAllowed = YES;
     option.resizeMode = PHImageRequestOptionsResizeModeFast;
@@ -243,7 +241,7 @@ static NSString *sortDescriptorKey = @"modificationDate";
 }
 
 // 获得（相册交卷/所有图片）所在的相册
-- (CLAlbumModel *)getCameraRollAlbumWithSelectMode:(CLPickerSelectMode)selectMode{
+- (CLAlbumModel *)getCameraRollAlbumWithSelectMode:(CLPickerSelectMode)selectMode {
     PHFetchOptions *option = [[PHFetchOptions alloc] init];
     if (selectMode == CLPickerSelectModeAllowImage) option.predicate = [NSPredicate predicateWithFormat:@"mediaType == %ld", PHAssetMediaTypeImage];
     if (selectMode == CLPickerSelectModeAllowVideo) option.predicate = [NSPredicate predicateWithFormat:@"mediaType == %ld", PHAssetMediaTypeVideo];
@@ -265,7 +263,7 @@ static NSString *sortDescriptorKey = @"modificationDate";
 }
 
 // 获取相册model
-- (CLAlbumModel *)getAlbumModeWithTitle:(NSString *)title result:(PHFetchResult<PHAsset *> *)result selectMode:(CLPickerSelectMode)selectMode{
+- (CLAlbumModel *)getAlbumModeWithTitle:(NSString *)title result:(PHFetchResult<PHAsset *> *)result selectMode:(CLPickerSelectMode)selectMode {
     CLAlbumModel *model = [[CLAlbumModel alloc] init];
     model.title = title;
     model.count = result.count;
@@ -280,7 +278,7 @@ static NSString *sortDescriptorKey = @"modificationDate";
     return model;
 }
 
-- (NSArray<CLPhotoModel *> *)getPhotoInResult:(PHFetchResult<PHAsset *> *)result selectMode:(CLPickerSelectMode)selectMode limitCount:(NSInteger)limitCount{
+- (NSArray<CLPhotoModel *> *)getPhotoInResult:(PHFetchResult<PHAsset *> *)result selectMode:(CLPickerSelectMode)selectMode limitCount:(NSInteger)limitCount {
     NSMutableArray<CLPhotoModel *> *arrModel = [NSMutableArray array];
     __block NSInteger count = 1;
     [result enumerateObjectsUsingBlock:^(PHAsset * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -303,14 +301,13 @@ static NSString *sortDescriptorKey = @"modificationDate";
 }
 
 // 系统mediatype 转换为 自定义type
-- (CLAssetMediaType)getPHAssetType:(PHAsset *)asset{
+- (CLAssetMediaType)getPHAssetType:(PHAsset *)asset {
     return [CLPhotoModel transformAssetType:asset];
 }
 
 #pragma mark -
 #pragma mark -- Private Class Methods --
-+ (void)judgeAssetisInLocalAblum:(PHAsset *)asset completion:(void (^)(BOOL isInLocal))completion
-{
++ (void)judgeAssetisInLocalAblum:(PHAsset *)asset completion:(void (^)(BOOL isInLocal))completion {
     PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
     option.networkAccessAllowed = NO;
     option.synchronous = YES;
@@ -325,8 +322,7 @@ static NSString *sortDescriptorKey = @"modificationDate";
     }];
 }
 
-+ (UIImage *)transformToGifImageWithData:(NSData *)data
-{
++ (UIImage *)transformToGifImageWithData:(NSData *)data {
     return [self sd_animatedGIFWithData:data];
 }
 
@@ -399,7 +395,7 @@ static NSString *sortDescriptorKey = @"modificationDate";
     return frameDuration;
 }
 
-+ (CGFloat)getDuration:(PHAsset *)asset{
++ (CGFloat)getDuration:(PHAsset *)asset {
     if (asset.mediaType != PHAssetMediaTypeVideo) return 0;
     return floorf(asset.duration * 100)/100.0;
 }
@@ -418,7 +414,7 @@ static NSString *sortDescriptorKey = @"modificationDate";
 
 #pragma mark -
 #pragma mark -- Public Class Methods --
-+ (void)getPhotosBytesWithArray:(NSArray<CLPhotoModel *> *)photos completion:(void (^)(NSString *photosBytes))completion{
++ (void)getPhotosBytesWithArray:(NSArray<CLPhotoModel *> *)photos completion:(void (^)(NSString *photosBytes))completion {
     __block NSInteger dataLength = 0;
     __block NSInteger count = photos.count;
     
@@ -440,7 +436,7 @@ static NSString *sortDescriptorKey = @"modificationDate";
     }
 }
 
-+ (NSArray *)getLocalIdentifierArrayWithArray:(NSArray<CLPhotoModel *> *)array{
++ (NSArray *)getLocalIdentifierArrayWithArray:(NSArray<CLPhotoModel *> *)array {
     NSMutableArray *identifiers = [NSMutableArray array];
     for (CLPhotoModel *model in array) {
         [identifiers addObject:model.asset.localIdentifier];
@@ -448,11 +444,11 @@ static NSString *sortDescriptorKey = @"modificationDate";
     return identifiers.copy;
 }
 
-+ (BOOL)checkSelcectedWithModel:(CLPhotoModel *)model identifiers:(NSArray *)identifiers{
++ (BOOL)checkSelcectedWithModel:(CLPhotoModel *)model identifiers:(NSArray *)identifiers {
     return [identifiers containsObject:model.asset.localIdentifier];
 }
 
-+ (NSInteger)checkSelcectModelInArray:(NSArray<CLPhotoModel *> *)dataArray selArray:(NSArray<CLPhotoModel *> *)selArray{
++ (NSInteger)checkSelcectModelInArray:(NSArray<CLPhotoModel *> *)dataArray selArray:(NSArray<CLPhotoModel *> *)selArray {
     NSInteger i = 0;
     NSArray *selIdentifiers = [self getLocalIdentifierArrayWithArray:selArray];
     for (CLPhotoModel *model in dataArray) {
@@ -466,9 +462,8 @@ static NSString *sortDescriptorKey = @"modificationDate";
     return i;
 }
 
-
 #pragma mark - 保存图片到系统相册
-+ (void)saveImageToAblum:(UIImage *)image completion:(void (^)(BOOL, PHAsset *))completion{
++ (void)saveImageToAblum:(UIImage *)image completion:(void (^)(BOOL, PHAsset *))completion {
     PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
     if (status == PHAuthorizationStatusDenied) {
         if (completion) completion(NO, nil);
@@ -497,7 +492,7 @@ static NSString *sortDescriptorKey = @"modificationDate";
     }
 }
 
-+ (void)saveVideoToAblum:(NSURL *)url completion:(void (^)(BOOL, PHAsset *))completion{
++ (void)saveVideoToAblum:(NSURL *)url completion:(void (^)(BOOL, PHAsset *))completion {
     PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
     if (status == PHAuthorizationStatusDenied) {
         if (completion) completion(NO, nil);
@@ -528,20 +523,20 @@ static NSString *sortDescriptorKey = @"modificationDate";
     }
 }
 
-+ (PHAsset *)getAssetFromlocalIdentifier:(NSString *)localIdentifier{
-    if(localIdentifier == nil){
++ (PHAsset *)getAssetFromlocalIdentifier:(NSString *)localIdentifier {
+    if (localIdentifier == nil) {
         CLLog(@"Cannot get asset from localID because it is nil");
         return nil;
     }
     PHFetchResult *result = [PHAsset fetchAssetsWithLocalIdentifiers:@[localIdentifier] options:nil];
-    if(result.count){
+    if (result.count) {
         return result[0];
     }
     return nil;
 }
 
 //获取自定义相册
-+ (PHAssetCollection *)getDestinationCollection{
++ (PHAssetCollection *)getDestinationCollection {
     // 找是否已经创建自定义相册
     PHFetchResult<PHAssetCollection *> *collectionResult = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:nil];
     for (PHAssetCollection *collection in collectionResult) {
@@ -561,6 +556,5 @@ static NSString *sortDescriptorKey = @"modificationDate";
     }
     return [PHAssetCollection fetchAssetCollectionsWithLocalIdentifiers:@[collectionId] options:nil].lastObject;
 }
-
 
 @end

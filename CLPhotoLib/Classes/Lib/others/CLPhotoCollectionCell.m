@@ -31,10 +31,9 @@ static CGFloat CLTimeLabelFontSize  = 12.0f;
 
 @end
 
-
 @implementation CLPhotoCollectionCell
 
-- (void)setModel:(CLPhotoModel *)model{
+- (void)setModel:(CLPhotoModel *)model {
     _model = model;
     _selectButton.hidden = NO;
     _selectButton.enabled = YES;
@@ -85,7 +84,7 @@ static CGFloat CLTimeLabelFontSize  = 12.0f;
 }
 
 #pragma mark -- Initial Methods --
-- (instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         self.imageView.hidden = NO;
@@ -99,7 +98,7 @@ static CGFloat CLTimeLabelFontSize  = 12.0f;
     return self;
 }
 
-- (void)layoutSubviews{
+- (void)layoutSubviews {
     [super layoutSubviews];
     _imageView.frame    = self.bounds;
     _shadowView.frame   = _imageView.bounds;
@@ -111,7 +110,7 @@ static CGFloat CLTimeLabelFontSize  = 12.0f;
 }
 
 #pragma mark -- Lazy Loads --
-- (UIImageView *)imageView{
+- (UIImageView *)imageView {
     if (!_imageView) {
         _imageView = [[UIImageView alloc] init];
         _imageView.contentMode = UIViewContentModeScaleAspectFill;
@@ -121,7 +120,7 @@ static CGFloat CLTimeLabelFontSize  = 12.0f;
     return _imageView;
 }
 
-- (UIView *)shadowView{
+- (UIView *)shadowView {
     if (!_shadowView) {
         _shadowView = [UIView new];
         _shadowView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:CLShadowViewAlpha];
@@ -130,7 +129,7 @@ static CGFloat CLTimeLabelFontSize  = 12.0f;
     return _shadowView;
 }
 
-- (UIButton *)selectButton{
+- (UIButton *)selectButton {
     if (!_selectButton) {
         _selectButton = [[UIButton alloc] init];
         [_selectButton setImage:[UIImage imageNamedFromBundle:@"btn_photo_unselected"] forState:UIControlStateNormal];
@@ -144,7 +143,7 @@ static CGFloat CLTimeLabelFontSize  = 12.0f;
     return _selectButton;
 }
 
-- (UIImageView *)bottomView{
+- (UIImageView *)bottomView {
     if (!_bottomView) {
         _bottomView = [[UIImageView alloc] initWithImage:[UIImage imageNamedFromBundle:@"clicon_photo_shadow"]];
         [self.contentView addSubview:_bottomView];
@@ -152,7 +151,7 @@ static CGFloat CLTimeLabelFontSize  = 12.0f;
     return _bottomView;
 }
 
-- (UIImageView *)liveImageView{
+- (UIImageView *)liveImageView {
     if (!_liveImageView) {
         _liveImageView = [[UIImageView alloc] init];
         _liveImageView.image = [UIImage imageNamedFromBundle:@"clicon_photo_live"];
@@ -162,8 +161,7 @@ static CGFloat CLTimeLabelFontSize  = 12.0f;
     return _liveImageView;
 }
 
-
-- (UIImageView *)videoImageView{
+- (UIImageView *)videoImageView {
     if (!_videoImageView) {
         _videoImageView = [[UIImageView alloc] init];
         _videoImageView.image = [UIImage imageNamedFromBundle:@"clicon_photo_video"];
@@ -172,7 +170,7 @@ static CGFloat CLTimeLabelFontSize  = 12.0f;
     return _videoImageView;
 }
 
-- (UILabel *)typeLabel{
+- (UILabel *)typeLabel {
     if (!_typeLabel) {
         _typeLabel = [[UILabel alloc] init];
         _typeLabel.textAlignment = NSTextAlignmentRight;
@@ -185,13 +183,13 @@ static CGFloat CLTimeLabelFontSize  = 12.0f;
 }
 
 #pragma mark -- Target Methods --
-- (void)clickSelectButton:(UIButton *)sender{
+- (void)clickSelectButton:(UIButton *)sender {
     if (self.didSelectPhotoBlock) {
         self.didSelectPhotoBlock(sender.selected);
     }
 }
 
-- (void)setSelectBtnSelect:(BOOL)selectBtnSelect{
+- (void)setSelectBtnSelect:(BOOL)selectBtnSelect {
     _selectBtnSelect = selectBtnSelect;
     self.selectButton.selected = _selectBtnSelect;
     if (self.selectButton.isSelected) {
@@ -200,13 +198,12 @@ static CGFloat CLTimeLabelFontSize  = 12.0f;
             weakSelf.shadowView.alpha = 1;
         }];
         [UIView showOscillatoryAnimationWithLayer:self.selectButton.layer type:CLOscillatoryAnimationToBigger];
-    }else{
+    } else {
         _shadowView.alpha = 0;
     }
 }
 
 @end
-
 
 #pragma mark -
 #pragma mark -- CLTakePhotoCell --
@@ -223,24 +220,24 @@ static CGFloat CLTimeLabelFontSize  = 12.0f;
 @end
 @implementation CLTakePhotoCell
 
-- (void)setShowCaptureOnCell:(BOOL)showCaptureOnCell{
+- (void)setShowCaptureOnCell:(BOOL)showCaptureOnCell {
     _showCaptureOnCell = showCaptureOnCell;
     if (_showCaptureOnCell) {
         [self startCapture];
         self.imageView.image = [UIImage imageNamedFromBundle:@"clicon_take_camera"];
         self.imageView.contentMode = UIViewContentModeScaleAspectFit;
-    }else{
+    } else {
         [self removeSession];
         if (_allowSelectVideo) {
             self.imageView.image = [UIImage imageNamedFromBundle:@"clicon_take_video"];
-        }else{
+        } else {
             self.imageView.image = [UIImage imageNamedFromBundle:@"clicon_take_photo"];
         }
         self.imageView.contentMode = UIViewContentModeScaleAspectFill;
     }
 }
 
-- (instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
 
@@ -248,18 +245,18 @@ static CGFloat CLTimeLabelFontSize  = 12.0f;
     return self;
 }
 
-- (void)layoutSubviews{
+- (void)layoutSubviews {
     [super layoutSubviews];
     if (_showCaptureOnCell) {
         _imageView.frame = CGRectMake(0, 0, self.width/3.0, self.width/3.0);
         _imageView.center = self.center;
-    }else{
+    } else {
         _imageView.frame = self.bounds;
     }
     _previewLayer.frame = self.contentView.layer.bounds;
 }
 
-- (UIImageView *)imageView{
+- (UIImageView *)imageView {
     if (!_imageView) {
         _imageView = [[UIImageView alloc] init];
         _imageView.clipsToBounds = YES;
@@ -268,14 +265,14 @@ static CGFloat CLTimeLabelFontSize  = 12.0f;
     return _imageView;
 }
 
-- (void)restartCapture{
+- (void)restartCapture {
     if (_session) {
         [_session stopRunning];
     }
     [self startCapture];
 }
 
-- (void)startCapture{
+- (void)startCapture {
     AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
     if (![UIImagePickerController isSourceTypeAvailable:
           UIImagePickerControllerSourceTypeCamera] ||
@@ -321,7 +318,7 @@ static CGFloat CLTimeLabelFontSize  = 12.0f;
     return [self cameraWithPosition:AVCaptureDevicePositionBack];
 }
 
-- (AVCaptureDevice *)cameraWithPosition:(AVCaptureDevicePosition) position {
+- (AVCaptureDevice *)cameraWithPosition:(AVCaptureDevicePosition)position {
     NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
     for (AVCaptureDevice *device in devices) {
         if ([device position] == position) {
@@ -331,14 +328,14 @@ static CGFloat CLTimeLabelFontSize  = 12.0f;
     return nil;
 }
 
-- (void)removeSession{
+- (void)removeSession {
     if (_session) {
         [_session stopRunning];
         _session = nil;
     }
 }
 
-- (void)dealloc{
+- (void)dealloc {
     CLLog(@"%s", __func__);
     [self removeSession];
 }
@@ -363,7 +360,7 @@ static CGFloat CLAlbumSelectFontSize    = 14.0f;
 @end
 @implementation CLAlbumTableViewCell
 
-- (void)setModel:(CLAlbumModel *)model{
+- (void)setModel:(CLAlbumModel *)model {
     _model = model;
     self.headImageView.hidden = NO;
     cl_weakSelf(self);
@@ -383,12 +380,12 @@ static CGFloat CLAlbumSelectFontSize    = 14.0f;
     if (_model.selectedCount) {
         self.selectButton.hidden = NO;
         [self.selectButton setTitle:[NSString stringWithFormat:@"%lu", (unsigned long)_model.selectedCount] forState:UIControlStateNormal];
-    }else{
+    } else {
         _selectButton.hidden = YES;
     }
 }
 
-- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         self.accessoryView = self.arrowImageView;
@@ -396,12 +393,12 @@ static CGFloat CLAlbumSelectFontSize    = 14.0f;
     return self;
 }
 
--(void)layoutSubviews{
+-(void)layoutSubviews {
     [super layoutSubviews];
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         CGFloat hleft = self.width - CGRectGetMinX(self.accessoryView.frame) - 15;
         _headImageView.frame = CGRectMake(hleft>5?hleft:10, 0.5, self.height, self.height - 1.5);
-    }else{
+    } else {
         _headImageView.frame = CGRectMake(10, 0.5, self.height, self.height - 1.5);
     }
     _titleLabel.frame = CGRectMake(_headImageView.right + 10, 0, self.width - _headImageView.width - rightSelectButtonWidth - 60, self.height);

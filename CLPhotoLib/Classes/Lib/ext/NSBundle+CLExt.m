@@ -15,7 +15,7 @@ NSString *CLString(NSString *key) {
     return [NSBundle clLocalizedStringForKey:key];
 };
 
-+ (instancetype)clLocalizedBundle{
++ (instancetype)clLocalizedBundle {
     static NSBundle *localBundle = nil;
     if (localBundle == nil) {
         localBundle = [NSBundle bundleWithPath:[[NSBundle bundleForClass:[CLPhotoManager class]] pathForResource:@"CLPhotoLib" ofType:@"bundle"]];
@@ -23,11 +23,11 @@ NSString *CLString(NSString *key) {
     return localBundle;
 }
 
-+ (NSString *)clLocalizedStringForKey:(NSString *)key{
++ (NSString *)clLocalizedStringForKey:(NSString *)key {
     return [self clLocalizedStringForKey:key value:nil];
 }
 
-+ (NSString *)clLocalizedStringForKey:(NSString *)key value:(NSString *)value{
++ (NSString *)clLocalizedStringForKey:(NSString *)key value:(NSString *)value {
     static NSBundle *bundle = nil;
     if (bundle == nil) {
         NSString *language = [NSLocale preferredLanguages].firstObject;

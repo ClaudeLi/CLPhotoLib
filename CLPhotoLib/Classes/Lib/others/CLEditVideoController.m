@@ -25,7 +25,7 @@ static NSString *itemIdentifier = @"CLEditCollectionCellIdentifier";
 
 @implementation CLEditCollectionCell
 
-- (UIImageView *)imageView{
+- (UIImageView *)imageView {
     if (!_imageView) {
         _imageView = [[UIImageView alloc] init];
         _imageView.frame = self.bounds;
@@ -36,7 +36,7 @@ static NSString *itemIdentifier = @"CLEditCollectionCellIdentifier";
     return _imageView;
 }
 
-- (void)layoutSubviews{
+- (void)layoutSubviews {
     [super layoutSubviews];
     self.imageView.frame = self.bounds;
 }
@@ -55,7 +55,7 @@ struct CLRatio {
 typedef struct CG_BOXABLE CLRatio CLRatio;
 
 CG_INLINE CLRatio
-CLRatioMake(CGFloat start, CGFloat end){
+CLRatioMake(CGFloat start, CGFloat end) {
     CLRatio rat;
     rat.startRatio = start;
     rat.endRatio = end;
@@ -71,7 +71,7 @@ CLRatioMake(CGFloat start, CGFloat end){
 
 @end
 
-@interface CLEditFrameView : UIView{
+@interface CLEditFrameView : UIView {
     UIImageView *_leftView;
     UIImageView *_rightView;
     UIView      *_layerView;
@@ -91,8 +91,7 @@ CLRatioMake(CGFloat start, CGFloat end){
 
 @implementation CLEditFrameView
 
-- (instancetype)init
-{
+- (instancetype)init {
     self = [super init];
     if (self) {
         [self setupUI];
@@ -100,29 +99,29 @@ CLRatioMake(CGFloat start, CGFloat end){
     return self;
 }
 
-- (CGFloat)startRatio{
+- (CGFloat)startRatio {
     return (_validRect.origin.x - editSideMargin)/(_layerView.width * 1.0);
 }
 
-- (CGFloat)endRatio{
+- (CGFloat)endRatio {
     return (_validRect.origin.x + _validRect.size.width - editSideMargin)/(_layerView.width * 1.0);
 }
 
-- (void)setFrame:(CGRect)frame{
+- (void)setFrame:(CGRect)frame {
     [super setFrame:frame];
     self.validRect = CGRectMake(editSideMargin, 0, self.width - 2 * editSideMargin, self.height);
     _layerView.frame = self.validRect;
     _minSpacing = _minRatio*_layerView.width;
 }
 
-- (void)setValidRect:(CGRect)validRect{
+- (void)setValidRect:(CGRect)validRect {
     _validRect = validRect;
     _leftView.frame = CGRectMake(validRect.origin.x - self.height*0.3, 0, self.height*0.6, self.height);
     _rightView.frame = CGRectMake(validRect.origin.x - self.height*0.3 + _validRect.size.width, _leftView.top, _leftView.width, _leftView.height);
     [self setNeedsDisplay];
 }
 
-- (void)setupUI{
+- (void)setupUI {
     _minRatio = 0.1;
     self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:.5];
     _layerView = [[UIView alloc] init];
@@ -147,7 +146,7 @@ CLRatioMake(CGFloat start, CGFloat end){
     [self addSubview:_rightView];
 }
 
-- (void)panAction:(UIGestureRecognizer *)pan{
+- (void)panAction:(UIGestureRecognizer *)pan {
     _layerView.layer.borderColor = [[UIColor whiteColor] colorWithAlphaComponent:.3].CGColor;
     CGPoint point = [pan locationInView:self];
     
@@ -206,8 +205,7 @@ CLRatioMake(CGFloat start, CGFloat end){
     self.validRect = rct;
 }
 
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
-{
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
     if (CGRectContainsPoint(_leftView.frame, point)) {
         if (CGRectContainsPoint(_rightView.frame, point)) {
             CGPoint lp = [self convertPoint:point toView:_leftView];
@@ -223,7 +221,7 @@ CLRatioMake(CGFloat start, CGFloat end){
     return nil;
 }
 
-- (void)drawRect:(CGRect)rect{
+- (void)drawRect:(CGRect)rect {
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     CGContextClearRect(context, _validRect);
@@ -251,7 +249,7 @@ CLRatioMake(CGFloat start, CGFloat end){
 #pragma mark -
 #pragma mark -- CLEditVideoController --
 
-@interface CLEditVideoController ()<UICollectionViewDelegate, UICollectionViewDataSource, CLEditFrameViewDelegate>{
+@interface CLEditVideoController ()<UICollectionViewDelegate, UICollectionViewDataSource, CLEditFrameViewDelegate> {
     UICollectionViewFlowLayout *_layout;
     NSTimeInterval  _interval;
     NSInteger       _imageCount;
@@ -281,18 +279,18 @@ CLRatioMake(CGFloat start, CGFloat end){
 
 #pragma mark -
 #pragma mark -- Lazy Loads --
-- (CLPickerRootController *)picker{
+- (CLPickerRootController *)picker {
     return (CLPickerRootController *)self.navigationController;
 }
 
-- (NSMutableArray *)imageArray{
+- (NSMutableArray *)imageArray {
     if (!_imageArray) {
         _imageArray = [NSMutableArray array];
     }
     return _imageArray;
 }
 
-- (UICollectionView *)collectionView{
+- (UICollectionView *)collectionView {
     if (!_collectionView) {
         _layout = [[UICollectionViewFlowLayout alloc] init];
         _layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
@@ -311,7 +309,7 @@ CLRatioMake(CGFloat start, CGFloat end){
     return _collectionView;
 }
 
-- (CLEditFrameView *)editView{
+- (CLEditFrameView *)editView {
     if (!_editView) {
         _editView = [[CLEditFrameView alloc] init];
         _editView.delegate = self;
@@ -319,7 +317,7 @@ CLRatioMake(CGFloat start, CGFloat end){
     return _editView;
 }
 
-- (UILabel *)timeLabel{
+- (UILabel *)timeLabel {
     if (!_timeLabel) {
         _timeLabel = [UILabel new];
         _timeLabel.textColor = [UIColor whiteColor];
@@ -330,7 +328,7 @@ CLRatioMake(CGFloat start, CGFloat end){
     return _timeLabel;
 }
 
-- (UIView *)progressView{
+- (UIView *)progressView {
     if (!_progressView) {
         _progressView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 2, imageItemHeight)];
         _progressView.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:.7];
@@ -339,7 +337,7 @@ CLRatioMake(CGFloat start, CGFloat end){
     return _progressView;
 }
 
-- (UIButton *)rotateBtn{
+- (UIButton *)rotateBtn {
     if (!_rotateBtn) {
         _rotateBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_rotateBtn setTitle:CLString(@"旋转") forState:UIControlStateNormal];
@@ -351,7 +349,7 @@ CLRatioMake(CGFloat start, CGFloat end){
     return _rotateBtn;
 }
 
-- (UIButton *)cancelBtn{
+- (UIButton *)cancelBtn {
     if (!_cancelBtn) {
         _cancelBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_cancelBtn setTitle:CLString(@"CLText_Cancel") forState:UIControlStateNormal];
@@ -364,7 +362,7 @@ CLRatioMake(CGFloat start, CGFloat end){
     return _cancelBtn;
 }
 
-- (UIButton *)doneBtn{
+- (UIButton *)doneBtn {
     if (!_doneBtn) {
         _doneBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_doneBtn setTitle:CLString(@"CLText_Done") forState:UIControlStateNormal];
@@ -394,21 +392,19 @@ CLRatioMake(CGFloat start, CGFloat end){
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enterForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [UIApplication sharedApplication].statusBarHidden = YES;
     self.navigationController.navigationBar.hidden = YES;
 }
 
-- (void)viewWillDisappear:(BOOL)animated
-{
+- (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [UIApplication sharedApplication].statusBarHidden = NO;
     self.navigationController.navigationBar.hidden = NO;
 }
 
-- (void)viewWillLayoutSubviews{
+- (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
     UIEdgeInsets inset = UIEdgeInsetsZero;
     if (@available(iOS 11.0, *)) {
@@ -430,7 +426,7 @@ CLRatioMake(CGFloat start, CGFloat end){
     _rotateBtn.center = CGPointMake(self.view.center.x, _cancelBtn.center.y);
 }
 
-- (void)_initValue{
+- (void)_initValue {
     _canRotate = self.picker.allowAutorotate;
     // 获取时间间隔、图片个数
     if (self.model.duration > self.picker.maxDuration) {
@@ -438,7 +434,7 @@ CLRatioMake(CGFloat start, CGFloat end){
         _maxValidTime = self.picker.maxDuration;
         self.editView.minRatio = self.picker.minDuration/(self.picker.maxDuration * 1.0);
         self.timeLabel.text = [CLPhotoModel timeWithFormat:self.picker.maxDuration];
-    }else{
+    } else {
         _interval = self.model.duration / 10.f;
         _maxValidTime = self.model.duration;
         if (self.picker.minDuration && self.model.duration >= self.picker.minDuration) {
@@ -449,7 +445,7 @@ CLRatioMake(CGFloat start, CGFloat end){
     _imageCount = round(self.model.duration/_interval);
 }
 
-- (void)_initUI{
+- (void)_initUI {
     [self.view addSubview:self.collectionView];
     [self.view addSubview:self.cancelBtn];
     [self.view addSubview:self.doneBtn];
@@ -457,7 +453,7 @@ CLRatioMake(CGFloat start, CGFloat end){
 //    [self.view addSubview:self.rotateBtn];
 }
 
-- (void)_initData{
+- (void)_initData {
     self.playerLayer = [[AVPlayerLayer alloc] init];
 //    self.playerLayer.borderColor = [[UIColor whiteColor] colorWithAlphaComponent:0.6].CGColor;
 //    self.playerLayer.borderWidth = 1.0f;
@@ -482,7 +478,7 @@ CLRatioMake(CGFloat start, CGFloat end){
     }];
 }
 
-- (void)requestThumbnailImages{
+- (void)requestThumbnailImages {
     cl_weakSelf(self);
     [CLEditManager requestThumbnailImagesForAVAsset:self.asset interval:_interval size:CGSizeMake(self.model.asset.pixelWidth, imageItemHeight * [UIScreen mainScreen].scale) eachThumbnail:^(UIImage *image) {
         if (image) {
@@ -505,12 +501,11 @@ CLRatioMake(CGFloat start, CGFloat end){
 
 #pragma mark -
 #pragma mark -- UICollectionViewDataSource & UICollectionViewDelegate --
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
-{
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     return _imageCount;
 }
 
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     CLEditCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:itemIdentifier forIndexPath:indexPath];
     if (indexPath.row < _imageArray.count) {
         cell.imageView.image = _imageArray[indexPath.row];
@@ -518,20 +513,19 @@ CLRatioMake(CGFloat start, CGFloat end){
     return cell;
 }
 
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
 }
 
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section{
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     return 0;
 }
 
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section{
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     return 0;
 }
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (!self.playerLayer.player) {
         return;
     }
@@ -540,20 +534,19 @@ CLRatioMake(CGFloat start, CGFloat end){
     [self.playerLayer.player seekToTime:[self getStartTime] toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
 }
 
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
-{
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     if (!decelerate) {
         [self startTimer];
     }
 }
 
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     [self startTimer];
 }
 
 #pragma mark -
 #pragma mark -- CLEditFrameViewDelegate --
-- (void)editValidDurationChanging:(BOOL)isRight{
+- (void)editValidDurationChanging:(BOOL)isRight {
     if (_canRotate) {
         self.picker.allowAutorotate = NO;
     }
@@ -561,13 +554,13 @@ CLRatioMake(CGFloat start, CGFloat end){
     [self.playerLayer.player pause];
     if (isRight) {
         [self.playerLayer.player seekToTime:[self getEndTime] toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
-    }else{
+    } else {
         [self.playerLayer.player seekToTime:[self getStartTime] toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
     }
     self.timeLabel.text = [CLPhotoModel timeWithFormat:(_editView.endRatio - _editView.startRatio)*_maxValidTime];
 }
 
-- (void)editValidDurationEndChanged{
+- (void)editValidDurationEndChanged {
     if (_canRotate) {
         self.picker.allowAutorotate = YES;
     }
@@ -577,7 +570,7 @@ CLRatioMake(CGFloat start, CGFloat end){
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
     [super viewWillTransitionToSize:size withTransitionCoordinator: coordinator];
     cl_weakSelf(self);
-    [coordinator animateAlongsideTransition: ^(id<UIViewControllerTransitionCoordinatorContext> context){
+    [coordinator animateAlongsideTransition: ^(id<UIViewControllerTransitionCoordinatorContext> context) {
      } completion: ^(id<UIViewControllerTransitionCoordinatorContext> context) {
          if (weakSelf.playerLayer.player.currentItem) {
              [weakSelf startTimer];
@@ -588,17 +581,17 @@ CLRatioMake(CGFloat start, CGFloat end){
 
 #pragma mark -
 #pragma mark -- Notification --
-- (void)enterBackground{
+- (void)enterBackground {
     [self stopTimer];
 }
 
-- (void)enterForeground{
+- (void)enterForeground {
     [self startTimer];
 }
 
 #pragma mark -
 #pragma mark -- Private Methods --
-- (void)startTimer{
+- (void)startTimer {
     if (!self.playerLayer.player.currentItem) {
         return;
     }
@@ -620,7 +613,7 @@ CLRatioMake(CGFloat start, CGFloat end){
     } completion:nil];
 }
 
-- (void)stopTimer{
+- (void)stopTimer {
     if (_timer) {
         [_timer invalidate];
         _timer = nil;
@@ -632,39 +625,39 @@ CLRatioMake(CGFloat start, CGFloat end){
     }
 }
 
-- (CMTime)getStartTime{
+- (CMTime)getStartTime {
     CGRect rect = [self.collectionView convertRect:self.editView.validRect fromView:self.editView];
     CGFloat s = MAX(0, _interval * (rect.origin.x - editSideMargin)/_layout.itemSize.width);
     return CMTimeMakeWithSeconds(s, self.playerLayer.player.currentTime.timescale);
 }
 
-- (CMTime)getEndTime{
+- (CMTime)getEndTime {
     CGRect rect = [self.collectionView convertRect:self.editView.validRect fromView:self.editView];
     CGFloat d = floorf(_interval * (rect.origin.x + self.editView.validRect.size.width - editSideMargin)/_layout.itemSize.width * 100.0)/100.0;
     return CMTimeMakeWithSeconds(d, self.playerLayer.player.currentTime.timescale);
 }
 
-- (CMTimeRange)getTimeRange{
+- (CMTimeRange)getTimeRange {
     CMTime start = [self getStartTime];
     CGFloat d = floorf(_interval * self.editView.validRect.size.width/_layout.itemSize.width * 100.0)/100.0;
     CMTime duration = CMTimeMakeWithSeconds(d, self.playerLayer.player.currentTime.timescale);
     return CMTimeRangeMake(start, duration);
 }
 
-- (void)playPartVideo:(NSTimer *)timer{
+- (void)playPartVideo:(NSTimer *)timer {
     [self.playerLayer.player play];
     [self.playerLayer.player seekToTime:[self getStartTime] toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
 }
 
 #pragma mark -
 #pragma mark -- Target Methods --
-- (void)clickRotateBtn:(UIButton *)sender{
+- (void)clickRotateBtn:(UIButton *)sender {
     _degrees+=90;
     _degrees = _degrees % 360;
     [_playerLayer setTransform:CATransform3DMakeRotation(M_PI*_degrees/180.0, 0, 0, 1)];
 }
 
-- (void)clickCancelBtn:(UIButton *)sender{
+- (void)clickCancelBtn:(UIButton *)sender {
     [self.picker cancelExport];
     [self stopTimer];
     self.picker.allowAutorotate = _canRotate;
@@ -674,7 +667,7 @@ CLRatioMake(CGFloat start, CGFloat end){
     [self.navigationController popViewControllerAnimated:NO];
 }
 
-- (void)clickDoneBtn:(UIButton *)sender{
+- (void)clickDoneBtn:(UIButton *)sender {
     if (_asset) {
         if (_canRotate) {
             self.picker.allowAutorotate = NO;
@@ -689,10 +682,10 @@ CLRatioMake(CGFloat start, CGFloat end){
     }
 }
 
-- (void)dealloc{
+- (void)dealloc {
     [CLEditManager cancelAllCGImageGeneration];
     [self stopTimer];
-    if (_playerLayer.player){
+    if (_playerLayer.player) {
         [_playerLayer.player pause];
         _playerLayer.player = nil;
     }

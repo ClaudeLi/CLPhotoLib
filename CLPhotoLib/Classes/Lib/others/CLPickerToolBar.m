@@ -26,11 +26,11 @@ static CGFloat itemMargin   = 10.0f;
 
 @implementation CLPickerToolBar
 
-- (void)setFontSize:(CGFloat)fontSize{
+- (void)setFontSize:(CGFloat)fontSize {
     _fontSize = fontSize;
 }
 
-- (void)setTitleColor:(UIColor *)titleColor{
+- (void)setTitleColor:(UIColor *)titleColor {
     _titleColor = titleColor;
     if (_previewBtn) {
         [_previewBtn setTitleColor:[_titleColor colorWithAlphaComponent:CLBarEnabledAlpha] forState:UIControlStateNormal];
@@ -54,23 +54,23 @@ static CGFloat itemMargin   = 10.0f;
     }
 }
 
-- (void)setEditSelect:(BOOL)editSelect{
+- (void)setEditSelect:(BOOL)editSelect {
     _editSelect = editSelect;
     if (_editBtn) {
         _editBtn.selected = _editSelect;
     }
 }
 
-- (void)startAnimating{
+- (void)startAnimating {
     [self.originalBtn setTitle:CLString(@"CLText_Original") forState:UIControlStateNormal];
     [self.indicatorView startAnimating];
 }
 
-- (void)stopAnimating{
+- (void)stopAnimating {
     [self.indicatorView stopAnimating];
 }
 
-- (void)layoutSubviews{
+- (void)layoutSubviews {
     [super layoutSubviews];
     UIEdgeInsets inset = UIEdgeInsetsZero;
     if (@available(iOS 11, *)) {
@@ -98,7 +98,7 @@ static CGFloat itemMargin   = 10.0f;
 
 #pragma mark -
 #pragma mark -- Target Methods --
-- (void)clickPreviewBtn:(UIButton *)sender{
+- (void)clickPreviewBtn:(UIButton *)sender {
     if (sender.selected) {
         if (self.clickPreviewBlock) {
             self.clickPreviewBlock();
@@ -106,7 +106,7 @@ static CGFloat itemMargin   = 10.0f;
     }
 }
 
-- (void)clickEditBtn:(UIButton *)sender{
+- (void)clickEditBtn:(UIButton *)sender {
     if (sender.selected) {
         if (self.clickEditBlock) {
             self.clickEditBlock();
@@ -114,7 +114,7 @@ static CGFloat itemMargin   = 10.0f;
     }
 }
 
-- (void)clickOriginalBtn:(UIButton *)sender{
+- (void)clickOriginalBtn:(UIButton *)sender {
     sender.selected = !sender.selected;
     if (self.clickOriginalBlock) {
         self.clickOriginalBlock(sender.selected);
@@ -123,7 +123,7 @@ static CGFloat itemMargin   = 10.0f;
 
 #pragma mark -
 #pragma mark -- Lazy Loads --
-- (UIButton *)previewBtn{
+- (UIButton *)previewBtn {
     if (!_previewBtn) {
         _previewBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_previewBtn setTitle:CLString(@"CLText_Preview") forState:UIControlStateNormal];
@@ -139,7 +139,7 @@ static CGFloat itemMargin   = 10.0f;
     return _previewBtn;
 }
 
-- (UIButton *)editBtn{
+- (UIButton *)editBtn {
     if (!_editBtn) {
         _editBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_editBtn setTitle:CLString(@"CLText_Edit") forState:UIControlStateNormal];
@@ -155,7 +155,7 @@ static CGFloat itemMargin   = 10.0f;
     return _editBtn;
 }
 
-- (UIButton *)originalBtn{
+- (UIButton *)originalBtn {
     if (!_originalBtn) {
         _originalBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_originalBtn setImage:[UIImage imageNamedFromBundle:@"btn_original_unselected"] forState:UIControlStateNormal];
@@ -176,7 +176,7 @@ static CGFloat itemMargin   = 10.0f;
     return _originalBtn;
 }
 
-- (UIButton *)tipLabel{
+- (UIButton *)tipLabel {
     if (!_tipLabel) {
         _tipLabel = [UIButton buttonWithType:UIButtonTypeCustom];
         _tipLabel.titleLabel.font = [UIFont systemFontOfSize:_fontSize];
@@ -191,7 +191,7 @@ static CGFloat itemMargin   = 10.0f;
     return _tipLabel;
 }
 
-- (UIActivityIndicatorView *)indicatorView{
+- (UIActivityIndicatorView *)indicatorView {
     if (!_indicatorView) {
         _indicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         _indicatorView.hidesWhenStopped = YES;
@@ -202,7 +202,7 @@ static CGFloat itemMargin   = 10.0f;
     return _indicatorView;
 }
 
-- (CLDoneButton *)doneBtn{
+- (CLDoneButton *)doneBtn {
     if (!_doneBtn) {
         _doneBtn = [CLDoneButton buttonWithType:UIButtonTypeCustom];
         if (_titleColor) {
@@ -213,28 +213,28 @@ static CGFloat itemMargin   = 10.0f;
     return _doneBtn;
 }
 
-- (CGFloat)pWidth{
+- (CGFloat)pWidth {
     if (!_pWidth) {
         _pWidth = GetMatchValue(CLString(@"CLText_Preview"), _fontSize, YES, CLToolBarHeight)?:0.01;
     }
     return _pWidth;
 }
 
-- (CGFloat)eWidth{
+- (CGFloat)eWidth {
     if (!_eWidth) {
         _eWidth = GetMatchValue(CLString(@"CLText_Edit"), _fontSize, YES, CLToolBarHeight)?:0.01;
     }
     return _eWidth;
 }
 
-- (CGFloat)oWidth{
+- (CGFloat)oWidth {
     if (!_oWidth) {
         _oWidth = GetMatchValue(CLString(@"CLText_Original"), _fontSize, YES, CLToolBarHeight)?:0.01;
     }
     return _oWidth;
 }
 
-- (CGFloat)dWidth{
+- (CGFloat)dWidth {
     if (!_dWidth) {
         _dWidth = GetMatchValue(CLString(@"CLText_Done"), _fontSize, YES, CLToolBarHeight)?:0.01;
     }
@@ -242,7 +242,6 @@ static CGFloat itemMargin   = 10.0f;
 }
 
 @end
-
 
 @interface CLDoneButton ()
 
@@ -252,7 +251,7 @@ static CGFloat itemMargin   = 10.0f;
 
 @implementation CLDoneButton
 
-- (instancetype)init{
+- (instancetype)init {
     self = [super init];
     if (self) {
         [self _setUp];
@@ -260,7 +259,7 @@ static CGFloat itemMargin   = 10.0f;
     return self;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         [self _setUp];
@@ -268,7 +267,7 @@ static CGFloat itemMargin   = 10.0f;
     return self;
 }
 
-- (instancetype)initWithCoder:(NSCoder *)aDecoder{
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder:aDecoder];
     if (self) {
         [self _setUp];
@@ -276,37 +275,37 @@ static CGFloat itemMargin   = 10.0f;
     return self;
 }
 
-- (void)_setUp{
+- (void)_setUp {
     [self setTitle:CLString(@"CLText_Done") forState:UIControlStateNormal];
     self.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
     [self addTarget:self action:@selector(clickDoneBtn:) forControlEvents:UIControlEventTouchUpInside];
     self.titleFontSize = CLToolBarTitleFontSize;
 }
 
-- (void)layoutSubviews{
+- (void)layoutSubviews {
     [super layoutSubviews];
     self.numberLabel.frame = CGRectMake(0, (self.height - (_titleFontSize + 1))/2.0, (_titleFontSize + 1), _titleFontSize + 1);
 }
 
-- (void)setTitleFontSize:(CGFloat)titleFontSize{
+- (void)setTitleFontSize:(CGFloat)titleFontSize {
     _titleFontSize = titleFontSize;
     self.titleLabel.font = [UIFont systemFontOfSize:_titleFontSize];
     self.numberLabel.font = [UIFont systemFontOfSize:(_titleFontSize - 1)];
     self.numberLabel.layer.cornerRadius = (_titleFontSize + 1)/2.0f;
 }
 
-- (void)setTitleColor:(UIColor *)titleColor{
+- (void)setTitleColor:(UIColor *)titleColor {
     _titleColor = titleColor;
     [self setTitleColor:[_titleColor colorWithAlphaComponent:CLBarEnabledAlpha] forState:UIControlStateNormal];
     [self setTitleColor:_titleColor forState:UIControlStateSelected];
 }
 
-- (void)setNumberColor:(UIColor *)numberColor{
+- (void)setNumberColor:(UIColor *)numberColor {
     _numberColor = numberColor;
     self.numberLabel.textColor = _numberColor;
 }
 
-- (void)setNumber:(NSInteger)number{
+- (void)setNumber:(NSInteger)number {
     if (_number != number) {
         _number = number;
         self.selected = _number > 0;
@@ -314,13 +313,13 @@ static CGFloat itemMargin   = 10.0f;
             self.numberLabel.hidden = NO;
             self.numberLabel.text = [NSString stringWithFormat:@"%ld", (long)number];
             [UIView showOscillatoryAnimationWithLayer:_numberLabel.layer type:CLOscillatoryAnimationToSmaller];
-        }else{
+        } else {
             _numberLabel.hidden = YES;
         }
     }
 }
 
-- (void)clickDoneBtn:(CLDoneButton *)sender{
+- (void)clickDoneBtn:(CLDoneButton *)sender {
     if (sender.selected) {
         if (self.clickDoneBlock) {
             self.clickDoneBlock();
@@ -330,7 +329,7 @@ static CGFloat itemMargin   = 10.0f;
 
 #pragma mark -
 #pragma mark -- Lazy Loads --
-- (UILabel *)numberLabel{
+- (UILabel *)numberLabel {
     if (!_numberLabel) {
         _numberLabel = [[UILabel alloc] init];
         _numberLabel.backgroundColor = _titleColor?:CLBarItemTitleDefaultColor;
@@ -342,6 +341,5 @@ static CGFloat itemMargin   = 10.0f;
     }
     return _numberLabel;
 }
-
 
 @end

@@ -41,7 +41,7 @@
 - (void)requestImagesWithModelArray:(NSMutableArray<CLPhotoModel *> *)modelArray isOriginal:(BOOL)isOriginal completion:(void (^)(NSArray<UIImage *> *photos, NSArray *assets))completion;
 
 // 获取LivePhoto
-- (void)requestLivePhotoForAsset:(PHAsset *)asset completion:(void (^)(PHLivePhoto *livePhoto, NSDictionary *info))completion PHOTOS_AVAILABLE_IOS_TVOS(9_1, 10_0);
+- (void)requestLivePhotoForAsset:(PHAsset *)asset completion:(void (^)(PHLivePhoto *livePhoto, NSDictionary *info))completion API_AVAILABLE(ios(9.1));
 
 // 获取图片data
 - (void)requestOriginalImageDataForAsset:(PHAsset *)asset completion:(void (^)(NSData *data, NSDictionary *info))completion;

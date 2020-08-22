@@ -36,12 +36,12 @@ static NSString *itemIdentifier = @"CLPhotoCollectionCellIdentifier";
     [super didReceiveMemoryWarning];
 }
 
-- (void)viewWillAppear:(BOOL)animated{
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationNone];
 }
 
-- (void)viewWillDisappear:(BOOL)animated{
+- (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
 }
@@ -54,7 +54,7 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
     CLSlideSelectTypeCancel,
 };
 
-@interface CLPhotosViewController ()<UICollectionViewDelegate, UICollectionViewDataSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate>{
+@interface CLPhotosViewController ()<UICollectionViewDelegate, UICollectionViewDataSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
     BOOL _reloadAlbumList;
     // 开始滑动选择 或 取消
     BOOL _beginSelect;
@@ -108,12 +108,12 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
     }
 }
 
-- (void)viewWillAppear:(BOOL)animated{
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [UIApplication sharedApplication].statusBarStyle = self.picker.statusBarStyle;
 }
 
-- (void)viewWillLayoutSubviews{
+- (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
     [UIApplication sharedApplication].statusBarHidden = self.navigationController.navigationBar.hidden;
     UIEdgeInsets inset = UIEdgeInsetsZero;
@@ -130,21 +130,21 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
     }
 }
 
-- (void)setTitle:(NSString *)title{
+- (void)setTitle:(NSString *)title {
     if (self.picker.allowAlbumDropDown) {
         if (_titleBtn.hidden) {
             _titleBtn.hidden = NO;
         }
         [_titleBtn setTitle:title forState:UIControlStateNormal];
         [self _updateTitleBtnLayout];
-    }else{
+    } else {
         [super setTitle:title];
     }
 }
 
 #pragma mark -
 #pragma mark -- self Methods --
-- (void)_initNavigationItems{
+- (void)_initNavigationItems {
     if (self.picker.allowDoneOnToolBar) {
         UIButton *rightItem = [UIButton buttonWithType:UIButtonTypeCustom];
         rightItem.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
@@ -155,7 +155,7 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
         [rightItem setTitleColor:self.picker.navigationItemColor forState:UIControlStateNormal];
         [rightItem addTarget:self action:@selector(clickCancelItemAction) forControlEvents:UIControlEventTouchUpInside];
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightItem];
-    }else{
+    } else {
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.doneBtn];
     }
     if (self.picker.allowAlbumDropDown) {
@@ -171,7 +171,7 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
     }
 }
 
-- (void)_initData{
+- (void)_initData {
     if (_albumModel) {
         self.title = self.albumModel.title;
         cl_weakSelf(self);
@@ -182,15 +182,18 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
                 [weakSelf scrollToBottom];
             });
         });
-    }else{
+    } else {
+        NSArray *selectedAssets = self.picker.selectedAssets;
+        CLPickerSelectMode selectMode = self.picker.selectMode;
+        NSMutableArray *selectedModels = self.picker.selectedModels;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             cl_weakSelf(self);
-            [CLPhotoShareManager getCameraRollAlbumWithSelectMode:self.picker.selectMode complete:^(CLAlbumModel *albumModel) {
+            [CLPhotoShareManager getCameraRollAlbumWithSelectMode:selectMode complete:^(CLAlbumModel *albumModel) {
                 cl_strongSelf(weakSelf);
                 if (strongSelf) {
                     strongSelf.albumModel = albumModel;
                     strongSelf.photoArray = albumModel.models.mutableCopy;
-                    [self checkSelectedModels];
+                    [self checkSelectedModels:selectedAssets selectedModels:selectedModels];
                     dispatch_async(dispatch_get_main_queue(), ^{
                         strongSelf.title = albumModel.title;
                         [strongSelf.collectionView reloadData];
@@ -202,14 +205,14 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
     }
 }
 
-- (void)checkSelectedModels {
+- (void)checkSelectedModels:(NSArray *)selectedAssets selectedModels:(NSMutableArray *)selectedModels {
     for (CLPhotoModel *model in self.photoArray) {
-        if (!model.isSelected){
-            for (PHAsset *asset in self.picker.selectedAssets) {
-                if ([asset.localIdentifier isEqualToString:model.asset.localIdentifier]){
+        if (!model.isSelected) {
+            for (PHAsset *asset in selectedAssets) {
+                if ([asset.localIdentifier isEqualToString:model.asset.localIdentifier]) {
                     model.isSelected = YES;
-                    if (![CLPhotoManager checkSelcectedWithModel:model identifiers:[CLPhotoManager getLocalIdentifierArrayWithArray:self.picker.selectedModels]]) {
-                        [self.picker.selectedModels addObject:model];
+                    if (![CLPhotoManager checkSelcectedWithModel:model identifiers:[CLPhotoManager getLocalIdentifierArrayWithArray:selectedModels]]) {
+                        [selectedModels addObject:model];
                     }
                 }
             }
@@ -219,14 +222,14 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
 
 #pragma mark -
 #pragma mark -- UICollectionViewDataSource & UICollectionViewDelegate --
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     if (self.picker.allowTakePhoto) {
         return _photoArray.count + 1;
     }
     return _photoArray.count;
 }
 
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     if (_photoArray && self.picker.allowTakePhoto && ((self.picker.sortAscending && indexPath.row >= _photoArray.count) || (!self.picker.sortAscending && indexPath.row == 0))) {
         CLTakePhotoCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:takeIdentifier forIndexPath:indexPath];
         cell.allowSelectVideo = self.picker.selectMode == CLPickerSelectModeAllowVideo ? YES:NO;
@@ -283,15 +286,15 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
     return cell;
 }
 
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     if ((self.picker.sortAscending && indexPath.row >= _photoArray.count) || (!self.picker.sortAscending && indexPath.row == 0 && self.picker.allowTakePhoto)) {
         if (self.picker.selectMode == CLPickerSelectModeAllowVideo) {
             [self takeVideo];
             return;
-        }else{
+        } else {
             if (self.picker.selectedModels.count < self.picker.maxSelectCount) {
                 [self takePhoto];
-            }else{
+            } else {
                 [self.picker showText:[NSString stringWithFormat:CLString(@"CLText_MaxImagesCount"), self.picker.maxSelectCount]];
             }
             return;
@@ -306,21 +309,21 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
     }
 }
 
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section{
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     return self.picker.minimumLineSpacing;
 }
 
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section{
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     return self.picker.minimumInteritemSpacing;
 }
 
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     CGFloat width = MIN(collectionView.width, collectionView.height);
     CGFloat itemWidth = (width - self.picker.sectionInset.left - self.picker.sectionInset.right - self.picker.columnCount * self.picker.minimumInteritemSpacing)/(self.picker.columnCount * 1.0);
     return CGSizeMake(itemWidth, itemWidth);
 }
 
-- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section{
+- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
     UIEdgeInsets inset = self.picker.sectionInset;
     if (@available(iOS 11, *)) {
         inset.bottom += self.view.safeAreaInsets.bottom;
@@ -333,14 +336,14 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
 
 #pragma mark -
 #pragma mark -- Private Methods --
-- (void)_updateTitleBtnLayout{
+- (void)_updateTitleBtnLayout {
     CGFloat imageWith = _titleBtn.imageView.frame.size.width;
     CGFloat labelWidth = _titleBtn.titleLabel.frame.size.width;
     _titleBtn.imageEdgeInsets = UIEdgeInsetsMake(0, labelWidth + 10, 0, -labelWidth - 10);
     _titleBtn.titleEdgeInsets = UIEdgeInsetsMake(0, -imageWith + 10, 0, imageWith - 10);
 }
 
-- (void)scrollToBottom{
+- (void)scrollToBottom {
     if (!self.picker.sortAscending) {
         return;
     }
@@ -353,7 +356,7 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
     }
 }
 
-- (void)refreshBottomToolBarStatus{
+- (void)refreshBottomToolBarStatus {
     if (_toolBar) {
         if (self.picker.allowPreviewImage) {
             _toolBar.previewBtn.selected = self.picker.selectedModels.count > 0;
@@ -366,10 +369,10 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
             if (self.picker.selectedModels.count) {
                 if (_toolBar.originalBtn.selected) {
                     [self getOriginalImageBytes];
-                }else{
+                } else {
                     [_toolBar.originalBtn setTitle:CLString(@"CLText_Original") forState:UIControlStateNormal];
                 }
-            }else{
+            } else {
                 [_toolBar.originalBtn setTitle:CLString(@"CLText_Original") forState:UIControlStateNormal];
             }
         }
@@ -382,14 +385,15 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
     }
 }
 
-- (void)getOriginalImageBytes{
+- (void)getOriginalImageBytes {
     if (_selectType) {
         return;
     }
     [_toolBar startAnimating];
+    CLPickerRootController *pk = self.picker;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         cl_weakSelf(self);
-        [CLPhotoManager getPhotosBytesWithArray:self.picker.selectedModels completion:^(NSString *photosBytes) {
+        [CLPhotoManager getPhotosBytesWithArray:pk.selectedModels completion:^(NSString *photosBytes) {
             cl_strongSelf(weakSelf);
             if (!strongSelf) {
                 return;
@@ -399,7 +403,7 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
     });
 }
 
-- (void)setOriginalImageBytes:(id)object{
+- (void)setOriginalImageBytes:(id)object {
     cl_weakSelf(self);
     dispatch_async(dispatch_get_main_queue(), ^{
         [weakSelf.toolBar stopAnimating];
@@ -407,13 +411,13 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
     });
 }
 
-- (void)gotoPreviewController:(NSInteger)index modelArray:(NSArray *)modelArray{
+- (void)gotoPreviewController:(NSInteger)index modelArray:(NSArray *)modelArray {
     cl_WS(ws);
     CLPreviewViewController *preview = [[CLPreviewViewController alloc] init];
     preview.currentIndex = index;
 //        preview.currentModel = modelArray[index];
     preview.photoArray = modelArray;
-    [preview setDidReloadToolBarStatus:^(BOOL reload){
+    [preview setDidReloadToolBarStatus:^(BOOL reload) {
         if (reload) {
             [ws.collectionView reloadData];
         }
@@ -435,12 +439,12 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
         imageCamera.sourceType = UIImagePickerControllerSourceTypeCamera;
 //        imageCamera.modalPresentationStyle = UIModalPresentationOverCurrentContext;
         [self showDetailViewController:imageCamera sender:self];
-    }else{
+    } else {
         [self.picker showText:CLString(@"CLText_CannotSimulatorCamera")];
     }
 }
 
-- (void)takeVideo{
+- (void)takeVideo {
     AVAuthorizationStatus authorizationStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
     if ([[AVAudioSession sharedInstance] respondsToSelector:@selector(requestRecordPermission:)]) {
         cl_weakSelf(self);
@@ -449,37 +453,39 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
             if (!strongSelf) {
                 return;
             }
-            if (granted) {
-                // Microphone is enabled
-                if (authorizationStatus == AVAuthorizationStatusRestricted|| authorizationStatus == AVAuthorizationStatusDenied){
-                    [strongSelf showAlertWithMessage:CLString(@"CLText_NotAccessCamera")];
-                }else{
-                    if ([UIImagePickerController isSourceTypeAvailable: UIImagePickerControllerSourceTypeCamera]) {
-                        if (strongSelf.picker.usedCustomRecording) {
-                            [strongSelf.picker clickShootVideoAction];
-                        }else{
-                            CLImagePickerController *imageCamera = [[CLImagePickerController alloc] init];
-                            imageCamera.delegate = strongSelf;
-//                            imageCamera.allowsEditing = YES;
-                            imageCamera.mediaTypes = @[(NSString*)kUTTypeMovie];
-                            imageCamera.videoQuality = UIImagePickerControllerQualityTypeIFrame960x540;
-                            imageCamera.sourceType = UIImagePickerControllerSourceTypeCamera;
-                            imageCamera.videoMaximumDuration = strongSelf.picker.maxDuration;
-                            [strongSelf showDetailViewController:imageCamera sender:strongSelf];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (granted) {
+                    // Microphone is enabled
+                    if (authorizationStatus == AVAuthorizationStatusRestricted|| authorizationStatus == AVAuthorizationStatusDenied) {
+                        [strongSelf showAlertWithMessage:CLString(@"CLText_NotAccessCamera")];
+                    } else {
+                        if ([UIImagePickerController isSourceTypeAvailable: UIImagePickerControllerSourceTypeCamera]) {
+                            if (strongSelf.picker.usedCustomRecording) {
+                                [strongSelf.picker clickShootVideoAction];
+                            } else {
+                                CLImagePickerController *imageCamera = [[CLImagePickerController alloc] init];
+                                imageCamera.delegate = strongSelf;
+                                //                            imageCamera.allowsEditing = YES;
+                                imageCamera.mediaTypes = @[(NSString*)kUTTypeMovie];
+                                imageCamera.videoQuality = UIImagePickerControllerQualityTypeIFrame960x540;
+                                imageCamera.sourceType = UIImagePickerControllerSourceTypeCamera;
+                                imageCamera.videoMaximumDuration = strongSelf.picker.maxDuration;
+                                [strongSelf showDetailViewController:imageCamera sender:strongSelf];
+                            }
+                        } else {
+                            [strongSelf.picker showText:CLString(@"CLText_CannotSimulatorCamera")];
                         }
-                    }else{
-                        [strongSelf.picker showText:CLString(@"CLText_CannotSimulatorCamera")];
                     }
+                } else {
+                    // Microphone disabled code
+                    [strongSelf showAlertWithMessage:CLString(@"CLText_NotAccessMicrophone")];
                 }
-            }else {
-                // Microphone disabled code
-                [strongSelf showAlertWithMessage:CLString(@"CLText_NotAccessMicrophone")];
-            }
+            });
         }];
     }
 }
 
-- (void)showAlertWithMessage:(NSString *)message{
+- (void)showAlertWithMessage:(NSString *)message {
     message = [NSString stringWithFormat:message, [UIDevice currentDevice].model, CLAppName];
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:message preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *action = [UIAlertAction actionWithTitle:CLString(@"CLText_GotoSettings") style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
@@ -500,7 +506,7 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
         popPresenter.sourceView = self.view;
         popPresenter.sourceRect = self.view.bounds;
         [self presentViewController:alert animated:YES completion:nil];
-    }else{
+    } else {
         [self presentViewController:alert animated:YES completion:nil];
     }
 }
@@ -526,11 +532,11 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
                     if (strongSelf) {
                         [strongSelf reloadPhotoArray:NO];
                     }
-                }else{
+                } else {
                     [strongSelf.picker showText:CLString(@"CLText_SaveImageError")];
                 }
             }];
-        }else if ([type isEqualToString:@"public.movie"]) {
+        } else if ([type isEqualToString:@"public.movie"]) {
             [ws.picker showProgress];
             NSURL *URL = [info objectForKey:UIImagePickerControllerMediaURL];
             cl_weakSelf(self);
@@ -545,7 +551,7 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
                     if (strongSelf) {
                         [strongSelf reloadPhotoArray:YES];
                     }
-                }else{
+                } else {
                     [strongSelf.picker showText:CLString(@"CLText_SaveVideoError")];
                 }
             }];
@@ -553,7 +559,7 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
     }];
 }
 
-- (void)reloadPhotoArray:(BOOL)isVideo{
+- (void)reloadPhotoArray:(BOOL)isVideo {
     cl_weakSelf(self);
     __block BOOL _isVideo = isVideo;
     [CLPhotoShareManager getCameraRollAlbumWithSelectMode:self.picker.selectMode complete:^(CLAlbumModel *albumModel) {
@@ -598,15 +604,15 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
 
 #pragma mark -
 #pragma mark -- Target Methods --
-- (void)clickCancelItemAction{
+- (void)clickCancelItemAction {
     [self.picker clickCancelAction];
 }
 
-- (void)clickDoneItemAction{
+- (void)clickDoneItemAction {
     [self.picker didFinishPickingPhotosAction];
 }
 
-- (void)clickEidtImageAction{
+- (void)clickEidtImageAction {
     if (self.picker.selectedModels.count) {
         CLEditImageController *image = [[CLEditImageController alloc] init];
         image.model = self.picker.selectedModels[0];
@@ -614,21 +620,22 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
     }
 }
 
-- (void)clickTitleViewAction:(UIButton *)sender{
+- (void)clickTitleViewAction:(UIButton *)sender {
     if (!sender.selected) {
         if (_reloadAlbumList || !_albumView.albumArray) {
             _reloadAlbumList = NO;
+            CLPickerRootController *pk = self.picker;
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 cl_weakSelf(self);
-                [CLPhotoShareManager getAlbumListWithSelectMode:self.picker.selectMode completion:^(NSArray<CLAlbumModel *> *models) {
+                [CLPhotoShareManager getAlbumListWithSelectMode:pk.selectMode completion:^(NSArray<CLAlbumModel *> *models) {
                     cl_strongSelf(weakSelf);
                     if (!strongSelf) {
                         return;
                     }
-                    for (CLAlbumModel *albumModel in models) {
-                        albumModel.selectedModels = strongSelf.picker.selectedModels;
-                    }
                     dispatch_async(dispatch_get_main_queue(), ^{
+                        for (CLAlbumModel *albumModel in models) {
+                            albumModel.selectedModels = strongSelf.picker.selectedModels;
+                        }
                         strongSelf.albumView.albumArray = models;
                         [strongSelf.albumView showAlbumAnimated:YES];
                         [UIView animateWithDuration:CLLittleControlAnimationTime animations:^{
@@ -640,7 +647,7 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
                     });
                 }];
             });
-        }else{
+        } else {
             for (CLAlbumModel *albumModel in self.albumView.albumArray) {
                 albumModel.selectedModels = self.picker.selectedModels;
             }
@@ -653,13 +660,13 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
             } completion:^(BOOL finished) {
             }];
         }
-    }else{
+    } else {
         [_albumView dismiss];
     }
     sender.selected = !sender.selected;
 }
 
-- (void)panAction:(UIPanGestureRecognizer *)pan{
+- (void)panAction:(UIPanGestureRecognizer *)pan {
     CGPoint point = [pan locationInView:self.collectionView];
     NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:point];
     UICollectionViewCell *cell = [self.collectionView cellForItemAtIndexPath:indexPath];
@@ -800,27 +807,25 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
 
 #pragma mark -
 #pragma mark -- Lazy Loads --
-- (CLPickerRootController *)picker{
+- (CLPickerRootController *)picker {
     return (CLPickerRootController *)self.navigationController;
 }
 
-- (NSMutableArray<NSIndexPath *> *)arrSlideIndexPath
-{
+- (NSMutableArray<NSIndexPath *> *)arrSlideIndexPath {
     if (!_arrSlideIndexPath) {
         _arrSlideIndexPath = [NSMutableArray array];
     }
     return _arrSlideIndexPath;
 }
 
-- (NSMutableDictionary<NSString *, NSNumber *> *)dicOriSelectStatus
-{
+- (NSMutableDictionary<NSString *, NSNumber *> *)dicOriSelectStatus {
     if (!_dicOriSelectStatus) {
         _dicOriSelectStatus = [NSMutableDictionary dictionary];
     }
     return _dicOriSelectStatus;
 }
 
-- (UIButton *)titleBtn{
+- (UIButton *)titleBtn {
     if (!_titleBtn) {
         _titleBtn = [UIButton new];
         _titleBtn.frame = CGRectMake(0, 0, self.view.width - 160, self.navigationController.navigationBar.height);
@@ -834,7 +839,7 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
     return _titleBtn;
 }
 
-- (CLAlbumTableView *)albumView{
+- (CLAlbumTableView *)albumView {
     if (!_albumView) {
         _albumView = [[CLAlbumTableView alloc] init];
         cl_WS(ws);
@@ -855,7 +860,7 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
     return _albumView;
 }
 
-- (UICollectionView *)collectionView{
+- (UICollectionView *)collectionView {
     if (!_collectionView) {
         UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
         _collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
@@ -868,7 +873,7 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
         [_collectionView registerClass:[CLTakePhotoCell class] forCellWithReuseIdentifier:takeIdentifier];
         [self.view insertSubview:_collectionView atIndex:0];
         if (@available(iOS 9.0, *)) {
-            if (self.traitCollection.forceTouchCapability == UIForceTouchCapabilityAvailable){
+            if (self.traitCollection.forceTouchCapability == UIForceTouchCapabilityAvailable) {
                 [self registerForPreviewingWithDelegate:(id)self sourceView:_collectionView];
             }
         }
@@ -876,7 +881,7 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
     return _collectionView;
 }
 
-- (CLDoneButton *)doneBtn{
+- (CLDoneButton *)doneBtn {
     if (!_doneBtn) {
         _doneBtn = [CLDoneButton buttonWithType:UIButtonTypeCustom];
         CGFloat doneWidth = GetMatchValue(CLString(@"CLText_Done"), CLNavigationItemFontSize, YES, CLToolBarHeight) + CLNavigationItemFontSize + 2;
@@ -893,7 +898,7 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
     return _doneBtn;
 }
 
-- (CLPickerToolBar *)toolBar{
+- (CLPickerToolBar *)toolBar {
     if (!_toolBar) {
         _toolBar = [[CLPickerToolBar alloc] init];
         _toolBar.titleColor = self.picker.toolBarItemColor?:self.picker.navigationItemColor;
@@ -936,8 +941,7 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
 
 #pragma mark -
 #pragma mark -- 3D Touch UIViewControllerPreviewingDelegate --
-- (UIViewController *)previewingContext:(id<UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location
-{
+- (UIViewController *)previewingContext:(id<UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location {
     NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:location];
     if (!indexPath) {
         return nil;
@@ -964,7 +968,7 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
     return vc;
 }
 
-- (void)previewingContext:(id<UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit{
+- (void)previewingContext:(id<UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit {
     if ([viewControllerToCommit isKindOfClass:[CLTouchViewController class]]) {
         CLTouchViewController *vc = (CLTouchViewController *)viewControllerToCommit;
         if (vc.index < _photoArray.count) {
@@ -973,7 +977,7 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
             preview.currentIndex = vc.index;
             //        preview.currentModel = _photoArray[index];
             preview.photoArray = _photoArray;
-            [preview setDidReloadToolBarStatus:^(BOOL reload){
+            [preview setDidReloadToolBarStatus:^(BOOL reload) {
                 if (reload) {
                     [ws.collectionView reloadData];
                 }
@@ -984,7 +988,7 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
     }
 }
 
-- (CGSize)getSize:(CLPhotoModel *)model{
+- (CGSize)getSize:(CLPhotoModel *)model {
     CGFloat w = MIN(model.asset.pixelWidth, self.view.width);
     CGFloat h = w * model.asset.pixelHeight / model.asset.pixelWidth;
     if (isnan(h)) return CGSizeZero;
@@ -993,9 +997,6 @@ typedef NS_ENUM(NSInteger, CLSlideSelectType) {
         w = h * model.asset.pixelWidth / model.asset.pixelHeight;
     }
     return CGSizeMake(w, h);
-}
-
--(void)dealloc{
 }
 
 - (void)didReceiveMemoryWarning {

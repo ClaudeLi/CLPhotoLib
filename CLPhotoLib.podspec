@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'CLPhotoLib'
-  s.version          = '1.0.1'
+  s.version          = '1.1.0'
   s.summary          = '图片视频选择器<支持原图、GIF、LivePhoto>、支持图片视频编辑'
 
 # This description is used to generate tags and improve search results.

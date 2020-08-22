@@ -27,7 +27,7 @@ typedef enum {
 
 @implementation CLEditManager
 
-- (instancetype)init{
+- (instancetype)init {
     self = [super init];
     if (self) {
     }
@@ -40,7 +40,7 @@ typedef enum {
                         degrees:(CGFloat)degrees
                         cutMode:(CLVideoCutMode)cutMode
                       fillColor:(UIColor *)fillColor
-                     presetName:(NSString *)presetName{
+                     presetName:(NSString *)presetName {
     [self exportEditVideoForAsset:asset
                             range:range
                         sizeScale:sizeScale
@@ -58,8 +58,7 @@ typedef enum {
                 isDistinguishWH:(BOOL)isDistinguishWH
                         cutMode:(CLVideoCutMode)cutMode
                       fillColor:(UIColor *)fillColor
-                     presetName:(NSString *)presetName
-{
+                     presetName:(NSString *)presetName {
     NSArray *videoTracks = [asset tracksWithMediaType:AVMediaTypeVideo];
     if (!videoTracks.count) {
         NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:CLString(@"CLText_VideoProcessingError"), NSLocalizedDescriptionKey, CLString(@"CLText_NotGetVideoInfo"), NSLocalizedFailureReasonErrorKey, nil];
@@ -86,17 +85,17 @@ typedef enum {
 //    CGAffineTransform translateToCenter;
 //    if (degrees != 0) {
 //        CGAffineTransform mixedTransform;
-//        if(degrees == 90){
+//        if (degrees == 90) {
 //            //顺时针旋转90°
 //            NSLog(@"视频旋转90度,home按键在左");
 //            translateToCenter = CGAffineTransformMakeTranslation(videoAssetTrack.naturalSize.height, 0.0);
 //            mixedTransform = CGAffineTransformRotate(translateToCenter, M_PI_2);
-//        }else if(degrees == 180){
+//        } else if(degrees == 180) {
 //            //顺时针旋转180°
 //            NSLog(@"视频旋转180度，home按键在上");
 //            translateToCenter = CGAffineTransformMakeTranslation(videoAssetTrack.naturalSize.width, videoAssetTrack.naturalSize.height);
 //            mixedTransform = CGAffineTransformRotate(translateToCenter, M_PI);
-//        }else if(degrees == 270){
+//        } else if(degrees == 270) {
 //            //顺时针旋转270°
 //            NSLog(@"视频旋转270度，home按键在右");
 //            translateToCenter = CGAffineTransformMakeTranslation(0.0, videoAssetTrack.naturalSize.width);
@@ -106,7 +105,7 @@ typedef enum {
 //
     // 视频显示大小
     CGSize renderSize;
-    if(isVideoAssetPortrait_){
+    if (isVideoAssetPortrait_) {
         renderSize = CGSizeMake(videoAssetTrack.naturalSize.height, videoAssetTrack.naturalSize.width);
     } else {
         renderSize = videoAssetTrack.naturalSize;
@@ -177,7 +176,7 @@ typedef enum {
                 CGFloat renderScale = renderSize.width/renderSize.height;
                 if (renderScale >= 1.0) {
                     sizeScale = sizeScale > 1.0 ? sizeScale:1.0/sizeScale;
-                }else{
+                } else {
                     sizeScale = sizeScale <= 1.0 ? sizeScale:1.0/sizeScale;
                 }
                 if (renderScale > sizeScale-0.1 && renderScale < sizeScale+0.1) {
@@ -190,7 +189,7 @@ typedef enum {
                     if (renderSize.width/renderSize.height > sizeScale) {
                         outputSize.width = renderSize.width;
                         outputSize.height = ceil(renderSize.width/sizeScale);
-                    }else{
+                    } else {
                         outputSize.height = renderSize.height;
                         outputSize.width = ceil(renderSize.height*sizeScale);
                     }
@@ -210,7 +209,7 @@ typedef enum {
                         outputSize.width = ceil(outputSize.height*sizeScale);
                         videoTransform.tx -= (renderSize.width-outputSize.width)/2.0;
                         [videoLayerInstruction setTransform:videoTransform atTime:kCMTimeZero];
-                    }else{
+                    } else {
                         outputSize.width = renderSize.width;
                         outputSize.height = ceil(outputSize.width/sizeScale);
                         videoTransform.ty -= (renderSize.height-outputSize.height)/2.0;
@@ -231,7 +230,7 @@ typedef enum {
                     break;
             }
             mainCompositionInst.frameDuration = CMTimeMake(1, 30);
-        }else{
+        } else {
             [videoLayerInstruction setTransform:videoTransform atTime:kCMTimeZero];
             mainCompositionInst.renderSize = outputSize;
             mainCompositionInst.frameDuration = CMTimeMake(1, 30);
@@ -299,7 +298,7 @@ typedef enum {
                     break;
             }
         }];
-    }else{
+    } else {
         NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:CLString(@"CLText_VideoProcessingError"), NSLocalizedDescriptionKey, CLString(@"CLText_UnableToDecode"), NSLocalizedFailureReasonErrorKey, nil];
         NSError *error = [[NSError alloc] initWithDomain:CLErrorDomain code:CLErrorUnableToDecode userInfo:userInfo];
         [self onError:error];
@@ -334,7 +333,7 @@ typedef enum {
             },
             outputSize
         };
-    }else{
+    } else {
         videoLayer.frame = (CGRect){
             CGPointZero,
             CGSizeMake(outputSize.width, outputSize.height)
@@ -376,7 +375,7 @@ typedef enum {
     mainCompositionInst.animationTool = [AVVideoCompositionCoreAnimationTool videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayer:videoLayer inLayer:parentLayer];
 }
 
-- (void)deleteFilePath:(NSString *)path{
+- (void)deleteFilePath:(NSString *)path {
     NSFileManager *fm = [NSFileManager defaultManager];
     BOOL exist = [fm fileExistsAtPath:path];
     NSError *err;
@@ -388,33 +387,33 @@ typedef enum {
     }
 }
 
-- (void)cancelExport{
+- (void)cancelExport {
     if (_exportSession) {
         [_exportSession cancelExport];
         _exportSession = nil;
     }
 }
 
-- (void)removeTimer{
+- (void)removeTimer {
     if (_timerEffect) {
         [_timerEffect invalidate];
         _timerEffect = nil;
     }
 }
 
-- (void)handlingProgress{
+- (void)handlingProgress {
     if ([self.delegate respondsToSelector:@selector(editManager:handlingProgress:)]) {
         [self.delegate editManager:self handlingProgress:self.exportSession.progress];
     }
 }
 
-- (void)onError:(NSError *)error{
+- (void)onError:(NSError *)error {
     if ([self.delegate respondsToSelector:@selector(editManager:operationFailure:)]) {
         [self.delegate editManager:self operationFailure:error];
     }
 }
 
-- (void)didFinishedOutputURL:(NSURL *)outputURL{
+- (void)didFinishedOutputURL:(NSURL *)outputURL {
     if ([self.delegate respondsToSelector:@selector(editManager:didFinishedOutputURL:)]) {
         [self.delegate editManager:self didFinishedOutputURL:outputURL];
     }
@@ -425,8 +424,7 @@ typedef enum {
 static AVAssetImageGenerator *_generator;
 
 + (UIImage *)requestThumbnailImageForAVAsset:(AVAsset *)asset
-                                timeBySecond:(NSTimeInterval)timeBySecond
-{
+                                timeBySecond:(NSTimeInterval)timeBySecond {
     if (!asset) {
         return nil;
     }
@@ -461,8 +459,7 @@ static AVAssetImageGenerator *_generator;
                                 interval:(NSTimeInterval)interval
                                     size:(CGSize)size
                            eachThumbnail:(void (^)(UIImage *image))eachThumbnail
-                                complete:(void (^)(AVAsset *asset, NSArray<UIImage *> *images))complete
-{
+                                complete:(void (^)(AVAsset *asset, NSArray<UIImage *> *images))complete {
     NSTimeInterval duration = asset.duration.value/(asset.duration.timescale * 1.0);
     long imgCount = round(duration/interval);
     [self requestThumbnailImagesForAVAsset:asset duration:duration imageCount:imgCount interval:interval size:size eachThumbnail:eachThumbnail complete:complete];
@@ -474,8 +471,7 @@ static AVAssetImageGenerator *_generator;
                                 interval:(NSTimeInterval)interval
                                     size:(CGSize)size
                            eachThumbnail:(void (^)(UIImage *image))eachThumbnail
-                                complete:(void (^)(AVAsset *asset, NSArray<UIImage *> *images))complete
-{
+                                complete:(void (^)(AVAsset *asset, NSArray<UIImage *> *images))complete {
     [self cancelAllCGImageGeneration];
     _generator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
     _generator.maximumSize = size;
@@ -530,7 +526,7 @@ static AVAssetImageGenerator *_generator;
     }];
 }
 
-+ (void)cancelAllCGImageGeneration{
++ (void)cancelAllCGImageGeneration {
     if (_generator) {
         [_generator cancelAllCGImageGeneration];
         _generator = nil;

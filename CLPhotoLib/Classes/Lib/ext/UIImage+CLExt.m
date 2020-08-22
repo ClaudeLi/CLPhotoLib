@@ -11,7 +11,7 @@
 
 @implementation UIImage (CLExt)
 
-+ (UIImage *)imageNamedFromBundle:(NSString *)name{
++ (UIImage *)imageNamedFromBundle:(NSString *)name {
     UIImage *image = [UIImage imageNamed:[@"CLPhotoLib.bundle" stringByAppendingPathComponent:name]];
     if (image) {
         return image;
@@ -22,7 +22,7 @@
     return image;
 }
 
-+ (UIImage *)imageWithColor:(UIColor *)color{
++ (UIImage *)imageWithColor:(UIColor *)color {
     CGRect rect = CGRectMake(0.0f, 0.0f, 1.0f, 1.0f);
     UIGraphicsBeginImageContext(rect.size);
     CGContextRef context = UIGraphicsGetCurrentContext();
@@ -45,7 +45,6 @@
     return image;
 }
 
-
 + (UIImage *)scaleImage:(UIImage *)image toSize:(CGSize)size {
     CGSize newSize = [self getSizeWithImageSize:image.size toSize:size];
     UIGraphicsBeginImageContext(newSize);
@@ -55,7 +54,7 @@
     return newImage;
 }
 
-+ (UIImage *)fixOrientation:(UIImage *)aImage isRotate:(BOOL)isRotate{
++ (UIImage *)fixOrientation:(UIImage *)aImage isRotate:(BOOL)isRotate {
     if (!isRotate) return aImage;
     
     // No-op if the orientation is already correct
@@ -133,19 +132,18 @@
     return img;
 }
 
-
-+ (CGSize)getSizeWithImageSize:(CGSize)imageSize toSize:(CGSize)size{
++ (CGSize)getSizeWithImageSize:(CGSize)imageSize toSize:(CGSize)size {
     CGSize newSize;
     if (imageSize.width < imageSize.height) {
         if (imageSize.width < size.width) {
             return imageSize;
-        }else{
+        } else {
             newSize = CGSizeMake(size.width, (int)size.width * imageSize.height / imageSize.width);
         }
-    }else{
+    } else {
         if (imageSize.height < size.height) {
             return imageSize;
-        }else{
+        } else {
             newSize = CGSizeMake(size.height * imageSize.width/imageSize.height, size.height);
         }
     }

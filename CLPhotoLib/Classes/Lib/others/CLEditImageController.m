@@ -30,14 +30,14 @@
         popPresenter.sourceView = self.view;
         popPresenter.sourceRect = self.view.bounds;
         [self presentViewController:alert animated:YES completion:nil];
-    }else{
+    } else {
         [self presentViewController:alert animated:YES completion:nil];
     }
 }
 
 #pragma mark -
 #pragma mark -- Lazy Loads --
-- (CLPickerRootController *)picker{
+- (CLPickerRootController *)picker {
     return (CLPickerRootController *)self.navigationController;
 }
 

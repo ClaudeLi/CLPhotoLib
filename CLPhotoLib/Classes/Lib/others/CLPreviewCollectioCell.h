@@ -53,7 +53,7 @@
 
 @interface CLPreviewImageCell : CLPreviewBaseCell
 
-@property (nonatomic, strong) PHLivePhotoView   *livePhotoView PHOTOS_AVAILABLE_IOS_TVOS(9_1, 10_0);
+@property (nonatomic, strong) PHLivePhotoView   *livePhotoView API_AVAILABLE(ios(9.1));
 @property (nonatomic, strong) UIView            *containerView;
 @property (nonatomic, strong) UIScrollView      *scrollView;
 

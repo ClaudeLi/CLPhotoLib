@@ -17,7 +17,7 @@
 
 static CGFloat  minimumLineSpacing = 20.0f;
 static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
-@interface CLPreviewViewController ()<UICollectionViewDelegate, UICollectionViewDataSource>{
+@interface CLPreviewViewController ()<UICollectionViewDelegate, UICollectionViewDataSource> {
     UICollectionViewFlowLayout *_layout;
     BOOL                        _hideBar;
     CLPhotoModel               *_currentModel;
@@ -32,7 +32,7 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
 
 @implementation CLPreviewViewController
 
-- (CLPickerRootController *)picker{
+- (CLPickerRootController *)picker {
     return (CLPickerRootController *)self.navigationController;
 }
 
@@ -47,16 +47,16 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
     self.toolBar.hidden = NO;
 }
 
-- (void)viewWillAppear:(BOOL)animated{
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 }
 
-- (void)viewDidAppear:(BOOL)animated{
+- (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self play];
 }
 
-- (void)viewWillLayoutSubviews{
+- (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
     [UIApplication sharedApplication].statusBarHidden = _hideBar;
     self.navigationController.navigationBar.hidden = _hideBar;
@@ -71,7 +71,7 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
     [_collectionView setContentOffset:CGPointMake((self.view.width+minimumLineSpacing)*_currentIndex, 0)];
 }
 
-- (void)_initNavigationItems{
+- (void)_initNavigationItems {
     UIButton *leftItem = [UIButton buttonWithType:UIButtonTypeCustom];
     leftItem.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
     leftItem.frame = CGRectMake(0, 0, self.navigationController.navigationBar.height, self.navigationController.navigationBar.height);
@@ -85,11 +85,11 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
 
 #pragma mark -
 #pragma mark -- Target Methods --
-- (void)clickCancelItemAction{
+- (void)clickCancelItemAction {
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)clickRightItemAction:(UIButton *)sender{
+- (void)clickRightItemAction:(UIButton *)sender {
     if (_photoArray.count > _currentIndex) {
         CLPhotoModel *model = _photoArray[_currentIndex];
         if (!sender.selected) {
@@ -99,11 +99,11 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
                 if (![CLPhotoManager checkSelcectedWithModel:model identifiers:[CLPhotoManager getLocalIdentifierArrayWithArray:self.picker.selectedModels]]) {
                     [self.picker.selectedModels addObject:model];
                 }
-            }else{
+            } else {
                 [self.picker showText:[NSString stringWithFormat:CLString(@"CLText_MaxImagesCount"), self.picker.maxSelectCount]];
                 return;
             }
-        }else{
+        } else {
             model.isSelected = NO;
             NSArray *selectedModels = [NSArray arrayWithArray:self.picker.selectedModels];
             [selectedModels enumerateObjectsUsingBlock:^(CLPhotoModel  * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -120,10 +120,10 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
     }
 }
 
-- (void)clickDoneItemAction{
+- (void)clickDoneItemAction {
     if (_currentPage < _photoArray.count) {
         CLPreviewCollectioCell *cell = (CLPreviewCollectioCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:_currentPage inSection:0]];
-        if (cell){
+        if (cell) {
             [cell pausePlay:YES];
         }
     }
@@ -143,19 +143,19 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
             if([tracks count] > 0) {
                 if ([[tracks firstObject] isKindOfClass:[AVCompositionTrack class]]) {
                     [strongSelf.picker showText:CLString(@"CLText_UnableToDecode")];
-                }else{
+                } else {
                     [strongSelf.picker clickPickingVideoActionForAsset:asset
                                                                  range:CMTimeRangeMake(kCMTimeZero, asset.duration)
                                                                degrees:0];
                 }
-            }else{
+            } else {
                 [strongSelf.picker showText:CLString(@"CLText_NotGetVideoInfo")];
             }
         }];
-    }else{
+    } else {
         if (self.picker.allowImgMultiple) {
             [self.picker didFinishPickingPhotosAction];
-        }else{
+        } else {
             if (_photoArray.count > _currentIndex) {
                 CLPhotoModel *model = _photoArray[_currentIndex];
                 if (![CLPhotoManager checkSelcectedWithModel:model identifiers:[CLPhotoManager getLocalIdentifierArrayWithArray:self.picker.selectedModels]]) {
@@ -167,10 +167,10 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
     }
 }
 
-- (void)clickEditAction{
+- (void)clickEditAction {
     if (_currentPage < _photoArray.count) {
         CLPreviewCollectioCell *cell = (CLPreviewCollectioCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:_currentPage inSection:0]];
-        if (cell){
+        if (cell) {
             [cell pausePlay:YES];
         }
     }
@@ -178,7 +178,7 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
         CLEditVideoController *edit = [[CLEditVideoController alloc] init];
         edit.model = _currentModel;
         [self.navigationController pushViewController:edit animated:NO];
-    }else{
+    } else {
         CLEditImageController *image = [[CLEditImageController alloc] init];
         image.model = _currentModel;
         [self.navigationController pushViewController:image animated:NO];
@@ -187,11 +187,11 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
 
 #pragma mark -
 #pragma mark -- UICollectionViewDataSource & UICollectionViewDelegate --
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     return _photoArray.count;
 }
 
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     CLPreviewCollectioCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:itemIdentifier forIndexPath:indexPath];
     cell.showGif = self.picker.allowSelectGif;
     cell.showLivePhoto = self.picker.allowSelectLivePhoto;
@@ -206,31 +206,31 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
     return cell;
 }
 
-- (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath{
+- (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
     [(CLPreviewCollectioCell *)cell resetScale];
     ((CLPreviewCollectioCell *)cell).willDisplaying = YES;
 }
 
-- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath{
+- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
     [(CLPreviewCollectioCell *)cell pausePlay:YES];
 }
 
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section{
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     return minimumLineSpacing;
 }
 
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section{
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     return 0;
 }
 
-//- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
+//- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
 //    return CGSizeMake(self.view.width, self.view.height);
 //}
 
-- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section{
+- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
     return UIEdgeInsetsMake(0, minimumLineSpacing/2.0, 0, minimumLineSpacing/2.0);
 }
 
@@ -242,7 +242,7 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
     }
 }
 
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     CGFloat page = scrollView.contentOffset.x/(minimumLineSpacing + self.view.width);
     if (ceilf(page) >= _photoArray.count) {
         return;
@@ -253,7 +253,7 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
 
 #pragma mark -
 #pragma mark -- Private Methods --
-- (void)play{
+- (void)play {
     if (_photoArray.count > _currentIndex) {
         CLPhotoModel *model = _photoArray[_currentIndex];
         if (model.type == CLAssetMediaTypeGif ||
@@ -267,14 +267,14 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
     }
 }
 
-- (void)handlerSingleTap{
+- (void)handlerSingleTap {
     _hideBar = !_hideBar;
     [UIApplication sharedApplication].statusBarHidden = _hideBar;
     self.navigationController.navigationBar.hidden = _hideBar;
     _toolBar.hidden = _hideBar;
 }
 
-- (void)refreshNavigationBar{
+- (void)refreshNavigationBar {
     if (_photoArray.count > _currentPage) {
         CLPhotoModel *model = _photoArray[_currentPage];
         if ([model.asset.localIdentifier isEqualToString:_currentModel.asset.localIdentifier]) {
@@ -288,7 +288,7 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
     }
 }
 
-- (BOOL)switchToVideo{
+- (BOOL)switchToVideo {
     if (_currentModel.type == CLAssetMediaTypeVideo) {
         if (self.picker.allowSelectOriginalImage) {
             _toolBar.originalBtn.hidden = YES;
@@ -302,12 +302,12 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
             _toolBar.tipLabel.hidden = NO;
             _toolBar.doneBtn.selected = NO;
             _toolBar.editSelect = NO;
-        }else if (self.picker.maxDuration < _currentModel.duration){
+        } else if (self.picker.maxDuration < _currentModel.duration) {
             [_toolBar.tipLabel setTitle:[NSString stringWithFormat:CLString(@"CLText_VideoMaximumLength"), @(self.picker.maxDuration)] forState:UIControlStateNormal];
             _toolBar.tipLabel.hidden = NO;
             _toolBar.doneBtn.selected = NO;
             _toolBar.editSelect = YES;
-        }else{
+        } else {
             _toolBar.doneBtn.selected = YES;
             _toolBar.tipLabel.hidden = YES;
             _toolBar.editSelect = YES;
@@ -327,7 +327,7 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
         if (self.picker.selectedModels.count == 0) {
             if (self.picker.allowImgMultiple) {
                 _toolBar.doneBtn.selected = NO;
-            }else{
+            } else {
                 _toolBar.doneBtn.selected = YES;
             }
         }
@@ -339,14 +339,14 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
     return NO;
 }
 
-- (void)refreshBottomToolBarReloadList:(BOOL)reload{
+- (void)refreshBottomToolBarReloadList:(BOOL)reload {
     [self refreshBottomToolBarStatus];
     if (self.didReloadToolBarStatus) {
         self.didReloadToolBarStatus(reload);
     }
 }
 
-- (void)refreshBottomToolBarStatus{
+- (void)refreshBottomToolBarStatus {
     if ([self switchToVideo]) return;
     if (self.picker.allowSelectOriginalImage) {
         _toolBar.originalBtn.hidden = NO;
@@ -354,10 +354,10 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
         if (self.picker.selectedModels.count) {
             if (_toolBar.originalBtn.selected) {
                 [self getOriginalImageBytes];
-            }else{
+            } else {
                 [_toolBar.originalBtn setTitle:CLString(@"CLText_Original") forState:UIControlStateNormal];
             }
-        }else{
+        } else {
             [_toolBar.originalBtn setTitle:CLString(@"CLText_Original") forState:UIControlStateNormal];
         }
     }
@@ -366,11 +366,12 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
     }
 }
 
-- (void)getOriginalImageBytes{
+- (void)getOriginalImageBytes {
     [_toolBar startAnimating];
+    CLPickerRootController *pk = self.picker;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         cl_weakSelf(self);
-        [CLPhotoManager getPhotosBytesWithArray:self.picker.selectedModels completion:^(NSString *photosBytes) {
+        [CLPhotoManager getPhotosBytesWithArray:pk.selectedModels completion:^(NSString *photosBytes) {
             cl_strongSelf(weakSelf);
             if (!strongSelf) {
                 return;
@@ -380,7 +381,7 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
     });
 }
 
-- (void)setOriginalImageBytes:(id)object{
+- (void)setOriginalImageBytes:(id)object {
     cl_weakSelf(self);
     dispatch_async(dispatch_get_main_queue(), ^{
         [weakSelf.toolBar stopAnimating];
@@ -390,7 +391,7 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
 
 #pragma mark -
 #pragma mark -- Lazy Loads --
-- (UIButton *)rightItem{
+- (UIButton *)rightItem {
     if (!_rightItem) {
         _rightItem = [UIButton buttonWithType:UIButtonTypeCustom];
         _rightItem.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
@@ -404,7 +405,7 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
     return _rightItem;
 }
 
-- (UICollectionView *)collectionView{
+- (UICollectionView *)collectionView {
     if (!_collectionView) {
         _layout = [[UICollectionViewFlowLayout alloc] init];
         _layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
@@ -423,7 +424,7 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
     return _collectionView;
 }
 
-- (CLPickerToolBar *)toolBar{
+- (CLPickerToolBar *)toolBar {
     if (!_toolBar) {
         _toolBar = [[CLPickerToolBar alloc] init];
         _toolBar.titleColor = self.picker.toolBarItemColor?:self.picker.navigationItemColor;
@@ -456,7 +457,7 @@ static NSString *itemIdentifier = @"CLPreviewCollectioCellItemIdentifier";
     return _toolBar;
 }
 
-- (void)dealloc{
+- (void)dealloc {
     [self.picker cancelExport];
 }
 

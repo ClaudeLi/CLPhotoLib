@@ -19,7 +19,7 @@
 
 @implementation CLPreviewCollectioCell
 
-- (CLPreviewImageCell *)imageView{
+- (CLPreviewImageCell *)imageView {
     if (!_imageView) {
         _imageView = [[CLPreviewImageCell alloc] initWithFrame:self.bounds];
         cl_WS(ws);
@@ -37,7 +37,7 @@
     return _imageView;
 }
 
-- (CLPreviewVideoCell *)videoView{
+- (CLPreviewVideoCell *)videoView {
     if (!_videoView) {
         _videoView = [[CLPreviewVideoCell alloc] initWithFrame:self.bounds];
         cl_WS(ws);
@@ -55,17 +55,17 @@
     return _videoView;
 }
 
-- (void)layoutSubviews{
+- (void)layoutSubviews {
     [super layoutSubviews];
     _imageView.frame = self.bounds;
     _videoView.frame = self.bounds;
 }
 
-- (void)resetScale{
+- (void)resetScale {
     [_imageView resetScale];
 }
 
-- (void)reloadGif{
+- (void)reloadGif {
     if (self.willDisplaying) {
         self.willDisplaying = NO;
         [self reload];
@@ -74,16 +74,16 @@
     }
 }
 
-- (void)setModel:(CLPhotoModel *)model{
+- (void)setModel:(CLPhotoModel *)model {
     _model = model;
     if (_model.type == CLAssetMediaTypeVideo) {
         [self.videoView loadAsset:_model.asset];
-    }else{
+    } else {
         [self.imageView loadAsset:_model.asset];
     }
 }
 
-- (void)reload{
+- (void)reload {
     if (self.showGif && _model.type == CLAssetMediaTypeGif) {
         [self.imageView loadGifImage:self.model.asset];
     } else if (self.showLivePhoto && _model.type == CLAssetMediaTypeLivePhoto) {
@@ -91,13 +91,13 @@
     }
 }
 
-- (void)resumePlay{
+- (void)resumePlay {
     if (self.model.type == CLAssetMediaTypeGif) {
         [self.imageView resumeGif];
     }
 }
 
-- (void)pausePlay:(BOOL)stop{
+- (void)pausePlay:(BOOL)stop {
     if (self.model.type == CLAssetMediaTypeGif) {
         [self.imageView pauseGif];
     } else if (self.model.type == CLAssetMediaTypeLivePhoto) {
@@ -109,19 +109,18 @@
 
 @end
 
-
 @implementation CLPreviewBaseCell
 
 #pragma mark -
 #pragma mark -- Initial Methods --
-- (instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         [self _setUp];
     }
     return self;
 }
 
-- (instancetype)init{
+- (instancetype)init {
     self = [super init];
     if (self) {
         [self _setUp];
@@ -129,19 +128,18 @@
     return self;
 }
 
-- (void)_setUp{
+- (void)_setUp {
     [self.singleTap requireGestureRecognizerToFail:self.doubleTap];
 }
 
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
     [super layoutSubviews];
     self.indicator.center = self.center;
 }
 
 #pragma mark -
 #pragma mark -- Lazy Loads --
-- (UIActivityIndicatorView *)indicator{
+- (UIActivityIndicatorView *)indicator {
     if (!_indicator) {
         _indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
         _indicator.hidesWhenStopped = YES;
@@ -150,7 +148,7 @@
     return _indicator;
 }
 
-- (UIImageView *)imageView{
+- (UIImageView *)imageView {
     if (!_imageView) {
         _imageView = [[UIImageView alloc] init];
         _imageView.contentMode = UIViewContentModeScaleAspectFit;
@@ -158,7 +156,7 @@
     return _imageView;
 }
 
-- (UITapGestureRecognizer *)singleTap{
+- (UITapGestureRecognizer *)singleTap {
     if (!_singleTap) {
         _singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTapAction)];
         [self addGestureRecognizer:_singleTap];
@@ -166,7 +164,7 @@
     return _singleTap;
 }
 
-- (UITapGestureRecognizer *)doubleTap{
+- (UITapGestureRecognizer *)doubleTap {
     if (!_doubleTap) {
         _doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTapAction:)];
         _doubleTap.numberOfTapsRequired = 2;
@@ -177,30 +175,28 @@
 
 #pragma mark -
 #pragma mark -- Target Methods --
-- (void)singleTapAction{
+- (void)singleTapAction {
     if (self.singleTapCallBack) self.singleTapCallBack();
 }
 
-- (void)doubleTapAction:(UITapGestureRecognizer *)tap{
-    
+- (void)doubleTapAction:(UITapGestureRecognizer *)tap {
 }
 
 #pragma mark -
 #pragma mark -- Public Methods --
-- (void)loadAsset:(PHAsset *)asset{
+- (void)loadAsset:(PHAsset *)asset {
     
 }
 
-- (void)loadGifImage:(PHAsset *)asset{
+- (void)loadGifImage:(PHAsset *)asset {
     
 }
 
-- (void)loadLivePhoto:(PHAsset *)asset{
+- (void)loadLivePhoto:(PHAsset *)asset {
     
 }
 
 @end
-
 
 @interface CLPreviewImageCell () <UIScrollViewDelegate, PHLivePhotoViewDelegate>{
     BOOL    _loaded;
@@ -210,7 +206,7 @@
 @implementation CLPreviewImageCell
 
 #pragma mark -- 重写父类方法 --
-- (void)loadAsset:(PHAsset *)asset{
+- (void)loadAsset:(PHAsset *)asset {
     if (self.asset.localIdentifier && [self.asset.localIdentifier isEqualToString:asset.localIdentifier]) {
         return;
     }
@@ -239,7 +235,7 @@
     }];
 }
 
-- (void)loadGifImage:(PHAsset *)asset{
+- (void)loadGifImage:(PHAsset *)asset {
     if (_isPlaying) {
         return;
     }
@@ -259,7 +255,7 @@
     }];
 }
 
-- (void)loadLivePhoto:(PHAsset *)asset{
+- (void)loadLivePhoto:(PHAsset *)asset {
     if (_isPlaying) {
         return;
     }
@@ -281,7 +277,7 @@
 
 #pragma mark -
 #pragma mark -- Initial Methods --
-- (instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         [self initUI];
@@ -289,7 +285,7 @@
     return self;
 }
 
-- (instancetype)init{
+- (instancetype)init {
     self = [super init];
     if (self) {
         [self initUI];
@@ -297,14 +293,14 @@
     return self;
 }
 
-- (void)initUI{
+- (void)initUI {
     [self addSubview:self.scrollView];
     [self.scrollView addSubview:self.containerView];
     [self.containerView addSubview:self.imageView];
     [self addSubview:self.indicator];
 }
 
-- (void)layoutSubviews{
+- (void)layoutSubviews {
     [super layoutSubviews];
     self.scrollView.frame = self.bounds;
     [self.scrollView setZoomScale:1.0];
@@ -316,7 +312,7 @@
 
 #pragma mark -
 #pragma mark -- Lazy Loads --
-- (UIScrollView *)scrollView{
+- (UIScrollView *)scrollView {
     if (!_scrollView) {
         _scrollView = [[UIScrollView alloc] init];
         _scrollView.frame = self.bounds;
@@ -332,15 +328,14 @@
     return _scrollView;
 }
 
-- (UIView *)containerView
-{
+- (UIView *)containerView {
     if (!_containerView) {
         _containerView = [[UIView alloc] init];
     }
     return _containerView;
 }
 
-- (PHLivePhotoView *)livePhotoView{
+- (PHLivePhotoView *)livePhotoView {
     if (!_livePhotoView) {
         _livePhotoView = [[PHLivePhotoView alloc] initWithFrame:self.containerView.bounds];
         _livePhotoView.contentMode = UIViewContentModeScaleAspectFit;
@@ -350,7 +345,7 @@
     return _livePhotoView;
 }
 
-- (void)resetSubviewSize:(id)obj{
+- (void)resetSubviewSize:(id)obj {
     CGRect frame = CGRectZero;
     UIImage *image = self.imageView.image;
     if (!image) {
@@ -365,27 +360,27 @@
             frame.size.width = self.width;
             frame.size.height = self.width/imageScale;
             point = self.center;
-        }else{
+        } else {
             frame.size.width = self.width;
             frame.size.height = self.width/imageScale;
         }
-    }else{
+    } else {
         if (imageScale > screenScale) {
             frame.size.width = self.width;
             frame.size.height = self.width/imageScale;
             point = self.center;
-        }else{
+        } else {
             if (image.size.height < self.height) {
                 frame.size.height = self.height;
                 frame.size.width = self.height*imageScale;
                 point = self.center;
-            }else{
+            } else {
                 CGFloat scale = 1/4.0 * self.width / self.height;
                 if (imageScale > scale) {
                     frame.size.height = self.height;
                     frame.size.width = self.height*imageScale;
                     point = self.center;
-                }else{
+                } else {
                     frame.size.width = 1/3.0 * self.width;
                     frame.size.height = 1/3.0 * self.width/imageScale;
                     point = CGPointMake(self.center.x, frame.size.height/2.0);
@@ -407,7 +402,7 @@
 
 #pragma mark -
 #pragma mark -- Target Methods --
-- (void)doubleTapAction:(UITapGestureRecognizer *)tap{
+- (void)doubleTapAction:(UITapGestureRecognizer *)tap {
     [super doubleTapAction:tap];
     UIScrollView *scrollView = self.scrollView;
     CGFloat scale = 1;
@@ -422,18 +417,17 @@
 
 #pragma mark -
 #pragma mark -- PHLivePhotoViewDelegate --
-- (void)livePhotoView:(PHLivePhotoView *)livePhotoView willBeginPlaybackWithStyle:(PHLivePhotoViewPlaybackStyle)playbackStyle API_AVAILABLE(ios(9.1)){
+- (void)livePhotoView:(PHLivePhotoView *)livePhotoView willBeginPlaybackWithStyle:(PHLivePhotoViewPlaybackStyle)playbackStyle API_AVAILABLE(ios(9.1)) {
     _isPlaying = YES;
 }
 
-- (void)livePhotoView:(PHLivePhotoView *)livePhotoView didEndPlaybackWithStyle:(PHLivePhotoViewPlaybackStyle)playbackStyle API_AVAILABLE(ios(9.1)){
+- (void)livePhotoView:(PHLivePhotoView *)livePhotoView didEndPlaybackWithStyle:(PHLivePhotoViewPlaybackStyle)playbackStyle API_AVAILABLE(ios(9.1)) {
     _isPlaying = NO;
 }
 
 #pragma mark -
 #pragma mark -- UIScrollViewDelegate --
-- (CGRect)zoomRectForScale:(float)scale withCenter:(CGPoint)center
-{
+- (CGRect)zoomRectForScale:(float)scale withCenter:(CGPoint)center {
     CGRect zoomRect;
     zoomRect.size.height = self.scrollView.frame.size.height / scale;
     zoomRect.size.width  = self.scrollView.frame.size.width  / scale;
@@ -442,8 +436,7 @@
     return zoomRect;
 }
 
-- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
-{
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
     return scrollView.subviews[0];
 }
 
@@ -453,17 +446,17 @@
     self.containerView.center = CGPointMake(scrollView.contentSize.width * 0.5 + offsetX, scrollView.contentSize.height * 0.5 + offsetY);
 }
 
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     [self resumeGif];
 }
 
 #pragma mark -
 #pragma mark -- Public Methods --
-- (void)resetScale{
+- (void)resetScale {
     self.scrollView.zoomScale = 1;
 }
 
-- (void)resumeGif{
+- (void)resumeGif {
     CALayer *layer = self.imageView.layer;
     if (layer.speed != 0) return;
     _isPlaying = YES;
@@ -475,7 +468,7 @@
     layer.beginTime = timeSincePause;
 }
 
-- (void)pauseGif{
+- (void)pauseGif {
     CALayer *layer = self.imageView.layer;
     if (layer.speed == .0) return;
     CFTimeInterval pausedTime = [layer convertTime:CACurrentMediaTime() fromLayer:nil];
@@ -484,17 +477,20 @@
     _isPlaying = NO;
 }
 
-- (void)stopPlayLivePhoto{
+- (void)stopPlayLivePhoto {
     _isPlaying = NO;
-    [_livePhotoView stopPlayback];
+    if (@available(iOS 9.1, *)) {
+        [_livePhotoView stopPlayback];
+    } else {
+        // Fallback on earlier versions
+    }
 }
 
 @end
 
-
 @implementation CLPreviewVideoCell
 
-- (void)loadAsset:(PHAsset *)asset{
+- (void)loadAsset:(PHAsset *)asset {
     if (self.asset && self.imageRequestID >= 0) {
         [[PHCachingImageManager defaultManager] cancelImageRequest:self.imageRequestID];
     }
@@ -521,8 +517,7 @@
     }];
 }
 
-
-- (AVPlayerLayer *)playLayer{
+- (AVPlayerLayer *)playLayer {
     if (!_playLayer) {
         _playLayer = [[AVPlayerLayer alloc] init];
         _playLayer.frame = self.bounds;
@@ -530,7 +525,7 @@
     return _playLayer;
 }
 
-- (UIImageView *)icloudView{
+- (UIImageView *)icloudView {
     if (!_icloudView) {
         _icloudView = [[UIImageView alloc] initWithFrame:CGRectZero];
         _icloudView.image = [UIImage imageNamedFromBundle:@"clicon_icloud_load"];
@@ -540,7 +535,7 @@
     return _icloudView;
 }
 
-- (UIButton *)playBtn{
+- (UIButton *)playBtn {
     if (!_playBtn) {
         _playBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_playBtn setImage:[UIImage imageNamedFromBundle:@"btn_preview_play"] forState:UIControlStateNormal];
@@ -551,7 +546,7 @@
     return _playBtn;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         [self initUI];
@@ -559,7 +554,7 @@
     return self;
 }
 
-- (instancetype)init{
+- (instancetype)init {
     self = [super init];
     if (self) {
         [self initUI];
@@ -567,27 +562,26 @@
     return self;
 }
 
-
-- (void)initUI{
+- (void)initUI {
     [self addSubview:self.imageView];
     [self addSubview:self.icloudView];
     [self addSubview:self.playBtn];
     [self addSubview:self.indicator];
 }
 
-- (void)layoutSubviews{
+- (void)layoutSubviews {
     [super layoutSubviews];
     self.imageView.frame = self.bounds;
     if (@available(iOS 11.0, *)) {
         _icloudView.frame = CGRectMake(20, self.height - self.safeAreaInsets.bottom - CLToolBarHeight - 40, 20, 20);
-    }else{
+    } else {
         _icloudView.frame = CGRectMake(20, self.height - CLToolBarHeight - 40, 20, 20);
     }
     _playBtn.center = self.center;
     _playLayer.frame = self.bounds;
 }
 
-- (void)singleTapAction{
+- (void)singleTapAction {
     [super singleTapAction];
     if (_playLayer && _playLayer.player) {
         if (_playLayer.player.rate) {
@@ -597,12 +591,12 @@
     }
 }
 
-- (void)doubleTapAction:(UITapGestureRecognizer *)tap{
+- (void)doubleTapAction:(UITapGestureRecognizer *)tap {
     [super doubleTapAction:tap];
     [self setVideoStatus];
 }
 
-- (void)setVideoStatus{
+- (void)setVideoStatus {
     if (!_playLayer) {
         cl_weakSelf(self);
         [CLPhotoShareManager requestVideoAssetForAsset:self.asset completion:^(AVAsset *asset, NSDictionary *info) {
@@ -612,7 +606,7 @@
             }
             if ([[NSThread currentThread] isMainThread]) {
                 [strongSelf loadVideoWithAsset:asset];
-            }else{
+            } else {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [strongSelf loadVideoWithAsset:asset];
                 });
@@ -623,7 +617,7 @@
     }
 }
 
-- (void)loadVideoWithAsset:(AVAsset *)asset{
+- (void)loadVideoWithAsset:(AVAsset *)asset {
     if (!asset || ![asset isKindOfClass:[AVAsset class]]) {
         [self initVideoLoadFailedFromiCloudUI];
         return;
@@ -636,24 +630,24 @@
     self.icloudView.hidden = YES;
     AVPlayer *player = [AVPlayer playerWithPlayerItem:self.playerItem];
     [self.layer addSublayer:self.playLayer];
-    self.playLayer.player = player;
+    _playLayer.player = player;
     [self switchVideoStatus];
-    [self.playLayer addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
+    [_playLayer addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playFinished:) name:AVPlayerItemDidPlayToEndTimeNotification object:player.currentItem];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enterBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
 }
 
-- (void)initVideoLoadFailedFromiCloudUI{
+- (void)initVideoLoadFailedFromiCloudUI {
     self.icloudView.hidden = NO;
     self.playBtn.enabled = NO;
 }
 
-- (void)playBtnClick{
+- (void)playBtnClick {
     [self doubleTapAction:nil];
 }
 
-- (void)switchVideoStatus{
-    AVPlayer *player = self.playLayer.player;
+- (void)switchVideoStatus {
+    AVPlayer *player = _playLayer.player;
     if (!player) return;
     if (!player.currentItem) return;
     CMTime stop = player.currentItem.currentTime;
@@ -670,36 +664,36 @@
     }
 }
 
-- (void)enterBackground{
+- (void)enterBackground {
     self.playBtn.hidden = NO;
-    [self.playLayer.player pause];
+    [_playLayer.player pause];
 }
 
-- (void)playFinished:(AVPlayerItem *)item{
+- (void)playFinished:(AVPlayerItem *)item {
     [super doubleTapAction:nil];
     self.playBtn.hidden = NO;
     self.imageView.hidden = NO;
-    [self.playLayer.player seekToTime:kCMTimeZero];
+    [_playLayer.player seekToTime:kCMTimeZero];
 }
 
 //监听获得消息
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context{
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
     if (self.playerItem && object == self.playerItem) {
         if ([keyPath isEqualToString:@"status"]) {
             if (self.playerItem.status == AVPlayerStatusReadyToPlay) {
                 self.imageView.hidden = YES;
             }
         }
-    }else{
+    } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
 }
 
-- (void)stopPlayVideo:(BOOL)stop{
+- (void)stopPlayVideo:(BOOL)stop {
     if (!_playLayer) {
         return;
     }
-    AVPlayer *player = self.playLayer.player;
+    AVPlayer *player = _playLayer.player;
     if (!stop) {
         [player pause];
         self.playBtn.hidden = NO;
@@ -712,11 +706,11 @@
     }
 }
 
-- (void)dealloc{
+- (void)dealloc {
     [self clearPlayer];
 }
 
-- (void)clearPlayer{
+- (void)clearPlayer {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     if (_playLayer) {
         _playerItem = nil;

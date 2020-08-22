@@ -29,7 +29,6 @@
 // 图片方向处理
 + (UIImage *)fixOrientation:(UIImage *)aImage isRotate:(BOOL)isRotate;
 
-
 /**
  *  返回一个Size
  *

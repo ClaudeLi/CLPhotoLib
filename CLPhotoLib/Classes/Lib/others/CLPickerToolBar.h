@@ -31,7 +31,6 @@
 
 @end
 
-
 @interface CLDoneButton : UIButton
 
 @property (nonatomic, strong) UIColor  *numberColor;

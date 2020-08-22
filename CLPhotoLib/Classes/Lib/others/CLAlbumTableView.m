@@ -14,7 +14,7 @@
 #import "CLExtHeader.h"
 
 static NSString *cellIdentifier = @"CLAlbumTableViewCellIdentifier";
-@interface CLAlbumTableView ()<UITableViewDelegate, UITableViewDataSource>{
+@interface CLAlbumTableView ()<UITableViewDelegate, UITableViewDataSource> {
     BOOL    _isAnimated;
 }
 
@@ -25,7 +25,7 @@ static NSString *cellIdentifier = @"CLAlbumTableViewCellIdentifier";
 
 @implementation CLAlbumTableView
 
-- (instancetype)init{
+- (instancetype)init {
     self = [super init];
     if (self) {
         self.tableView.hidden = NO;
@@ -33,7 +33,7 @@ static NSString *cellIdentifier = @"CLAlbumTableViewCellIdentifier";
     return self;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         self.tableView.hidden = NO;
@@ -41,7 +41,7 @@ static NSString *cellIdentifier = @"CLAlbumTableViewCellIdentifier";
     return self;
 }
 
-- (UITableView *)tableView{
+- (UITableView *)tableView {
     if (!_tableView) {
         _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
         _tableView.delegate = self;
@@ -59,11 +59,11 @@ static NSString *cellIdentifier = @"CLAlbumTableViewCellIdentifier";
 
 #pragma mark -
 #pragma mark -- UITableViewDataSource & UITableViewDelegate --
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return _albumArray.count;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     CLAlbumTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if (!cell) {
         cell = [[CLAlbumTableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
@@ -74,7 +74,7 @@ static NSString *cellIdentifier = @"CLAlbumTableViewCellIdentifier";
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     if (_albumArray.count > indexPath.row) {
         if (self.didSelectAlbumBlock) {
@@ -84,44 +84,44 @@ static NSString *cellIdentifier = @"CLAlbumTableViewCellIdentifier";
     [self dismiss];
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return CLAlbumRowHeight();
 }
 
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
     // iso 7
-    if ([cell  respondsToSelector:@selector(setSeparatorInset:)]) {
+    if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
         [cell setSeparatorInset:UIEdgeInsetsZero];
     }
     // ios 8
-    if([cell respondsToSelector:@selector(setLayoutMargins:)]){
+    if ([cell respondsToSelector:@selector(setLayoutMargins:)]) {
         [cell setLayoutMargins:UIEdgeInsetsZero];
     }
 }
 
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     [super touchesBegan:touches withEvent:event];
     [self dismiss];
 }
 
 #pragma mark -
 #pragma mark -- -- -- -- -- - Public Methond - -- -- -- -- --
-- (void)setAlbumArray:(NSArray *)albumArray{
+- (void)setAlbumArray:(NSArray *)albumArray {
     _albumArray = albumArray;
     [self reloadData];
 }
 
-- (void)reloadData{
+- (void)reloadData {
     [self.tableView reloadData];
 }
 
-- (void)showAlbumAnimated:(BOOL)animated{
+- (void)showAlbumAnimated:(BOOL)animated {
     _isAnimated = animated;
     if (_isAnimated) {
         if (CLAlbumRowHeight() * _albumArray.count > self.height*CLAlbumDropDownScale) {
             self.tableView.scrollEnabled = YES;
             _tableHeight = self.height*CLAlbumDropDownScale;
-        }else{
+        } else {
             self.tableView.scrollEnabled = NO;
             _tableHeight = CLAlbumRowHeight() * self.albumArray.count;
         }
@@ -132,31 +132,31 @@ static NSString *cellIdentifier = @"CLAlbumTableViewCellIdentifier";
         [UIView animateWithDuration:CLAlbumDropDownAnimationTime animations:^{
             weakSelf.tableView.frame = CGRectMake(0, 0, weakSelf.width, weakSelf.tableHeight);
         }];
-    }else{
+    } else {
         self.tableView.scrollEnabled = YES;
     }
 }
 
-- (void)layoutSubviews{
+- (void)layoutSubviews {
     [super layoutSubviews];
     if (_isAnimated) {
         if (CLAlbumRowHeight() * _albumArray.count > self.height*CLAlbumDropDownScale) {
             _tableHeight = self.height*CLAlbumDropDownScale;
-        }else{
+        } else {
             _tableHeight = CLAlbumRowHeight() * self.albumArray.count;
         }
         self.tableView.frame = CGRectMake(0, 0, self.width, _tableHeight);
-    }else{
+    } else {
         self.tableView.frame = self.bounds;
     }
 }
 
-- (void)setTableColor:(UIColor *)tableColor{
+- (void)setTableColor:(UIColor *)tableColor {
     _tableColor = tableColor;
     self.tableView.backgroundColor = _tableColor;
 }
 
-- (void)dismiss{
+- (void)dismiss {
     if (!_isAnimated) {
         return;
     }
@@ -164,7 +164,7 @@ static NSString *cellIdentifier = @"CLAlbumTableViewCellIdentifier";
     [UIView animateWithDuration:CLAlbumPackUpAnimationTime animations:^{
         weakSelf.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0];
         weakSelf.tableView.frame = CGRectMake(0, -weakSelf.tableHeight, weakSelf.width, weakSelf.tableHeight);
-    }completion:^(BOOL finished) {
+    } completion:^(BOOL finished) {
         self.hidden = YES;
         if (self.disMissAlbumBlock) {
             self.disMissAlbumBlock();

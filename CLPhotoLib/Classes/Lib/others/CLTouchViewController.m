@@ -24,7 +24,7 @@
     [self setupUI];
 }
 
-- (void)setupUI{
+- (void)setupUI {
     switch (self.model.type) {
         case CLAssetMediaTypeImage:
             [self loadNormalImage];
@@ -48,7 +48,7 @@
 }
 
 #pragma mark - 加载静态图
-- (void)loadNormalImage{
+- (void)loadNormalImage {
     UIImageView *imageView = [[UIImageView alloc] init];
     imageView.contentMode = UIViewContentModeScaleAspectFit;
     imageView.frame = (CGRect){CGPointZero, self.preferredContentSize};
@@ -58,7 +58,7 @@
     }];
 }
 
-- (void)loadGifImage{
+- (void)loadGifImage {
     UIImageView *imageView = [[UIImageView alloc] init];
     imageView.contentMode = UIViewContentModeScaleAspectFit;
     imageView.frame = (CGRect){CGPointZero, self.preferredContentSize};
@@ -68,7 +68,7 @@
     }];
 }
 
-- (void)loadLivePhoto{
+- (void)loadLivePhoto {
     if (@available(iOS 9.1, *)) {
         PHLivePhotoView *lpView = [[PHLivePhotoView alloc] init];
         lpView.contentMode = UIViewContentModeScaleAspectFit;
@@ -89,7 +89,7 @@
     }
 }
 
-- (void)loadVideo{
+- (void)loadVideo {
     AVPlayerLayer *playLayer = [[AVPlayerLayer alloc] init];
     playLayer.frame = (CGRect){CGPointZero, self.preferredContentSize};
     [self.view.layer addSublayer:playLayer];
@@ -105,9 +105,6 @@
             [player play];
         });
     }];
-}
-
-- (void)dealloc{
 }
 
 - (void)didReceiveMemoryWarning {
